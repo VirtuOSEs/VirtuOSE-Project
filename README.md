@@ -8,3 +8,5 @@ Vous devez également télécharger le VST SDK v3.0 sur le site de Steinberg. Le
 Idem, je pense pas qu'on puisse partager l'Oculus SDK. Du coup faudra documenter où il faut le mettre dans la structure du projet (ça peut être en dehors de l'arborescence couverte par GitHub c'est pas gênant).
 
 Le VirtuOSE.sln est dans buildFiles/VisualStudio 2010
+
+Pour l'instant le VST utilisé est 4Front Piano. Vous pouvez le trouver facilement sur internet. Il suffit de placer la dll à la racine du projet GitHub et de la renommer 4Front_Piano.dll.
