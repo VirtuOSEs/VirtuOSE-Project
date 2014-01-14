@@ -1,47 +1,25 @@
 #ifndef JUCE_MODULE_SCRIPT_H
 #define JUCE_MODULE_SCRIPT_H
-  #include "platform/threads/threadPool.h"
 
-  #define JUCE_MODULE_THREADPOOL_CNT 1
+#include "console/engineAPI.h"
 
-namespace JuceModule
-{
-
-class AudioMidiThreadPool : public ThreadPool, public ManagedSingleton<AudioMidiThreadPool>
+class MidiPlayer : public SimObject
 {
 public:
-  typedef ThreadPool Parent;
+  typedef SimObject Parent;
+  DECLARE_CONOBJECT( MidiPlayer );
+  DECLARE_CATEGORY( "Juce Module" );
+  DECLARE_DESCRIPTION( "A midi file player." );
 
-  AudioMidiThreadPool()
-    : Parent("AudioMidiThreadPool", JUCE_MODULE_THREADPOOL_CNT)
-  {
-  }
+  MidiPlayer();
+  ~MidiPlayer();
 
-  static const char* getSingletonName()
-  {
-    return "AudioMidiThreadPool";
-  }
+  void playMidi();
+  void stopMidi();
+
+private:
+  ThreadSafeRef<JuceModule::AudioMidiWorkItem> sequencer;
 };
 
-struct AudioMidiWorkItem : public ThreadPool::WorkItem
-{
-  typedef ThreadPool::WorkItem Parent;
-  U32 mIndex;
-
-  AudioMidiWorkItem(U32 index)
-    : mIndex(index), askedToStop(false) {}
-
-  virtual bool isCancellationRequested()
-    { return askedToStop;}
-
-  void stop()
-    {askedToStop = true;}
-
-protected :
-  virtual void execute();
-  bool askedToStop;
-};
-
-} // namespace JuceModule
 
 #endif // JUCE_MODULE_SCRIPT_H

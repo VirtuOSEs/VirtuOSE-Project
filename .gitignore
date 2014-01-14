@@ -13,6 +13,7 @@
 *.a
 
 commitmsg.txt
+*.cs~
 #Torque files
 buildFiles/Link/
 buildFiles/VisualStudio 2010/*.sdf
@@ -25,7 +26,6 @@ game/*.dll
 game/*.lib
 game/*.ilk
 game/*.exp
-game/*~
 web/
 tools/
 source/VST3_SDK/*/

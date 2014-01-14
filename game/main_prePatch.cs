@@ -21,7 +21,7 @@
 //-----------------------------------------------------------------------------
 
 // Set the name of our application
-$appName = "PINAGE";
+$appName = "VirtuOSE";
 
 // The directory it is run from
 $defaultGame = "scripts";

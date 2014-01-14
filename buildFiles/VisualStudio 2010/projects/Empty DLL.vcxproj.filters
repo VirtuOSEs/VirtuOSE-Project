@@ -2852,6 +2852,9 @@
     <ClCompile Include="..\..\..\source\JuceModule.cpp">
       <Filter>Source Files\source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\source\JuceAudioThread.cpp">
+      <Filter>Source Files\source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\..\Engine\source\T3D\aiClient.h">
@@ -5330,6 +5333,9 @@
       <Filter>Source Files\source\Juce Library Code</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\source\JuceScript.h">
+      <Filter>Source Files\source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\JuceAudioThread.h">
       <Filter>Source Files\source</Filter>
     </ClInclude>
   </ItemGroup>

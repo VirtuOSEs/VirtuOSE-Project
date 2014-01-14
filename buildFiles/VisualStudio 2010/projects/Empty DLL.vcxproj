@@ -221,6 +221,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\..\Engine\source\T3D\aiClient.cpp" />
+    <ClCompile Include="..\..\..\source\JuceAudioThread.cpp" />
     <ClCompile Include="..\..\..\source\JuceLibraryCode\modules\juce_audio_basics\juce_audio_basics.cpp" />
     <ClCompile Include="..\..\..\source\JuceLibraryCode\modules\juce_audio_devices\juce_audio_devices.cpp" />
     <ClCompile Include="..\..\..\source\JuceLibraryCode\modules\juce_audio_formats\juce_audio_formats.cpp" />
@@ -1908,6 +1909,7 @@
     <ClInclude Include="..\..\..\..\..\Engine\source\windowManager\win32\win32WindowMgr.h" />
     <ClCompile Include="..\..\..\..\..\Engine\source\windowManager\win32\winDispatch.cpp" />
     <ClInclude Include="..\..\..\..\..\Engine\source\windowManager\win32\winDispatch.h" />
+    <ClInclude Include="..\..\..\source\JuceAudioThread.h" />
     <ClInclude Include="..\..\..\source\JuceLibraryCode\AppConfig.h" />
     <ClInclude Include="..\..\..\source\JuceLibraryCode\JuceHeader.h" />
     <ClInclude Include="..\..\..\source\JuceScript.h" />

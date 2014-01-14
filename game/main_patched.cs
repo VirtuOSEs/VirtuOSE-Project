@@ -24,7 +24,7 @@ dbgSetParameters(28040, "password", false);
 //-----------------------------------------------------------------------------
 
 // Set the name of our application
-$appName = "PINAGE";
+$appName = "VirtuOSE";
 
 // The directory it is run from
 $defaultGame = "scripts";
