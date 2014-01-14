@@ -5,6 +5,7 @@
 //***********INCLUDE JUCE***************
 // WARNING : Disable Juce namespace to avoid name confusion on ThreadPool class
 #define DONT_SET_USING_JUCE_NAMESPACE 1
+#define JUCE_ASIO 1 //INDISPENSABLE pour faire fonctionner les VST
 #include "JuceLibraryCode/JuceHeader.h"
 //**********INCLUDE WINDOWS THREAD******
 #include <Objbase.h>
@@ -17,7 +18,7 @@ void AudioMidiWorkItem::execute()
   CoInitialize(nullptr);
   juce::AudioDeviceManager deviceManager;
   deviceManager.initialise (256, 256, nullptr, true);
-  //deviceManager.playTestSound();
+  deviceManager.playTestSound();
   
   //AudioIODeviceType* device = AudioIODeviceType::createAudioIODeviceType_DirectSound ();
   juce::AudioPluginFormatManager formatManager;
@@ -37,7 +38,6 @@ void AudioMidiWorkItem::execute()
   {
     player.setProcessor(plugin);
     deviceManager.addAudioCallback(&player);
-    player.getMidiMessageCollector().reset(44100);
   }
  
   juce::File myFile = juce::File::getCurrentWorkingDirectory().getChildFile ("../Beethoven-Symphony5-1.mid");
@@ -53,7 +53,7 @@ void AudioMidiWorkItem::execute()
   juce::MidiFile midiFile;
   midiFile.readFrom(stream);
     
-  const juce::MidiMessageSequence* sequence = midiFile.getTrack(1);
+  const juce::MidiMessageSequence* sequence = midiFile.getTrack(3);
   double startTime = sequence->getStartTime();
 
   //std::cout << sequence->getNextIndexAtTime(startTime) << std::endl;
