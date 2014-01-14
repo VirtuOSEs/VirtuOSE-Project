@@ -2,6 +2,8 @@
 #include "console/console.h"
 #include <JuceAudioThread.h>
 
+#include "JuceLibraryCode/JuceHeader.h"
+
 
 MODULE_BEGIN( JuceModule )
 

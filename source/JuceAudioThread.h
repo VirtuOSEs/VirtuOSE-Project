@@ -1,8 +1,10 @@
 #ifndef JUCE_MODULE_AUDIO_THREAD_H
 #define JUCE_MODULE_AUDIO_THREAD_H  
-  #include "platform/threads/threadPool.h"
+  
+#include "platform/threads/threadPool.h"
+#include "JuceLibraryCode\JuceHeader.h"
 
-  #define JUCE_MODULE_THREADPOOL_CNT 1
+#define JUCE_MODULE_THREADPOOL_CNT 1
 
 namespace JuceModule
 {
@@ -25,11 +27,12 @@ public:
 
 struct AudioMidiWorkItem : public ThreadPool::WorkItem
 {
+  AudioMidiWorkItem();
+  ~AudioMidiWorkItem();
   typedef ThreadPool::WorkItem Parent;
   U32 mIndex;
 
-  AudioMidiWorkItem(U32 index)
-    : mIndex(index), askedToStop(false) {}
+  AudioMidiWorkItem(U32 index);
 
   virtual bool isCancellationRequested()
     { return askedToStop;}
@@ -40,6 +43,9 @@ struct AudioMidiWorkItem : public ThreadPool::WorkItem
 protected :
   virtual void execute();
   bool askedToStop;
+  juce::AudioDeviceManager deviceManager;
+  juce::AudioProcessorPlayer player;
+  juce::ScopedPointer<juce::AudioPluginInstance> plugin;
 };
 
 } // namespace JuceModule

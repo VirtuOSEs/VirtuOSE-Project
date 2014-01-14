@@ -1,9 +1,6 @@
 #include "JuceAudioThread.h"
 
 //***********INCLUDE JUCE***************
-// WARNING : Disable Juce namespace to avoid name confusion on ThreadPool class
-#define DONT_SET_USING_JUCE_NAMESPACE 1
-#define JUCE_ASIO 1 //INDISPENSABLE pour faire fonctionner les VST
 #include "JuceLibraryCode/JuceHeader.h"
 
 //**********INCLUDE WINDOWS THREAD******
@@ -15,13 +12,9 @@
 namespace JuceModule
 {
 
-void AudioMidiWorkItem::execute()
+AudioMidiWorkItem::AudioMidiWorkItem(U32 index)
+  : mIndex(index), askedToStop(false)
 {
-  CoInitialize(nullptr);
-  juce::AudioDeviceManager deviceManager;
-  deviceManager.initialise (2, 2, nullptr, true);
-  deviceManager.playTestSound();
-  
   juce::AudioPluginFormatManager formatManager;
   formatManager.addDefaultFormats();
   juce::KnownPluginList list;
@@ -31,15 +24,30 @@ void AudioMidiWorkItem::execute()
   description2.pluginFormatName = "VST";
   description2.category = "Instrument";
   description2.fileOrIdentifier =  juce::File::getCurrentWorkingDirectory().getChildFile("../4Front_Piano.dll").getFullPathName();
-  juce::ScopedPointer<juce::AudioPluginInstance> plugin = formatManager.createPluginInstance(description2, errorMessage);
+  plugin = formatManager.createPluginInstance(description2, errorMessage);
   Con::printf(errorMessage.getCharPointer());
+}
 
-  juce::AudioProcessorPlayer player;
-  if (plugin != nullptr) 
-  {
-    player.setProcessor(plugin);
-    deviceManager.addAudioCallback(&player);
-  }
+AudioMidiWorkItem::~AudioMidiWorkItem()
+{
+  deviceManager.closeAudioDevice();
+  juce::MessageManager::deleteInstance();
+  CoUninitialize();
+}
+
+void AudioMidiWorkItem::execute()
+{
+  //Le plugin doit être correctement initialisé, sinon c'est qu'il y a eu un problème
+  jassert(plugin);
+  CoInitialize(nullptr);
+  deviceManager.initialise (2, 2, nullptr, true);
+  deviceManager.playTestSound();
+
+  player.setProcessor(plugin);
+  deviceManager.addAudioCallback(&player);
+  
+
+  Con::printf(deviceManager.getCurrentAudioDeviceType().toStdString().c_str());
  
   juce::File myFile = juce::File::getCurrentWorkingDirectory().getChildFile ("../Beethoven-Symphony5-1.mid");
     
@@ -56,10 +64,6 @@ void AudioMidiWorkItem::execute()
     
   const juce::MidiMessageSequence* sequence = midiFile.getTrack(3);
   double startTime = sequence->getStartTime();
-
-  //std::cout << sequence->getNextIndexAtTime(startTime) << std::endl;
-  juce::MidiMessageSequence::MidiEventHolder* midiEvent = sequence->getEventPointer(0);
-  //std::cout << midiEvent->message.getMidiNoteName(midiEvent->message.getNoteNumber(), true, true, 3) << std::endl;
   
   double msPerTick = 60000.0 / 120.0 / midiFile.getTimeFormat(); 
   double nextTime;
@@ -82,9 +86,6 @@ void AudioMidiWorkItem::execute()
     if (cancellationPoint())
       break;
   }
-  
-  deviceManager.closeAudioDevice();
-  CoUninitialize();
 }
 
 } // namespace JuceModule

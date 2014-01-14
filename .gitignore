@@ -29,5 +29,6 @@ game/*.exp
 web/
 tools/
 source/VST3_SDK/*/
+source/ASIOSDK2.3/*/
 Link/
 

@@ -19,6 +19,10 @@
 
 // (You can add your own code in this section, and the Introjucer will not overwrite it)
 
+//Disable Juce namespace to avoid name confusion on ThreadPool class
+#define DONT_SET_USING_JUCE_NAMESPACE 1
+//#define JUCE_ASIO 0 //INDISPENSABLE pour faire fonctionner les VST
+
 // [END_USER_CODE_SECTION]
 
 //==============================================================================
