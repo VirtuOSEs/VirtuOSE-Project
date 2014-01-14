@@ -10,7 +10,7 @@ MODULE_BEGIN( JuceModule )
   ThreadSafeRef<JuceModule::AudioMidiWorkItem> sequencer;
   MODULE_INIT
   {
-    Con::printf("PINAGE JUCE ON");
+    Con::printf("JUCE ON");
 
     //Créé le thread (en fait un ensemble de Thread mais ici normalement il n'en contient qu'un)
     //qui va gérer audio+midi avec JUCE

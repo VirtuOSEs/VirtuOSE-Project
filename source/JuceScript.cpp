@@ -28,7 +28,7 @@ void AudioMidiWorkItem::execute()
   description2.name = "4Front_Piano";
   description2.pluginFormatName = "VST";
   description2.category = "Instrument";
-  description2.fileOrIdentifier = "G:/Dev/Apari_Tenpan/Apari_Tenpan.dll";
+  description2.fileOrIdentifier =  juce::File::getCurrentWorkingDirectory().getChildFile("../4Front_Piano.dll").getFullPathName();
   juce::ScopedPointer<juce::AudioPluginInstance> plugin = formatManager.createPluginInstance(description2, errorMessage);
   Con::printf(errorMessage.getCharPointer());
 
@@ -40,13 +40,16 @@ void AudioMidiWorkItem::execute()
     player.getMidiMessageCollector().reset(44100);
   }
  
-  juce::File myFile("G:/Archives_origines-2013/Projets_Musique/Projet_2/Midi/Piano_premier_mouvement.mid");
+  juce::File myFile = juce::File::getCurrentWorkingDirectory().getChildFile ("../Beethoven-Symphony5-1.mid");
     
   juce::FileInputStream stream(myFile);
   Con::printf(stream.getStatus().getErrorMessage().getCharPointer());
 
   if (stream.failedToOpen())
+  {
     Con::printf("Impossible d'ouvrir le fichier midi");
+    jassert(false);
+  }
   juce::MidiFile midiFile;
   midiFile.readFrom(stream);
     

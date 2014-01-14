@@ -12,10 +12,12 @@
 *.la
 *.a
 
+commitmsg.txt
 #Torque files
 buildFiles/Link/
 buildFiles/VisualStudio 2010/*.sdf
 buildFiles/VisualStudio 2010/*.opensdf
+buildFiles/VisualStudio 2010/ipch
 game/console.log
 game/art/*
 game/*.exe
