@@ -2,6 +2,10 @@
 #include <JuceScript.h>
 #include "console/console.h"
 
+
+//**********INCLUDE WINDOWS THREAD******
+#include <Objbase.h>
+
 IMPLEMENT_CONOBJECT(MidiPlayer);
 
 MidiPlayer::MidiPlayer()

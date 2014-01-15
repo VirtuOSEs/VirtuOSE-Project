@@ -27,11 +27,10 @@ public:
 
 struct AudioMidiWorkItem : public ThreadPool::WorkItem
 {
-  AudioMidiWorkItem();
-  ~AudioMidiWorkItem();
   typedef ThreadPool::WorkItem Parent;
   U32 mIndex;
 
+  ~AudioMidiWorkItem();
   AudioMidiWorkItem(U32 index);
 
   virtual bool isCancellationRequested()
@@ -46,6 +45,51 @@ protected :
   juce::AudioDeviceManager deviceManager;
   juce::AudioProcessorPlayer player;
   juce::ScopedPointer<juce::AudioPluginInstance> plugin;
+};
+
+class Track : public ThreadPool::WorkItem
+{
+public:
+  typedef ThreadPool::WorkItem Parent;
+  U32 mIndex;
+
+  Track(U32 index, juce::AudioProcessorPlayer& player, const juce::MidiMessageSequence* sequence, short TimeFormat)
+    : mIndex(index), askedToStop(false), player(player), sequence(sequence), timeFormat(timeFormat)
+  {}
+
+protected:
+  virtual void execute()
+  {
+    double startTime = sequence->getStartTime();
+    double msPerTick = 60000.0 / 120.0 / timeFormat; 
+    double nextTime;
+    double prevTimestamp = 0.0;
+
+
+    for (int i = 0; i < sequence->getNumEvents(); ++i)
+    {
+      juce::MidiMessageSequence::MidiEventHolder* midiEvent = sequence->getEventPointer(i);
+      nextTime = msPerTick * (midiEvent->message.getTimeStamp() - prevTimestamp);
+
+      juce::Time::waitForMillisecondCounter(juce::Time::getMillisecondCounter() + juce::uint32(nextTime));
+      if (midiEvent->message.getTimeStamp() != 0)
+      {
+        player.handleIncomingMidiMessage(nullptr, midiEvent->message);    
+      }
+
+      prevTimestamp = midiEvent->message.getTimeStamp();
+
+      //Interrompt la lecture si le thread doit être fermé
+      if (cancellationPoint())
+        break;
+    }
+  }
+
+  bool askedToStop;
+  juce::AudioProcessorPlayer& player;
+  const juce::MidiMessageSequence* sequence;
+  short timeFormat;
+
 };
 
 } // namespace JuceModule

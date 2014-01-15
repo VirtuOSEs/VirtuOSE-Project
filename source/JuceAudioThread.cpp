@@ -9,6 +9,9 @@
 //**********INCLUDE TORQUE ENGINE*********
 #include "console/engineAPI.h"
 
+#include <vector>
+#include "Sequencer.h"
+
 namespace JuceModule
 {
 
@@ -45,7 +48,6 @@ void AudioMidiWorkItem::execute()
 
   player.setProcessor(plugin);
   deviceManager.addAudioCallback(&player);
-  
 
   Con::printf(deviceManager.getCurrentAudioDeviceType().toStdString().c_str());
  
@@ -64,10 +66,11 @@ void AudioMidiWorkItem::execute()
     
   const juce::MidiMessageSequence* sequence = midiFile.getTrack(3);
   double startTime = sequence->getStartTime();
-  
   double msPerTick = 60000.0 / 120.0 / midiFile.getTimeFormat(); 
   double nextTime;
   double prevTimestamp = 0.0;
+
+
   for (int i = 0; i < sequence->getNumEvents(); ++i)
   {
     juce::MidiMessageSequence::MidiEventHolder* midiEvent = sequence->getEventPointer(i);
@@ -76,11 +79,10 @@ void AudioMidiWorkItem::execute()
     juce::Time::waitForMillisecondCounter(juce::Time::getMillisecondCounter() + juce::uint32(nextTime));
     if (midiEvent->message.getTimeStamp() != 0)
     {
-      player.handleIncomingMidiMessage(nullptr, midiEvent->message);
-          
+      player.handleIncomingMidiMessage(nullptr, midiEvent->message);    
     }
+
     prevTimestamp = midiEvent->message.getTimeStamp();
-    std::cout << midiEvent->message.getMidiNoteName(midiEvent->message.getNoteNumber(), true, true, 3) << std::endl;
 
     //Interrompt la lecture si le thread doit être fermé
     if (cancellationPoint())

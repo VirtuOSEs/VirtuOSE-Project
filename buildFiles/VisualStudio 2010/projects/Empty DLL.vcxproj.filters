@@ -5338,6 +5338,9 @@
     <ClInclude Include="..\..\..\source\JuceAudioThread.h">
       <Filter>Source Files\source</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\source\Sequencer.h">
+      <Filter>Source Files\source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\..\..\..\..\Engine\source\math\mMathAMD_ASM.asm">

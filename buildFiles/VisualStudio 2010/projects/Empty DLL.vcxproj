@@ -1913,6 +1913,7 @@
     <ClInclude Include="..\..\..\source\JuceLibraryCode\AppConfig.h" />
     <ClInclude Include="..\..\..\source\JuceLibraryCode\JuceHeader.h" />
     <ClInclude Include="..\..\..\source\JuceScript.h" />
+    <ClInclude Include="..\..\..\source\Sequencer.h" />
     <ClInclude Include="..\..\..\source\torqueConfig.h" />
   </ItemGroup>
   <ItemGroup>
