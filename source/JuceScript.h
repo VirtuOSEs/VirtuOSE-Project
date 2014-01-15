@@ -2,6 +2,7 @@
 #define JUCE_MODULE_SCRIPT_H
 
 #include "console/engineAPI.h"
+#include <vector>
 
 class MidiPlayer : public SimObject
 {
@@ -18,7 +19,9 @@ public:
   void stopMidi();
 
 private:
-  ThreadSafeRef<JuceModule::AudioMidiWorkItem> sequencer;
+  //ThreadSafeRef<JuceModule::AudioMidiWorkItem> sequencer;
+  std::vector<ThreadSafeRef<JuceModule::Track>> sequencer;
+  std::vector<juce::MidiMessageSequence> sequences;
 };
 
 

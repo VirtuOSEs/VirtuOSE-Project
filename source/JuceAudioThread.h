@@ -4,6 +4,8 @@
 #include "platform/threads/threadPool.h"
 #include "JuceLibraryCode\JuceHeader.h"
 
+#include "Sequencer.h"
+
 #define JUCE_MODULE_THREADPOOL_CNT 1
 
 namespace JuceModule
@@ -53,28 +55,36 @@ public:
   typedef ThreadPool::WorkItem Parent;
   U32 mIndex;
 
-  Track(U32 index, juce::AudioProcessorPlayer& player, const juce::MidiMessageSequence* sequence, short TimeFormat)
-    : mIndex(index), askedToStop(false), player(player), sequence(sequence), timeFormat(timeFormat)
-  {}
+  Track(U32 index, juce::MidiMessageSequence& sequence, short timeFormat)
+    : mIndex(index), askedToStop(false), sequence(sequence), timeFormat(timeFormat)
+  {
+  }
+
+  virtual bool isCancellationRequested()
+  {return askedToStop;}
+
+  void stop()
+  {askedToStop = true;}
 
 protected:
   virtual void execute()
   {
-    double startTime = sequence->getStartTime();
+    double startTime = sequence.getStartTime();
     double msPerTick = 60000.0 / 120.0 / timeFormat; 
     double nextTime;
     double prevTimestamp = 0.0;
 
 
-    for (int i = 0; i < sequence->getNumEvents(); ++i)
+    for (int i = 0; i < sequence.getNumEvents(); ++i)
     {
-      juce::MidiMessageSequence::MidiEventHolder* midiEvent = sequence->getEventPointer(i);
+      juce::MidiMessageSequence::MidiEventHolder* midiEvent = sequence.getEventPointer(i);
       nextTime = msPerTick * (midiEvent->message.getTimeStamp() - prevTimestamp);
 
       juce::Time::waitForMillisecondCounter(juce::Time::getMillisecondCounter() + juce::uint32(nextTime));
       if (midiEvent->message.getTimeStamp() != 0)
       {
-        player.handleIncomingMidiMessage(nullptr, midiEvent->message);    
+        AudioTools::getInstance().playMidi(midiEvent);
+        //player.handleIncomingMidiMessage(nullptr, midiEvent->message);    
       }
 
       prevTimestamp = midiEvent->message.getTimeStamp();
@@ -86,8 +96,7 @@ protected:
   }
 
   bool askedToStop;
-  juce::AudioProcessorPlayer& player;
-  const juce::MidiMessageSequence* sequence;
+  juce::MidiMessageSequence& sequence;
   short timeFormat;
 
 };

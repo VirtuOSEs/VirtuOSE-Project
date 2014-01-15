@@ -45,7 +45,6 @@ void AudioMidiWorkItem::execute()
   CoInitialize(nullptr);
   deviceManager.initialise (2, 2, nullptr, true);
   deviceManager.playTestSound();
-
   player.setProcessor(plugin);
   deviceManager.addAudioCallback(&player);
 

@@ -235,6 +235,7 @@
     <ClCompile Include="..\..\..\source\JuceLibraryCode\modules\juce_gui_extra\juce_gui_extra.cpp" />
     <ClCompile Include="..\..\..\source\JuceScript.cpp" />
     <ClCompile Include="..\..\..\source\JuceModule.cpp" />
+    <ClCompile Include="..\..\..\source\Sequencer.cpp" />
     <ClInclude Include="..\..\..\..\..\Engine\source\T3D\aiClient.h" />
     <ClCompile Include="..\..\..\..\..\Engine\source\T3D\aiConnection.cpp" />
     <ClInclude Include="..\..\..\..\..\Engine\source\T3D\aiConnection.h" />
