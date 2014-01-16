@@ -1,9 +1,12 @@
+//********INCLUDE TORQUE ENGINE********
 #include "core/module.h"
 #include "console/console.h"
-#include <JuceAudioThread.h>
 
+//********INCLUDE JUCE************
 #include "JuceLibraryCode/JuceHeader.h"
 
+#include "JuceAudioThread.h"
+#include "Sequencer.h"
 
 MODULE_BEGIN( JuceModule )
 
@@ -16,6 +19,7 @@ MODULE_BEGIN( JuceModule )
     //Créé le thread (en fait un ensemble de Thread mais ici normalement il n'en contient qu'un)
     //qui va gérer audio+midi avec JUCE
     JuceModule::AudioMidiThreadPool::createSingleton();
+    JuceModule::AudioTools::initialize();
   }
 
   MODULE_SHUTDOWN
@@ -23,6 +27,7 @@ MODULE_BEGIN( JuceModule )
     // Cleanup code...
     JuceModule::AudioMidiThreadPool::instance()->shutdown();
     JuceModule::AudioMidiThreadPool::instance()->deleteSingleton();
+    JuceModule::AudioTools::deleteInstance();
   }
 
 MODULE_END;

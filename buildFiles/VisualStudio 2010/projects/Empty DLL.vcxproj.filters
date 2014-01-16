@@ -2855,7 +2855,7 @@
     <ClCompile Include="..\..\..\source\JuceModule.cpp">
       <Filter>Source Files\source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\source\JuceAudioThread.cpp">
+    <ClCompile Include="..\..\..\source\Sequencer.cpp">
       <Filter>Source Files\source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Engine\source\platform\input\oculusVR\barrelDistortionPostEffect.cpp">
@@ -5359,6 +5359,10 @@
     <ClInclude Include="..\..\..\source\JuceAudioThread.h">
       <Filter>Source Files\source</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\source\Sequencer.h">
+      <Filter>Source Files\source</Filter>
+	</ClInclude>
+
     <ClInclude Include="..\..\..\..\..\Engine\source\platform\input\oculusVR\barrelDistortionPostEffect.h">
       <Filter>Source Files\Engine\platform\input\oculusVR</Filter>
     </ClInclude>

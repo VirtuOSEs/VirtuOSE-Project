@@ -71,7 +71,7 @@
       <AdditionalOptions>/MP4 %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>../../../source/ASIOSDK2.3/common;../../../source/VST3_SDK;../../../source/JuceLibraryCode;../../../game/shaders;../../../../../Engine/lib/lmng;../../../../../Engine/lib/lpng;../../../../../Engine/lib/ljpeg;../../../../../Engine/lib/lungif;../../../../../Engine/lib/zlib;../../../../../Engine/lib/tinyxml;../../../../../Engine/lib/opcode;../../../../../Engine/lib/squish;../../../../../Engine/lib/convexDecomp;../../../../../Engine/lib/libvorbis/include;../../../../../Engine/lib/libogg/include;../../../../../Engine/lib/libtheora/include;../../../source;../../../../../Engine/source/;../../../../../Engine/lib/;../../../../../Engine/lib/directx8;../../../../../Engine/lib/openal/win32;../../../../../Engine/lib/collada/include;../../../../../Engine/lib/collada/include/1.4;C:\Logiciels\OculusSDK/LibOVR/Include;C:\Logiciels\OculusSDK/LibOVR/Src;$(DXSDK_DIR)/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../../source/ASIOSDK2.3/common;../../../source/VST3_SDK;../../../source/JuceLibraryCode;../../../game/shaders;../../../../../Engine/lib/lmng;../../../../../Engine/lib/lpng;../../../../../Engine/lib/ljpeg;../../../../../Engine/lib/lungif;../../../../../Engine/lib/zlib;../../../../../Engine/lib/tinyxml;../../../../../Engine/lib/opcode;../../../../../Engine/lib/squish;../../../../../Engine/lib/convexDecomp;../../../../../Engine/lib/libvorbis/include;../../../../../Engine/lib/libogg/include;../../../../../Engine/lib/libtheora/include;../../../source;../../../../../Engine/source/;../../../../../Engine/lib/;../../../../../Engine/lib/directx8;../../../../../Engine/lib/openal/win32;../../../../../Engine/lib/collada/include;../../../../../Engine/lib/collada/include/1.4;../../../../../../OculusSDK/LibOVR/Include;../../../../../../OculusSDK/LibOVR/Src;$(DXSDK_DIR)/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>TORQUE_SHADERGEN;TORQUE_UNICODE;TORQUE_SHARED;BAN_OPCODE_AUTOLINK;ICE_NO_DLL;TORQUE_OPCODE;LTC_NO_PROTOTYPES;TORQUE_ADVANCED_LIGHTING;TORQUE_BASIC_LIGHTING;TORQUE_COLLADA;DOM_INCLUDE_TINYXML;PCRE_STATIC;TORQUE_OGGVORBIS;TORQUE_OGGTHEORA;TORQUE_OGGVORIBS;UNICODE;INITGUID;_CRT_SECURE_NO_DEPRECATE;TORQUE_DEBUG;TORQUE_DEBUG_GUARD;D3D_DEBUG_INFO;TORQUE_NET_STATS;UNICODE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Sync</ExceptionHandling>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -227,7 +227,6 @@
     <ClCompile Include="..\..\..\..\..\Engine\source\platform\input\oculusVR\oculusVRSensorDevice.cpp" />
     <ClCompile Include="..\..\..\..\..\Engine\source\platform\input\oculusVR\oculusVRUtil.cpp" />
     <ClCompile Include="..\..\..\..\..\Engine\source\T3D\aiClient.cpp" />
-    <ClCompile Include="..\..\..\source\JuceAudioThread.cpp" />
     <ClCompile Include="..\..\..\source\JuceLibraryCode\modules\juce_audio_basics\juce_audio_basics.cpp" />
     <ClCompile Include="..\..\..\source\JuceLibraryCode\modules\juce_audio_devices\juce_audio_devices.cpp" />
     <ClCompile Include="..\..\..\source\JuceLibraryCode\modules\juce_audio_formats\juce_audio_formats.cpp" />
@@ -241,6 +240,7 @@
     <ClCompile Include="..\..\..\source\JuceLibraryCode\modules\juce_gui_extra\juce_gui_extra.cpp" />
     <ClCompile Include="..\..\..\source\JuceScript.cpp" />
     <ClCompile Include="..\..\..\source\JuceModule.cpp" />
+    <ClCompile Include="..\..\..\source\Sequencer.cpp" />
     <ClInclude Include="..\..\..\..\..\Engine\source\platform\input\oculusVR\barrelDistortionPostEffect.h" />
     <ClInclude Include="..\..\..\..\..\Engine\source\platform\input\oculusVR\oculusVRConstants.h" />
     <ClInclude Include="..\..\..\..\..\Engine\source\platform\input\oculusVR\oculusVRDevice.h" />
@@ -1926,6 +1926,7 @@
     <ClInclude Include="..\..\..\source\JuceLibraryCode\AppConfig.h" />
     <ClInclude Include="..\..\..\source\JuceLibraryCode\JuceHeader.h" />
     <ClInclude Include="..\..\..\source\JuceScript.h" />
+    <ClInclude Include="..\..\..\source\Sequencer.h" />
     <ClInclude Include="..\..\..\source\torqueConfig.h" />
   </ItemGroup>
   <ItemGroup>

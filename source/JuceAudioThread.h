@@ -2,13 +2,18 @@
 #define JUCE_MODULE_AUDIO_THREAD_H  
   
 #include "platform/threads/threadPool.h"
-#include "JuceLibraryCode\JuceHeader.h"
 
-#define JUCE_MODULE_THREADPOOL_CNT 1
+#define JUCE_MODULE_THREADPOOL_CNT 16
 
 namespace JuceModule
 {
 
+/**
+  This class is a ThreadPool which goal is to handle the WorkItems (here they are JuceModule::Track)
+  which play the MIDI Tracks of the JuceModule::MidiPlayer.
+  Each Track is added to this ThreadPool in order to be executed in parrallel with the others.
+  Today, this ThreadPool manage just one thread, but it may evolve with future needs.
+**/
 class AudioMidiThreadPool : public ThreadPool, public ManagedSingleton<AudioMidiThreadPool>
 {
 public:
@@ -23,29 +28,6 @@ public:
   {
     return "AudioMidiThreadPool";
   }
-};
-
-struct AudioMidiWorkItem : public ThreadPool::WorkItem
-{
-  AudioMidiWorkItem();
-  ~AudioMidiWorkItem();
-  typedef ThreadPool::WorkItem Parent;
-  U32 mIndex;
-
-  AudioMidiWorkItem(U32 index);
-
-  virtual bool isCancellationRequested()
-    { return askedToStop;}
-
-  void stop()
-    {askedToStop = true;}
-
-protected :
-  virtual void execute();
-  bool askedToStop;
-  juce::AudioDeviceManager deviceManager;
-  juce::AudioProcessorPlayer player;
-  juce::ScopedPointer<juce::AudioPluginInstance> plugin;
 };
 
 } // namespace JuceModule

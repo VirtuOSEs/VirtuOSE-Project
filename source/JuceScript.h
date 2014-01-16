@@ -1,8 +1,20 @@
 #ifndef JUCE_MODULE_SCRIPT_H
 #define JUCE_MODULE_SCRIPT_H
 
+//***********INCLUDE TORQUE ENGINE***************
 #include "console/engineAPI.h"
 
+//**********INCLUDE STD LIB*********************
+#include <vector>
+
+#include "Sequencer.h"
+
+/**
+  Bridge between C++ and TorqueScript to 
+  play MIDI. This class is accessible through TorqueScript
+  (see JuceScript.cpp to see exactly which methods are accessible).
+  Early implementation, should evolve a lot.
+**/
 class MidiPlayer : public SimObject
 {
 public:
@@ -14,11 +26,16 @@ public:
   MidiPlayer();
   ~MidiPlayer();
 
-  void playMidi();
-  void stopMidi();
+  void loadMidiFile(const char* filePath);
+  void play();
+  void pause();
+  void unpause();
+  void stop();
 
 private:
-  ThreadSafeRef<JuceModule::AudioMidiWorkItem> sequencer;
+  bool fileLoaded;
+  std::vector<ThreadSafeRef<JuceModule::Track>> sequencer;
+  std::vector<juce::MidiMessageSequence> sequences;
 };
 
 

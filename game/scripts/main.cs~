@@ -111,7 +111,8 @@ function onStart()
       initDedicated();
    else
       initClient();
-    //playMIDI();
+   $midiPlayer = new MidiPlayer();
+   $midiPlayer.startMidi();
 }
 
 function onExit()
@@ -127,6 +128,8 @@ function onExit()
    // Destroy the physics plugin.
    physicsDestroy();
       
+   $midiPlayer.stopMidi();
+   
    echo("Exporting client prefs");
    export("$pref::*", "./client/prefs.cs", False);
 
