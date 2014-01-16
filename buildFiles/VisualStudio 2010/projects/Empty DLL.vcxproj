@@ -99,7 +99,7 @@
       <AdditionalDependencies>x3daudio.lib;COMCTL32.LIB;COMDLG32.LIB;USER32.LIB;ADVAPI32.LIB;GDI32.LIB;WINMM.LIB;WSOCK32.LIB;vfw32.lib;Imm32.lib;d3d9.lib;d3dx9.lib;DxErr.lib;ole32.lib;shell32.lib;oleaut32.lib;version.lib;libovr.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)VirtuOSE_DEBUG.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>../../../../../Engine/lib/SDL/win32;../../../../../Engine/lib/unicode;../../../../../Engine/lib/directx8;C:\Logiciels\OculusSDK/LibOVR/Lib/Win32;../../Link/VC2010.$(Configuration).$(PlatformName);$(DXSDK_DIR)/Lib/x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../../../../Engine/lib/SDL/win32;../../../../../Engine/lib/unicode;../../../../../Engine/lib/directx8;../../../../../../OculusSDK/LibOVR/Lib/Win32;../../Link/VC2010.$(Configuration).$(PlatformName);$(DXSDK_DIR)/Lib/x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>LIBC;LIBCD;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <ModuleDefinitionFile>../../../../../Engine/lib/Torque3D/msvc/torque3d.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -203,7 +203,7 @@
       <AdditionalDependencies>x3daudio.lib;COMCTL32.LIB;COMDLG32.LIB;USER32.LIB;ADVAPI32.LIB;GDI32.LIB;WINMM.LIB;WSOCK32.LIB;vfw32.lib;Imm32.lib;d3d9.lib;libovr.lib;d3dx9.lib;DxErr.lib;ole32.lib;shell32.lib;oleaut32.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)VirtuOSE.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>../../../../../Engine/lib/SDL/win32;../../../../../Engine/lib/unicode;../../../../../Engine/lib/directx8;../../Link/VC2010.$(Configuration).$(PlatformName);C:\Logiciels\OculusSDK/LibOVR/Lib/Win32;$(DXSDK_DIR)/Lib/x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../../../../Engine/lib/SDL/win32;../../../../../Engine/lib/unicode;../../../../../Engine/lib/directx8;../../Link/VC2010.$(Configuration).$(PlatformName);../../../../../../OculusSDK/LibOVR/Lib/Win32;$(DXSDK_DIR)/Lib/x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>LIBC;LIBCD;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <ModuleDefinitionFile>../../../../../Engine/lib/Torque3D/msvc/torque3d.def</ModuleDefinitionFile>
       <GenerateDebugInformation>false</GenerateDebugInformation>
