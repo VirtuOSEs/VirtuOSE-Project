@@ -9,7 +9,7 @@
 
 //**********INCLUDE TORQUE ENGINE*********
 #include "console/engineAPI.h"
-
+#include "platform/threads/threadPool.h"
 #include "platform/threads/semaphore.h"
 
 namespace JuceModule
@@ -23,99 +23,26 @@ class AudioTools
 public:
 
   /** Call this from the thread in charge of
-      the audio
+      the audio. Initialise ASIO device, and VST plugin
   */
-  static void initialize()
-  {
-    if (singleton == nullptr)
-      singleton = new AudioTools();
-  }
+  static void initialize();
+  static AudioTools& getInstance();
+  static void deleteInstance();
 
-  static void deleteInstance()
-  {
-    delete singleton;
-    singleton = nullptr;
-  }
+  void playMidi(const juce::MidiMessageSequence::MidiEventHolder* const midiEvent);
+  
+  juce::AudioDeviceManager& acquireDeviceManager();
+  void releaseDeviceManager();
 
-  static AudioTools& getInstance()
-  {
-    jassert(singleton);
-    return *singleton;
-  }
-
-  void playMidi(const juce::MidiMessageSequence::MidiEventHolder* const midiEvent)
-  {
-    playerSemaphore.acquire();
-    player.handleIncomingMidiMessage(nullptr, midiEvent->message);
-    playerSemaphore.release();
-  }
-
-  juce::AudioDeviceManager& acquireDeviceManager()
-  {
-    deviceSemaphore.acquire();
-    return deviceManager;
-  }
-
-  void releaseDeviceManage()
-  {
-    deviceSemaphore.release();
-  }
-
-  juce::ScopedPointer<juce::AudioPluginInstance> acquirePlugin()
-  {
-    pluginSemaphore.acquire();
-    return plugin;
-  }
-
-  void releasePlugin()
-  {
-    pluginSemaphore.release();
-  }
-
-    ~AudioTools()
-  {
-    deviceManager.closeAudioDevice();
-    juce::MessageManager::deleteInstance();
-    CoUninitialize();
-  }
+  juce::ScopedPointer<juce::AudioPluginInstance> acquirePlugin();
+  void releasePlugin();
 
 private:
   static AudioTools* singleton;
+  AudioTools();
+  ~AudioTools();
   AudioTools(const AudioTools& other);
   AudioTools& operator=(const AudioTools& other);
-
-  AudioTools()
-  {
-    juce::AudioDeviceManager::AudioDeviceSetup setup;
-    setup.inputChannels = 256;
-    setup.outputChannels = 256;
-    setup.outputDeviceName = "ASIO4ALL v2";
-    setup.inputDeviceName = "ASIO4ALL v2";
-    setup.sampleRate = 44100.0000;
-    setup.bufferSize = 0;
-    setup.useDefaultInputChannels = true;
-    setup.useDefaultOutputChannels = true;
-    
-    juce::AudioPluginFormatManager formatManager;
-    formatManager.addDefaultFormats();
-    juce::KnownPluginList list;
-    juce::String errorMessage;
-    juce::PluginDescription description2;
-    description2.name = "4Front_Piano";
-    description2.pluginFormatName = "VST";
-    description2.category = "Instrument";
-    description2.fileOrIdentifier =  juce::File::getCurrentWorkingDirectory().getChildFile("../4Front_Piano.dll").getFullPathName();
-    plugin = formatManager.createPluginInstance(description2, errorMessage);
-    Con::printf(errorMessage.getCharPointer());
-
-    CoInitialize(nullptr);
-    juce::String error = deviceManager.initialise (2, 2, nullptr, true, juce::String::empty, &setup);
-    Con::printf(error.toStdString().c_str());
-
-    deviceManager.playTestSound();
-    player.setProcessor(plugin);
-    deviceManager.addAudioCallback(&player);
-  }
 
   Semaphore deviceSemaphore;
   Semaphore pluginSemaphore;
@@ -125,71 +52,35 @@ private:
   juce::AudioProcessorPlayer player;
 };
 
-class Sequence
+/**
+ A Track is a WorkItem (Torque Engine object) wich will be passed to a ThreadPool
+  (here the JuceModule::AudioMidiThreadPool). 
+  A Track goal is to play a juce::MidiMessageSequence.
+**/
+class Track : public ThreadPool::WorkItem
 {
 public:
-  explicit Sequence(juce::AudioProcessorPlayer& player, const juce::MidiMessageSequence* sequence, const short timeFormat, double tempo = 120.0)
-    : player(player), sequence(sequence), currentMessageIndex(0), lastTimePlayed(0.0), finished(false), timeFormat(timeFormat), tempo(tempo), nextTime(0.0),
-    starting(false)
-  {}
+  typedef ThreadPool::WorkItem Parent;
+  U32 mIndex;
 
-  void start()
+  Track(U32 index, juce::MidiMessageSequence& sequence, short timeFormat)
+    : mIndex(index), askedToStop(false), sequence(sequence), timeFormat(timeFormat)
   {
-    starting = true;
   }
 
-  void playNextEvent()
-  {
-    if (starting)
-    {
-      double msPerTick = 60000.0 / tempo / timeFormat; 
-      juce::MidiMessageSequence::MidiEventHolder* midiEvent = sequence->getEventPointer(currentMessageIndex);
-      nextTime = msPerTick * (midiEvent->message.getTimeStamp() - lastTimePlayed);
-      starting = false;
+  virtual bool isCancellationRequested()
+  {return askedToStop;}
 
-      if (midiEvent->message.getTimeStamp() != 0)
-      {
-        player.handleIncomingMidiMessage(nullptr, midiEvent->message);    
-      }
-      currentMessageIndex++;
-      if (currentMessageIndex > sequence->getNumEvents())
-        finished = true;
-      lastTimePlayed = juce::Time::getMillisecondCounter();
+  void stop()
+  {askedToStop = true;}
 
-      return;
-    }
+protected:
+  virtual void execute();
 
-    double msPerTick = 60000.0 / tempo / timeFormat; 
-    juce::MidiMessageSequence::MidiEventHolder* midiEvent = sequence->getEventPointer(currentMessageIndex);
-    nextTime = msPerTick * (midiEvent->message.getTimeStamp() - lastTimePlayed);
-    if (midiEvent->message.getTimeStamp() != 0)
-    {
-      player.handleIncomingMidiMessage(nullptr, midiEvent->message);    
-    }
-    lastTimePlayed = juce::Time::getMillisecondCounter();
-    currentMessageIndex++;
-    if (currentMessageIndex >= sequence->getNumEvents())
-      finished = true;
-  }
+  bool askedToStop;
+  juce::MidiMessageSequence& sequence;
+  short timeFormat;
 
-  double getTimeInMillisBeforeNextEvent()
-  {
-    return nextTime;
-  }
-
-  bool isFinished()
-    {return finished;}
-
-private:
-  juce::AudioProcessorPlayer& player;
-  const juce::MidiMessageSequence* sequence;
-  unsigned int currentMessageIndex;
-  double lastTimePlayed;
-  bool finished;
-  const short timeFormat;
-  double tempo;
-  double nextTime;
-  bool starting;
 };
 
 } // namespace JuceModule

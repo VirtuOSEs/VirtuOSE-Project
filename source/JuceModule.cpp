@@ -1,8 +1,12 @@
+//********INCLUDE TORQUE ENGINE********
 #include "core/module.h"
 #include "console/console.h"
-#include <JuceAudioThread.h>
 
+//********INCLUDE JUCE************
 #include "JuceLibraryCode/JuceHeader.h"
+
+#include "JuceAudioThread.h"
+#include "Sequencer.h"
 
 MODULE_BEGIN( JuceModule )
 

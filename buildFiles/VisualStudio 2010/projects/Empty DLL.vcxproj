@@ -221,7 +221,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\..\Engine\source\T3D\aiClient.cpp" />
-    <ClCompile Include="..\..\..\source\JuceAudioThread.cpp" />
     <ClCompile Include="..\..\..\source\JuceLibraryCode\modules\juce_audio_basics\juce_audio_basics.cpp" />
     <ClCompile Include="..\..\..\source\JuceLibraryCode\modules\juce_audio_devices\juce_audio_devices.cpp" />
     <ClCompile Include="..\..\..\source\JuceLibraryCode\modules\juce_audio_formats\juce_audio_formats.cpp" />

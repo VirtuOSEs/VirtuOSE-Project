@@ -2852,9 +2852,6 @@
     <ClCompile Include="..\..\..\source\JuceModule.cpp">
       <Filter>Source Files\source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\source\JuceAudioThread.cpp">
-      <Filter>Source Files\source</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\source\Sequencer.cpp">
       <Filter>Source Files\source</Filter>
     </ClCompile>
