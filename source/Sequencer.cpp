@@ -73,6 +73,12 @@ void AudioTools::playMidiEvent(const juce::MidiMessageSequence::MidiEventHolder*
 
 //     IMPLEM TRACK
 
+void Track::pause()
+  {paused = true;}
+
+void Track::play()
+  {paused = false;}
+
 void Track::execute()
 {
   //double startTime = sequence.getStartTime();
@@ -82,10 +88,24 @@ void Track::execute()
 
   for (int i = 0; i < sequence.getNumEvents(); ++i)
   {
+    while (paused)
+    {
+      juce::Time::waitForMillisecondCounter(300);
+    }
+
     juce::MidiMessageSequence::MidiEventHolder* midiEvent = sequence.getEventPointer(i);
     nextTime = msPerTick * (midiEvent->message.getTimeStamp() - prevTimestamp);
 
-    juce::Time::waitForMillisecondCounter(juce::Time::getMillisecondCounter() + juce::uint32(nextTime));
+    juce::uint32 waitingTime = 0;
+    while(waitingTime < nextTime || paused)
+    {
+      juce::Time::waitForMillisecondCounter(juce::Time::getMillisecondCounter() + 1);
+      //Interrompt la lecture si le thread doit être fermé
+      if (cancellationPoint())
+        break;
+      waitingTime++;
+    }
+    //juce::Time::waitForMillisecondCounter(juce::Time::getMillisecondCounter() + juce::uint32(nextTime));
     if (midiEvent->message.getTimeStamp() != 0)
     {
       AudioTools::getInstance().playMidiEvent(midiEvent); 

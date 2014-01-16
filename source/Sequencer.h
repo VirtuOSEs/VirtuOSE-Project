@@ -63,7 +63,7 @@ public:
   U32 mIndex;
 
   Track(U32 index, juce::MidiMessageSequence& sequence, short timeFormat)
-    : mIndex(index), askedToStop(false), sequence(sequence), timeFormat(timeFormat)
+    : mIndex(index), askedToStop(false), paused(false), sequence(sequence), timeFormat(timeFormat)
   {
   }
 
@@ -73,10 +73,14 @@ public:
   void stop()
   {askedToStop = true;}
 
+  void pause();
+  void play();
+
 protected:
   virtual void execute();
 
   bool askedToStop;
+  bool paused;
   juce::MidiMessageSequence& sequence;
   short timeFormat;
 

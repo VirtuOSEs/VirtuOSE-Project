@@ -63,6 +63,18 @@ void MidiPlayer::play()
  // JuceModule::AudioMidiThreadPool::instance()->flushWorkItems();//je sais pas encore trop pourquoi faut mettre ça
 }
 
+void MidiPlayer::pause()
+{
+ for (unsigned int i = 0; i < sequencer.size(); ++i)
+    sequencer[i]->pause();
+}
+
+void MidiPlayer::unpause()
+{
+  for (unsigned int i = 0; i < sequencer.size(); ++i)
+    sequencer[i]->play();
+}
+
 void MidiPlayer::stop()
 {
   jassert(fileLoaded);
@@ -87,4 +99,14 @@ DefineEngineMethod(MidiPlayer, play, void, (),, "Play a MIDI sequence" )
 DefineEngineMethod(MidiPlayer, stop, void, (),, "Stop a MIDI sequence" )
 {
   object->stop();
+}
+
+DefineEngineMethod(MidiPlayer, pause, void, (),, "Pause a MIDI sequence" )
+{
+  object->pause();
+}
+
+DefineEngineMethod(MidiPlayer, unpause, void, (),, "Unpause a MIDI sequence" )
+{
+  object->unpause();
 }

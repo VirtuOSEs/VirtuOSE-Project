@@ -28,6 +28,8 @@ public:
 
   void loadMidiFile(const char* filePath);
   void play();
+  void pause();
+  void unpause();
   void stop();
 
 private:

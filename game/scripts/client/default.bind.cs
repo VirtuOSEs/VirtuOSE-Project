@@ -469,6 +469,19 @@ function doProfile(%val)
 
 GlobalActionMap.bind(keyboard, "ctrl F3", doProfile);
 
+function pauseMidi()
+{
+  $midiPlayer.pause();
+}
+
+function playMidi()
+{
+  $midiPlayer.unpause();
+}
+
+GlobalActionMap.bind(keyboard, "p", pauseMidi);
+GlobalActionMap.bind(keyboard, "k", playMidi);
+
 //------------------------------------------------------------------------------
 // Misc.
 //------------------------------------------------------------------------------
