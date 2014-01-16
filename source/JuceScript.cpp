@@ -110,3 +110,4 @@ DefineEngineMethod(MidiPlayer, unpause, void, (),, "Unpause a MIDI sequence" )
 {
   object->unpause();
 }
+

@@ -17,6 +17,7 @@ commitmsg.txt
 #Torque files
 buildFiles/Link/
 buildFiles/VisualStudio 2010/*.sdf
+buildFiles/VisualStudio 2010/*.suo
 buildFiles/VisualStudio 2010/*.opensdf
 buildFiles/VisualStudio 2010/ipch
 game/console.log
@@ -26,6 +27,7 @@ game/*.dll
 game/*.lib
 game/*.ilk
 game/*.exp
+game/script/client/prefs.cs
 web/
 tools/
 source/VST3_SDK/*/

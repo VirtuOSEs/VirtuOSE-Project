@@ -82,7 +82,6 @@ function onStart()
    exec("./scripts/gui/messageBoxes/messageBox.ed.cs");
    
    echo(" % - Initialized Core");
-   echo("POUEEEEET\n");
 }
 
 //---------------------------------------------------------------------------------------------
