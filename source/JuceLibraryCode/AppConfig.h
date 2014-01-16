@@ -21,7 +21,10 @@
 
 //Disable Juce namespace to avoid name confusion on ThreadPool class
 #define DONT_SET_USING_JUCE_NAMESPACE 1
-//#define JUCE_ASIO 0 //INDISPENSABLE pour faire fonctionner les VST
+#define JUCE_ASIO 1 //INDISPENSABLE pour faire fonctionner les VST
+#define JUCE_DIRECTSOUND 0
+#define JUCE_WASAPI 0
+#define JUCE_ALSA 0
 
 // [END_USER_CODE_SECTION]
 

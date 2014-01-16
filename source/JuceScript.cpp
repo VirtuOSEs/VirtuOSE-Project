@@ -39,12 +39,14 @@ MidiPlayer::MidiPlayer()
   sequencer.resize(sequences.size());
 
   for (unsigned int i = 0; i < sequencer.size(); ++i)
-    sequencer[i] = new JuceModule::Track(12, sequences[i], midiFile.getTimeFormat());
+    sequencer[i] = new JuceModule::Track(11+i, sequences[i], midiFile.getTimeFormat());
 }
 
 MidiPlayer::~MidiPlayer()
 {
   //sequencer->stop();
+  for (unsigned int i = 0; i < sequencer.size(); ++i)
+    sequencer[i]->stop();
 }
 
 void MidiPlayer::playMidi()

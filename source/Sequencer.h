@@ -86,6 +86,16 @@ private:
 
   AudioTools()
   {
+    juce::AudioDeviceManager::AudioDeviceSetup setup;
+    setup.inputChannels = 256;
+    setup.outputChannels = 256;
+    setup.outputDeviceName = "ASIO4ALL v2";
+    setup.inputDeviceName = "ASIO4ALL v2";
+    setup.sampleRate = 44100.0000;
+    setup.bufferSize = 0;
+    setup.useDefaultInputChannels = true;
+    setup.useDefaultOutputChannels = true;
+    
     juce::AudioPluginFormatManager formatManager;
     formatManager.addDefaultFormats();
     juce::KnownPluginList list;
@@ -99,7 +109,9 @@ private:
     Con::printf(errorMessage.getCharPointer());
 
     CoInitialize(nullptr);
-    deviceManager.initialise (2, 2, nullptr, true);
+    juce::String error = deviceManager.initialise (2, 2, nullptr, true, juce::String::empty, &setup);
+    Con::printf(error.toStdString().c_str());
+
     deviceManager.playTestSound();
     player.setProcessor(plugin);
     deviceManager.addAudioCallback(&player);
