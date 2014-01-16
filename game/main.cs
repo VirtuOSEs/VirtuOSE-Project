@@ -21,7 +21,7 @@
 //-----------------------------------------------------------------------------
 
 // Set the name of our application
-$appName = "VirtuOSE";
+$appName = "Virtuose";
 
 // The directory it is run from
 $defaultGame = "scripts";
@@ -36,6 +36,9 @@ function createCanvas(%windowTitle)
       GFXInit::createNullDevice();
       return true;
    }
+
+   // For Rift
+   pointCanvasToOculusVRDisplay();
 
    // Create the Canvas
    %foo = new GuiCanvas(Canvas);

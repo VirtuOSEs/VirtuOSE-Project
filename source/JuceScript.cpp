@@ -1,4 +1,4 @@
-#include <JuceAudioThread.h>
+/*#include <JuceAudioThread.h>
 #include <JuceScript.h>
 #include "console/console.h"
 
@@ -36,4 +36,4 @@ DefineEngineMethod(MidiPlayer, startMIDI, void, (),, "Play a MIDI sequence" )
 DefineEngineMethod(MidiPlayer, stopMIDI, void, (),, "Stop a MIDI sequence" )
 {
   object->stopMidi();
-}
+}*/

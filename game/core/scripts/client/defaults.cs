@@ -48,7 +48,10 @@ $sceneLighting::cacheLighting = 1;
 
 $pref::Video::displayDevice = "D3D9";
 $pref::Video::disableVerticalSync = 1;
-$pref::Video::mode = "1024 768 false 32 60 4";
+$pref::Video::mode = "1280 800 false 32 60 0";  // For Oculus Rift
+$pref::Video::RiftFullscreen = 1;
+$pref::Video::RiftResolution = 1280;
+$pref::Video::ReftPrediction = 0.02;
 $pref::Video::defaultFenceCount = 0;
 $pref::Video::screenShotSession = 0;
 $pref::Video::screenShotFormat = "PNG";
@@ -110,11 +113,11 @@ $pref::SFX::autoDetect = true;
 /// this is DirectSound, OpenAL, or XACT.  There is also 
 /// a special Null provider which acts normally, but 
 /// plays no sound.
-$pref::SFX::provider = "";
+$pref::SFX::provider = "FMOD";
 
 /// The sound device to select from the provider.  Each
 /// provider may have several different devices.
-$pref::SFX::device = "OpenAL";
+$pref::SFX::device = "";
 
 /// If true the device will try to use hardware buffers
 /// and sound mixing.  If not it will use software.

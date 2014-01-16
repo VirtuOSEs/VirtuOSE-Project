@@ -40,6 +40,27 @@ function StartLevel( %mission, %hostingType )
          %serverType = "SinglePlayer";
    }
 
+   // For Rift
+   if($pref::Video::RiftFullscreen == 1)
+   {
+      switch($pref::Video::RiftResolution)
+      {
+         case 1440:
+            %h = 900;
+            
+         case 1680:
+            %h = 1050;
+         
+         case 1920:
+            %h = 1200;
+            
+         default:
+            %h = 800;
+      }
+      
+      Canvas.setVideoMode($pref::Video::RiftResolution, %h, true, 32, 60, 0);
+   }
+
    // Show the loading screen immediately.
    if ( isObject( LoadingGui ) )
    {
