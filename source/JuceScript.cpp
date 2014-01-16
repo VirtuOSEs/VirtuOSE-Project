@@ -10,12 +10,19 @@
 IMPLEMENT_CONOBJECT(MidiPlayer);
 
 MidiPlayer::MidiPlayer()
+  : fileLoaded(false)
 {
-  //L'item est un objet qui contient la méthode execute() qui va être appelée par le ThreadPool
-  //sequencer = new JuceModule::AudioMidiWorkItem(10);
+}
 
-  //TEST 
-  juce::File myFile = juce::File::getCurrentWorkingDirectory().getChildFile ("../Beethoven-Symphony5-1.mid");
+MidiPlayer::~MidiPlayer()
+{
+  for (unsigned int i = 0; i < sequencer.size(); ++i)
+    sequencer[i]->stop();
+}
+
+void MidiPlayer::loadMidiFile(const char* filePath)
+{
+  juce::File myFile = juce::File::getCurrentWorkingDirectory().getChildFile (filePath);
     
   juce::FileInputStream stream(myFile);
   Con::printf(stream.getStatus().getErrorMessage().getCharPointer());
@@ -23,36 +30,32 @@ MidiPlayer::MidiPlayer()
   if (stream.failedToOpen())
   {
     Con::printf("Impossible d'ouvrir le fichier midi");
-    jassert(false);
+    fileLoaded = false;
   }
+  else fileLoaded = true;
+
+  // DEBUG CHECK : the file must be correctly loaded in order to continue
+  jassert(fileLoaded);
+
   juce::MidiFile midiFile;
   midiFile.readFrom(stream);
-
-  //sequence = *(midiFile.getTrack(3));
 
   for (unsigned int i = 0; i < midiFile.getNumTracks(); ++i)
   {
     sequences.push_back(juce::MidiMessageSequence(*midiFile.getTrack(i)));
   }
-  /*sequences.resize(1);
-  sequences.push_back(*midiFile.getTrack(3));*/
+
   sequencer.resize(sequences.size());
 
   for (unsigned int i = 0; i < sequencer.size(); ++i)
     sequencer[i] = new JuceModule::Track(11+i, sequences[i], midiFile.getTimeFormat());
 }
 
-MidiPlayer::~MidiPlayer()
-{
-  //sequencer->stop();
-  for (unsigned int i = 0; i < sequencer.size(); ++i)
-    sequencer[i]->stop();
-}
-
 void MidiPlayer::play()
 {
-  //TEST
-
+  jassert(fileLoaded);
+  if (!fileLoaded)
+    return;
   //Ajoute l'item à la file d'attente du ThreadPool pour qu'il soit traité
   for (unsigned int i = 0; i < sequencer.size(); ++i)
     JuceModule::AudioMidiThreadPool::instance()->queueWorkItem(sequencer[i]);
@@ -62,13 +65,19 @@ void MidiPlayer::play()
 
 void MidiPlayer::stop()
 {
-  //TEST
+  jassert(fileLoaded);
+  if (!fileLoaded)
+    return;
   for (unsigned int i = 0; i < sequencer.size(); ++i)
     sequencer[i]->stop();
-
-  //sequencer->stop();
 }
 
+//-------------Torque Script Bridge
+
+DefineEngineMethod(MidiPlayer, loadMidiFile, void, (const char* filePath), , "Load a Midi File. You must call this method before any other on MidiPlayer.")
+{
+  object->loadMidiFile(filePath);
+}
 
 DefineEngineMethod(MidiPlayer, play, void, (),, "Play a MIDI sequence" )
 {

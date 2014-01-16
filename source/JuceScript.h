@@ -26,11 +26,12 @@ public:
   MidiPlayer();
   ~MidiPlayer();
 
-
+  void loadMidiFile(const char* filePath);
   void play();
   void stop();
 
 private:
+  bool fileLoaded;
   std::vector<ThreadSafeRef<JuceModule::Track>> sequencer;
   std::vector<juce::MidiMessageSequence> sequences;
 };

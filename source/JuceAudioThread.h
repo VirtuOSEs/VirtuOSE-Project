@@ -3,7 +3,7 @@
   
 #include "platform/threads/threadPool.h"
 
-#define JUCE_MODULE_THREADPOOL_CNT 10
+#define JUCE_MODULE_THREADPOOL_CNT 16
 
 namespace JuceModule
 {
