@@ -11,3 +11,6 @@ Pour l'instant le VST utilisé est 4Front Piano. Vous pouvez le trouver facileme
 
 Pour réussir à lire des VST (instruments virtuels) correctement sous Windows, il vous faut les bons drivers :
 Téléchargez les drivers ASIO4all et installez-les. Quand vous lancez VirtuOSE vous devez entendre un BIP, puis du piano, une pause, et de nouveau du piano (ça va changer bien sûr).
+
+Pour l'Oculus Rift, il faut le placer à côté de TorqueMaster (ou Torque3D). A la compilation, une erreur vous petera à la gueule et il faut changer le code de l'oculus. Aller dans le .cpp et dans le .h du fichier qui pose problème
+et enlevez le const du premier paramètre. Ca devrait résoudre les problèmes.
