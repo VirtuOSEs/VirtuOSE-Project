@@ -15,6 +15,7 @@
 commitmsg.txt
 *.cs~
 #Torque files
+*.dll
 buildFiles/Link/
 buildFiles/VisualStudio 2010/*.sdf
 buildFiles/VisualStudio 2010/*.suo
