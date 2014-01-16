@@ -30,12 +30,12 @@ MidiPlayer::MidiPlayer()
 
   //sequence = *(midiFile.getTrack(3));
 
-  //for (unsigned int i = 0; i < midiFile.getNumTracks(); ++i)
-  //{
-  //  sequences.push_back(juce::MidiMessageSequence(*midiFile.getTrack(i)));
-  //}
-  sequences.resize(1);
-  sequences.push_back(*midiFile.getTrack(3));
+  for (unsigned int i = 0; i < midiFile.getNumTracks(); ++i)
+  {
+    sequences.push_back(juce::MidiMessageSequence(*midiFile.getTrack(i)));
+  }
+  /*sequences.resize(1);
+  sequences.push_back(*midiFile.getTrack(3));*/
   sequencer.resize(sequences.size());
 
   for (unsigned int i = 0; i < sequencer.size(); ++i)
@@ -49,7 +49,7 @@ MidiPlayer::~MidiPlayer()
     sequencer[i]->stop();
 }
 
-void MidiPlayer::playMidi()
+void MidiPlayer::play()
 {
   //TEST
 
@@ -60,7 +60,7 @@ void MidiPlayer::playMidi()
  // JuceModule::AudioMidiThreadPool::instance()->flushWorkItems();//je sais pas encore trop pourquoi faut mettre ça
 }
 
-void MidiPlayer::stopMidi()
+void MidiPlayer::stop()
 {
   //TEST
   for (unsigned int i = 0; i < sequencer.size(); ++i)
@@ -70,12 +70,12 @@ void MidiPlayer::stopMidi()
 }
 
 
-DefineEngineMethod(MidiPlayer, startMIDI, void, (),, "Play a MIDI sequence" )
+DefineEngineMethod(MidiPlayer, play, void, (),, "Play a MIDI sequence" )
 {
-  object->playMidi();
+  object->play();
 }
 
-DefineEngineMethod(MidiPlayer, stopMIDI, void, (),, "Stop a MIDI sequence" )
+DefineEngineMethod(MidiPlayer, stop, void, (),, "Stop a MIDI sequence" )
 {
-  object->stopMidi();
+  object->stop();
 }

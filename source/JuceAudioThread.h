@@ -3,13 +3,13 @@
   
 #include "platform/threads/threadPool.h"
 
-#define JUCE_MODULE_THREADPOOL_CNT 1
+#define JUCE_MODULE_THREADPOOL_CNT 10
 
 namespace JuceModule
 {
 
 /**
-  This class is a ThreadPool wich goal is to handle the WorkItems (here they are JuceModule::Track)
+  This class is a ThreadPool which goal is to handle the WorkItems (here they are JuceModule::Track)
   which play the MIDI Tracks of the JuceModule::MidiPlayer.
   Each Track is added to this ThreadPool in order to be executed in parrallel with the others.
   Today, this ThreadPool manage just one thread, but it may evolve with future needs.

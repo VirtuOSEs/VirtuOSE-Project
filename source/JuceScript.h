@@ -26,8 +26,9 @@ public:
   MidiPlayer();
   ~MidiPlayer();
 
-  void playMidi();
-  void stopMidi();
+
+  void play();
+  void stop();
 
 private:
   std::vector<ThreadSafeRef<JuceModule::Track>> sequencer;

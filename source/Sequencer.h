@@ -22,20 +22,21 @@ class AudioTools
 {
 public:
 
-  /** Call this from the thread in charge of
-      the audio. Initialise ASIO device, and VST plugin
+  /** The thread calling this will be the handler of all the important
+      audio objects (sound device, VST plugin...).
+      Currently this static method is called by the Torque's module "Juce Module"
+      (JuceModule.cpp), so I think audio objects are maintained by the main thread.
+      Initialise ASIO device, and VST plugin
   */
   static void initialize();
   static AudioTools& getInstance();
   static void deleteInstance();
 
-  void playMidi(const juce::MidiMessageSequence::MidiEventHolder* const midiEvent);
-  
-  juce::AudioDeviceManager& acquireDeviceManager();
-  void releaseDeviceManager();
-
-  juce::ScopedPointer<juce::AudioPluginInstance> acquirePlugin();
-  void releasePlugin();
+  /** 
+   Send a midi event to the plugin to play it.
+   Supposed to be thread-safe.
+  **/
+  void playMidiEvent(const juce::MidiMessageSequence::MidiEventHolder* const midiEvent);
 
 private:
   static AudioTools* singleton;
@@ -44,8 +45,6 @@ private:
   AudioTools(const AudioTools& other);
   AudioTools& operator=(const AudioTools& other);
 
-  Semaphore deviceSemaphore;
-  Semaphore pluginSemaphore;
   Semaphore playerSemaphore;
   juce::AudioDeviceManager deviceManager;
   juce::ScopedPointer<juce::AudioPluginInstance> plugin;

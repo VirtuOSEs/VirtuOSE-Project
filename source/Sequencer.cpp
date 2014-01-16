@@ -64,45 +64,21 @@ AudioTools& AudioTools::getInstance()
   return *singleton;
 }
 
-void AudioTools::playMidi(const juce::MidiMessageSequence::MidiEventHolder* const midiEvent)
+void AudioTools::playMidiEvent(const juce::MidiMessageSequence::MidiEventHolder* const midiEvent)
 {
   playerSemaphore.acquire();
   player.handleIncomingMidiMessage(nullptr, midiEvent->message);
   playerSemaphore.release();
 }
 
-juce::AudioDeviceManager& AudioTools::acquireDeviceManager()
-{
-  deviceSemaphore.acquire();
-  return deviceManager;
-}
-
-void AudioTools::releaseDeviceManager()
-{
-  deviceSemaphore.release();
-}
-
-juce::ScopedPointer<juce::AudioPluginInstance> AudioTools::acquirePlugin()
-{
-  pluginSemaphore.acquire();
-  return plugin;
-}
-
-void AudioTools::releasePlugin()
-{
-  pluginSemaphore.release();
-}
-
-
 //     IMPLEM TRACK
 
 void Track::execute()
 {
-  double startTime = sequence.getStartTime();
+  //double startTime = sequence.getStartTime();
   double msPerTick = 60000.0 / 120.0 / timeFormat; 
   double nextTime;
   double prevTimestamp = 0.0;
-
 
   for (int i = 0; i < sequence.getNumEvents(); ++i)
   {
@@ -112,7 +88,7 @@ void Track::execute()
     juce::Time::waitForMillisecondCounter(juce::Time::getMillisecondCounter() + juce::uint32(nextTime));
     if (midiEvent->message.getTimeStamp() != 0)
     {
-      AudioTools::getInstance().playMidi(midiEvent); 
+      AudioTools::getInstance().playMidiEvent(midiEvent); 
     }
 
     prevTimestamp = midiEvent->message.getTimeStamp();
