@@ -30,5 +30,7 @@ web/
 tools/
 source/VST3_SDK/*/
 source/ASIOSDK2.3/*/
+source/ASIOSDK2.3/*.pdf
+source/ASIOSDK2.3/changes.txt
 Link/
 
