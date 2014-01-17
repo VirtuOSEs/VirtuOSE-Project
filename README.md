@@ -27,10 +27,19 @@ Vous devez récuperer :
    
 Vous receverez par mail une archive contenant la plupart des .exe d'installations.
 
-En premier lieu, installez le Kinect SDK.
-Ensuite, installez OpenNI. Par défaut l'installation se fera dans le dossier Program Files/OpenNI (32 bits).
-De la même façon, installez NiTE. Par défaut l'installation se fera dans le dossier Program Files/PrimeSense/NiTE2 (32 bits).
-
+   <ul>
+      <li>En premier lieu, installez le Kinect SDK.</li>
+      <li>Ensuite, installez OpenNI. Par défaut l'installation se fera dans le dossier Program Files/OpenNI2 (32 bits).</li>
+      <li>De la même façon, installez NiTE. Par défaut l'installation se fera dans le dossier Program Files/PrimeSense/NiTE2 (32 bits).</li>
+   </ul>
+   
+   Il faut ensuite copier le contenu des dossiers (y compris le dossier source) de Program Files/PrimeSense/NiTE2/Redist et Program Files/OpenNI2/Redist et coller le tout à la racine du dossier game de VirtuOSE.
+   En cas de problème :
+   <ul>
+   <li>Copiez les dossiers Program Files/PrimseSense/NiTe2 et Program Files/OpenNI2 dans le dossier source de VirtuOSE</li>
+   <li>Installez les versions 64 bits de OpenNI et NiTE</li>
+   </ul>
+   
 Asio SDK
 =====
 L'ASIO SDK ainsi que les drivers ASIO sont nécessaires. L'ASIO SDK doit être placé dans le répertoire déjà prévu à cet effet dans source/. Vous devez copier-coller les fichiers dans ce dossier afin de respecter la hierarchie (pour vous repérer sur quoi copier et comment il y a déjà un fichier dans ASIO SDK)
