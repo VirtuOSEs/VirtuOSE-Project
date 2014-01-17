@@ -30,6 +30,8 @@ game/*.ilk
 game/*.exp
 game/*.pdb
 game/script/client/prefs.cs
+game/NiTE2/*
+game/OpenNI2/*
 web/
 tools/
 source/VST3_SDK/*/
