@@ -34,12 +34,12 @@ Vous receverez par mail une archive contenant la plupart des .exe d'installation
    </ol>
    
    <strong>Il faut ensuite copier le contenu des dossiers (y compris le dossier source) de Program Files/PrimeSense/NiTE2/Redist et Program Files/OpenNI2/Redist et coller le tout à la racine du dossier game de VirtuOSE. <br/>
-   Dernière étape, il faut copier le fichier NiteSampleUtilities.h depuis Program Files /PrimeSense/ NiTE2/ Samples/SimpleHandTracker et le coller dans rogram Files /PrimeSense/NiTE2/Include</strong>
+   Il faut copier le fichier NiteSampleUtilities.h depuis Program Files /PrimeSense/ NiTE2/ Samples/SimpleHandTracker et le coller dans rogram Files /PrimeSense/NiTE2/Include</strong>
    
-   En cas de problème :
+Dernières Étapes
    <ul>
+   <li>Ajoutez ../../../source/OpenNI2/Include et ../../../source/NiTE2/Include dans les include du projet VirtuOSE DLL</li>
    <li>Copiez les dossiers Program Files/PrimseSense/NiTe2 et Program Files/OpenNI2 dans le dossier source de VirtuOSE</li>
-   <li>Installez les versions 64 bits de OpenNI et NiTE</li>
    </ul>
    
 Asio SDK
