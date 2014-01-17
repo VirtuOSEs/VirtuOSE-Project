@@ -686,14 +686,15 @@ function playMidi()
   $midiPlayer.unpause();
 }
 
-GlobalActionMap.bind(keyboard, "p", pauseMidi);
-GlobalActionMap.bind(keyboard, "k", playMidi);
+//Fonction de sons
+// GlobalActionMap.bind(keyboard, "p", pauseMidi);
+// GlobalActionMap.bind(keyboard, "k", playMidi);
 
 //------------------------------------------------------------------------------
 // Misc.
 //------------------------------------------------------------------------------
 
-GlobalActionMap.bind(keyboard, "tilde", toggleConsole);
+GlobalActionMap.bind(keyboard, "F5", toggleConsole);
 GlobalActionMap.bindCmd(keyboard, "alt k", "cls();","");
 GlobalActionMap.bindCmd(keyboard, "alt enter", "", "Canvas.attemptFullscreenToggle();");
 GlobalActionMap.bindCmd(keyboard, "F1", "", "contextHelp();");

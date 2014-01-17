@@ -27,10 +27,21 @@ Vous devez récuperer :
    
 Vous receverez par mail une archive contenant la plupart des .exe d'installations.
 
-En premier lieu, installez le Kinect SDK.
-Ensuite, installez OpenNI. Par défaut l'installation se fera dans le dossier Program Files/OpenNI (32 bits).
-De la même façon, installez NiTE. Par défaut l'installation se fera dans le dossier Program Files/PrimeSense/NiTE2 (32 bits).
-
+   <ol>
+      <li>En premier lieu, installez le Kinect SDK.</li>
+      <li>Ensuite, installez OpenNI. Par défaut l'installation se fera dans le dossier Program Files/OpenNI2 (32 bits).</li>
+      <li>De la même façon, installez NiTE. Par défaut l'installation se fera dans le dossier Program Files/PrimeSense/NiTE2 (32 bits).</li>
+   </ol>
+   
+   <strong>Il faut ensuite copier le contenu des dossiers (y compris le dossier source) de Program Files/PrimeSense/NiTE2/Redist et Program Files/OpenNI2/Redist et coller le tout à la racine du dossier game de VirtuOSE. <br/>
+   Il faut copier le fichier NiteSampleUtilities.h depuis Program Files /PrimeSense/ NiTE2/ Samples/SimpleHandTracker et le coller dans rogram Files /PrimeSense/NiTE2/Include</strong>
+   
+Dernières Étapes
+   <ul>
+   <li>Ajoutez ../../../source/OpenNI2/Include et ../../../source/NiTE2/Include dans les include du projet VirtuOSE DLL</li>
+   <li>Copiez les dossiers Program Files/PrimseSense/NiTe2 et Program Files/OpenNI2 dans le dossier source de VirtuOSE</li>
+   </ul>
+   
 Asio SDK
 =====
 L'ASIO SDK ainsi que les drivers ASIO sont nécessaires. L'ASIO SDK doit être placé dans le répertoire déjà prévu à cet effet dans source/. Vous devez copier-coller les fichiers dans ce dossier afin de respecter la hierarchie (pour vous repérer sur quoi copier et comment il y a déjà un fichier dans ASIO SDK)
@@ -45,3 +56,6 @@ Pour l'instant le VST utilisé est 4Front Piano. Vous pouvez le trouver facileme
 
 Pour réussir à lire des VST (instruments virtuels) correctement sous Windows, il vous faut les bons drivers :
 Téléchargez les drivers ASIO4all et installez-les. Quand vous lancez VirtuOSE vous devez entendre un BIP, puis du piano, une pause, et de nouveau du piano (ça va changer bien sûr).
+
+Pour l'Oculus Rift, il faut le placer à côté de TorqueMaster (ou Torque3D). A la compilation, une erreur vous petera à la gueule et il faut changer le code de l'oculus. Aller dans le .cpp et dans le .h du fichier qui pose problème
+et enlevez le const du premier paramètre. Ca devrait résoudre les problèmes.

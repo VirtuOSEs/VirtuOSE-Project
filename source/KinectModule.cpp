@@ -8,7 +8,7 @@
 
 #include <NiteSampleUtilities.h>
 #include "KinectTracker.h"
-
+/*
 MODULE_BEGIN( KinectModule )
 
   MODULE_INIT_AFTER( JuceModule )
@@ -64,3 +64,4 @@ MODULE_BEGIN( KinectModule )
   }
 
 MODULE_END;
+*/

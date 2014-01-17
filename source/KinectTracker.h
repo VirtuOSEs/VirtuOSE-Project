@@ -6,7 +6,7 @@
 #include "NiTE.h"
 #include "NiteSampleUtilities.h"
 
-class KinectTracker : public juce::Thread
+/*class KinectTracker : public juce::Thread
 {
 public:
 	explicit KinectTracker(nite::HandTracker& handTracker)
@@ -39,15 +39,11 @@ public:
 				}
 			}
 
-			/************UTILISATION DES GESTURES******************************************************
-
-			Using gestures like this is optional. If your application can know the location of hand positions from 
-			some other source (for example, a kiosk application might show a user where to hold his hands), 
-			then you can initialize directly without a gesture. It is also possible to write your own computer vision 
-			algorithms to locate the position of the hands. For the majority of applications, though, using the 
-			gestures described above is the easiest way to initialize hand tracking.
-
-			****************************************************************************************/
+			//Using gestures like this is optional. If your application can know the location of hand positions from 
+			//some other source (for example, a kiosk application might show a user where to hold his hands), 
+			//then you can initialize directly without a gesture. It is also possible to write your own computer vision 
+			//algorithms to locate the position of the hands. For the majority of applications, though, using the 
+			//gestures described above is the easiest way to initialize hand tracking.
 		
 			//getHands récupère la liste de toutes les mains qui sont trackées
 			const nite::Array<nite::HandData>& hands = handTrackerFrame.getHands();
@@ -65,5 +61,5 @@ public:
 private:
 	nite::HandTracker& handTracker;
 };
-
+*/
 #endif // KINECT_MODULE_TRACKER_H

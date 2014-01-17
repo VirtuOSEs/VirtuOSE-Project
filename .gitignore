@@ -28,10 +28,15 @@ game/*.dll
 game/*.lib
 game/*.ilk
 game/*.exp
+game/*.pdb
 game/script/client/prefs.cs
+game/NiTE2/*
+game/OpenNI2/*
 web/
 tools/
 source/VST3_SDK/*/
+source/NiTE2/*/
+source/OpenNI2/*/
 source/ASIOSDK2.3/*/
 source/ASIOSDK2.3/*.pdf
 source/ASIOSDK2.3/changes.txt
