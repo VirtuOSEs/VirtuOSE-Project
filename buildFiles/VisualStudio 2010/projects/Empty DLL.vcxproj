@@ -1923,7 +1923,6 @@
     <ClInclude Include="..\..\..\..\..\Engine\source\windowManager\win32\win32WindowMgr.h" />
     <ClCompile Include="..\..\..\..\..\Engine\source\windowManager\win32\winDispatch.cpp" />
     <ClInclude Include="..\..\..\..\..\Engine\source\windowManager\win32\winDispatch.h" />
-    <ClInclude Include="..\..\..\source\JuceAudioThread.h" />
     <ClInclude Include="..\..\..\source\JuceLibraryCode\AppConfig.h" />
     <ClInclude Include="..\..\..\source\JuceLibraryCode\JuceHeader.h" />
     <ClInclude Include="..\..\..\source\JuceScript.h" />

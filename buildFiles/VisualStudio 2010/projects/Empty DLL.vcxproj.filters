@@ -5359,9 +5359,6 @@
     <ClInclude Include="..\..\..\source\JuceScript.h">
       <Filter>Source Files\source</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\source\JuceAudioThread.h">
-      <Filter>Source Files\source</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\source\Sequencer.h">
       <Filter>Source Files\source</Filter>
     </ClInclude>

@@ -50,8 +50,7 @@ private:
 };
 
 /**
- A Track is a WorkItem (Torque Engine object) wich will be passed to a ThreadPool
-  (here the JuceModule::AudioMidiThreadPool). 
+  A Track is a juce::Thread playing a midi track in background.
   A Track goal is to play a juce::MidiMessageSequence.
 **/
 class Track : public juce::Thread
