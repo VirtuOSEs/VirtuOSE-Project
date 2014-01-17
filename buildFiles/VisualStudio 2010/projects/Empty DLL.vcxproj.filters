@@ -2876,6 +2876,9 @@
     <ClCompile Include="..\..\..\..\..\Engine\source\platform\input\oculusVR\oculusVRUtil.cpp">
       <Filter>Source Files\Engine\platform\input\oculusVR</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\source\KinectModule.cpp">
+      <Filter>Source Files\source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\..\Engine\source\T3D\aiClient.h">
@@ -5361,8 +5364,7 @@
     </ClInclude>
     <ClInclude Include="..\..\..\source\Sequencer.h">
       <Filter>Source Files\source</Filter>
-	</ClInclude>
-
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Engine\source\platform\input\oculusVR\barrelDistortionPostEffect.h">
       <Filter>Source Files\Engine\platform\input\oculusVR</Filter>
     </ClInclude>
@@ -5383,6 +5385,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Engine\source\platform\input\oculusVR\oculusVRUtil.h">
       <Filter>Source Files\Engine\platform\input\oculusVR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\KinectTracker.h">
+      <Filter>Source Files\source</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
