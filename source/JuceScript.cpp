@@ -49,6 +49,7 @@ void MidiPlayer::loadMidiFile(const char* filePath)
 
   for (unsigned int i = 0; i < sequencer.size(); ++i)
     sequencer[i] = new JuceModule::Track(11+i, sequences[i], midiFile.getTimeFormat());
+  
 }
 
 void MidiPlayer::play()
@@ -58,7 +59,8 @@ void MidiPlayer::play()
     return;
   //Ajoute l'item à la file d'attente du ThreadPool pour qu'il soit traité
   for (unsigned int i = 0; i < sequencer.size(); ++i)
-    JuceModule::AudioMidiThreadPool::instance()->queueWorkItem(sequencer[i]);
+    sequencer[i]->startThread();
+    //JuceModule::AudioMidiThreadPool::instance()->queueWorkItem(sequencer[i]);
 
  // JuceModule::AudioMidiThreadPool::instance()->flushWorkItems();//je sais pas encore trop pourquoi faut mettre ça
 }
@@ -81,7 +83,9 @@ void MidiPlayer::stop()
   if (!fileLoaded)
     return;
   for (unsigned int i = 0; i < sequencer.size(); ++i)
-    sequencer[i]->stop();
+  {
+    sequencer[i]->stopThread(1000);
+  }
 }
 
 //-------------Torque Script Bridge

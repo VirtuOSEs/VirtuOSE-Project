@@ -66,9 +66,8 @@ AudioTools& AudioTools::getInstance()
 
 void AudioTools::playMidiEvent(const juce::MidiMessageSequence::MidiEventHolder* const midiEvent)
 {
-  playerSemaphore.acquire();
+  const juce::ScopedLock threadLock(criticalSection);
   player.handleIncomingMidiMessage(nullptr, midiEvent->message);
-  playerSemaphore.release();
 }
 
 //     IMPLEM TRACK
@@ -79,7 +78,7 @@ void Track::pause()
 void Track::play()
   {paused = false;}
 
-void Track::execute()
+void Track::run()
 {
   //double startTime = sequence.getStartTime();
   double msPerTick = 60000.0 / 120.0 / timeFormat; 
@@ -90,22 +89,13 @@ void Track::execute()
   {
     while (paused)
     {
-      juce::Time::waitForMillisecondCounter(300);
+      wait(300);
     }
 
     juce::MidiMessageSequence::MidiEventHolder* midiEvent = sequence.getEventPointer(i);
     nextTime = msPerTick * (midiEvent->message.getTimeStamp() - prevTimestamp);
 
-    juce::uint32 waitingTime = 0;
-    while(waitingTime < nextTime || paused)
-    {
-      juce::Time::waitForMillisecondCounter(juce::Time::getMillisecondCounter() + 1);
-      //Interrompt la lecture si le thread doit être fermé
-      if (cancellationPoint())
-        break;
-      waitingTime++;
-    }
-    //juce::Time::waitForMillisecondCounter(juce::Time::getMillisecondCounter() + juce::uint32(nextTime));
+    wait(juce::uint32(nextTime));
     if (midiEvent->message.getTimeStamp() != 0)
     {
       AudioTools::getInstance().playMidiEvent(midiEvent); 
@@ -114,7 +104,7 @@ void Track::execute()
     prevTimestamp = midiEvent->message.getTimeStamp();
 
     //Interrompt la lecture si le thread doit être fermé
-    if (cancellationPoint())
+    if (threadShouldExit())
       break;
   }
 }

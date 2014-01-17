@@ -34,7 +34,7 @@ public:
 
 private:
   bool fileLoaded;
-  std::vector<ThreadSafeRef<JuceModule::Track>> sequencer;
+  std::vector<juce::ScopedPointer<JuceModule::Track> > sequencer;
   std::vector<juce::MidiMessageSequence> sequences;
 };
 

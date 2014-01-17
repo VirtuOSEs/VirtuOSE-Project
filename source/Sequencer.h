@@ -9,8 +9,6 @@
 
 //**********INCLUDE TORQUE ENGINE*********
 #include "console/engineAPI.h"
-#include "platform/threads/threadPool.h"
-#include "platform/threads/semaphore.h"
 
 namespace JuceModule
 {
@@ -45,7 +43,7 @@ private:
   AudioTools(const AudioTools& other);
   AudioTools& operator=(const AudioTools& other);
 
-  Semaphore playerSemaphore;
+  juce::CriticalSection criticalSection;
   juce::AudioDeviceManager deviceManager;
   juce::ScopedPointer<juce::AudioPluginInstance> plugin;
   juce::AudioProcessorPlayer player;
@@ -56,14 +54,12 @@ private:
   (here the JuceModule::AudioMidiThreadPool). 
   A Track goal is to play a juce::MidiMessageSequence.
 **/
-class Track : public ThreadPool::WorkItem
+class Track : public juce::Thread
 {
 public:
-  typedef ThreadPool::WorkItem Parent;
-  U32 mIndex;
 
   Track(U32 index, juce::MidiMessageSequence& sequence, short timeFormat)
-    : mIndex(index), askedToStop(false), paused(false), sequence(sequence), timeFormat(timeFormat)
+    : juce::Thread("Track"), askedToStop(false), paused(false), sequence(sequence), timeFormat(timeFormat)
   {
   }
 
@@ -77,7 +73,7 @@ public:
   void play();
 
 protected:
-  virtual void execute();
+  virtual void run();
 
   bool askedToStop;
   bool paused;
