@@ -33,7 +33,9 @@ Vous receverez par mail une archive contenant la plupart des .exe d'installation
       <li>De la même façon, installez NiTE. Par défaut l'installation se fera dans le dossier Program Files/PrimeSense/NiTE2 (32 bits).</li>
    </ol>
    
-   Il faut ensuite copier le contenu des dossiers (y compris le dossier source) de Program Files/PrimeSense/NiTE2/Redist et Program Files/OpenNI2/Redist et coller le tout à la racine du dossier game de VirtuOSE.
+   <strong>Il faut ensuite copier le contenu des dossiers (y compris le dossier source) de Program Files/PrimeSense/NiTE2/Redist et Program Files/OpenNI2/Redist et coller le tout à la racine du dossier game de VirtuOSE. <br/>
+   Dernière étape, il faut copier le fichier NiteSampleUtilities.h depuis Program Files /PrimeSense/ NiTE2/ Samples/SimpleHandTracker et le coller dans rogram Files /PrimeSense/NiTE2/Include</strong>
+   
    En cas de problème :
    <ul>
    <li>Copiez les dossiers Program Files/PrimseSense/NiTe2 et Program Files/OpenNI2 dans le dossier source de VirtuOSE</li>
