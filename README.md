@@ -16,6 +16,21 @@ source/platform/input/oculusVR/oculusVRSensorData.h : ligne 59
 </pre>
 Répercutez le changement dans le fichier .cpp d'implémentation.
 
+Kinect : Kinect SDK + OpenNI2 + NiTE
+====
+Vous devez récuperer :
+   <ul>
+      <li>Le Kinect SDK officiel, disponible sur le site de Microsoft</li>
+      <li>L'OpenNI SDK, version 2, disponible sans inscription sur le site de PrimeSense</li>
+      <li>Le NiTE SDK, disponible avec inscription sur le site de PrimeSese</li>
+   </ul>
+   
+Vous receverez par mail une archive contenant la plupart des .exe d'installations.
+
+En premier lieu, installez le Kinect SDK.
+Ensuite, installez OpenNI. Par défaut l'installation se fera dans le dossier Program Files/OpenNI (32 bits).
+De la même façon, installez NiTE. Par défaut l'installation se fera dans le dossier Program Files/PrimeSense/NiTE2 (32 bits).
+
 Asio SDK
 =====
 L'ASIO SDK ainsi que les drivers ASIO sont nécessaires. L'ASIO SDK doit être placé dans le répertoire déjà prévu à cet effet dans source/. Vous devez copier-coller les fichiers dans ce dossier afin de respecter la hierarchie (pour vous repérer sur quoi copier et comment il y a déjà un fichier dans ASIO SDK)
