@@ -23,7 +23,7 @@ AudioTools::AudioTools()
   juce::KnownPluginList list;
   juce::String errorMessage;
   juce::PluginDescription description2;
-  description2.name = "4Front_Piano";
+  description2.name = "4Front Piano";
   description2.pluginFormatName = "VST";
   description2.category = "Instrument";
   description2.fileOrIdentifier =  juce::File::getCurrentWorkingDirectory().getChildFile("../4Front_Piano.dll").getFullPathName();
@@ -64,10 +64,20 @@ AudioTools& AudioTools::getInstance()
   return *singleton;
 }
 
-void AudioTools::playMidiEvent(const juce::MidiMessageSequence::MidiEventHolder* const midiEvent)
+void AudioTools::playMidiMessage(const juce::MidiMessage& message)
 {
   const juce::ScopedLock threadLock(criticalSection);
-  player.handleIncomingMidiMessage(nullptr, midiEvent->message);
+  player.handleIncomingMidiMessage(nullptr, message);
+}
+
+void AudioTools::suspendAudioProcessing()
+{
+  plugin->suspendProcessing(true);
+}
+
+void AudioTools::enableAudioProcessing()
+{
+  plugin->suspendProcessing(false);
 }
 
 //     IMPLEM TRACK
@@ -84,28 +94,55 @@ void Track::run()
   double msPerTick = 60000.0 / 120.0 / timeFormat; 
   double nextTime;
   double prevTimestamp = 0.0;
-
+  juce::MidiMessage noteOff;
   for (int i = 0; i < sequence.getNumEvents(); ++i)
   {
-    while (paused)
-    {
-      wait(300);
-    }
 
     juce::MidiMessageSequence::MidiEventHolder* midiEvent = sequence.getEventPointer(i);
     nextTime = msPerTick * (midiEvent->message.getTimeStamp() - prevTimestamp);
+    
+    //Boucle d'attente du prochaine évènement midi : pendant l'attente d'un nouvel event il peut
+    //se passer plusieurs choses qu'il faut gérer
+    juce::uint64 timeWaited = 0;
+    juce::uint64 remainingTimeToWait = juce::uint64(nextTime);
+    do
+    {
+      juce::uint64 startTime = juce::Time::currentTimeMillis();
+      //Si le thread est réveillé alors qu'il attend une note, c'est qu'on lui demande d'être mis en pause
+      if (wait(juce::uint32(remainingTimeToWait)))
+      {
+        paused = true; 
+        AudioTools::getInstance().suspendAudioProcessing();
+        timeWaited += juce::Time::currentTimeMillis() - startTime;//Il reste peut-être du temps à attendre
+        remainingTimeToWait = nextTime - timeWaited;
+      }
+      else remainingTimeToWait = 0;
 
-    wait(juce::uint32(nextTime));
+      //Gestion de la pause
+      while (paused && !threadShouldExit())
+        wait(300);
+
+      AudioTools::getInstance().enableAudioProcessing();
+
+      //Interrompt la lecture si le thread doit être fermé
+      if (threadShouldExit())
+        return;
+    } while (remainingTimeToWait > 0);
+
+    
     if (midiEvent->message.getTimeStamp() != 0)
     {
-      AudioTools::getInstance().playMidiEvent(midiEvent); 
+      AudioTools::getInstance().playMidiMessage(midiEvent->message); 
     }
 
     prevTimestamp = midiEvent->message.getTimeStamp();
 
+    if (midiEvent->noteOffObject)
+      noteOff = midiEvent->noteOffObject->message;
+
     //Interrompt la lecture si le thread doit être fermé
     if (threadShouldExit())
-      break;
+      return;
   }
 }
 

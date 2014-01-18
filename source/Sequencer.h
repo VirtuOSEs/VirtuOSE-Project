@@ -31,10 +31,13 @@ public:
   static void deleteInstance();
 
   /** 
-   Send a midi event to the plugin to play it.
+   Send a midi message to the plugin to play it.
    Supposed to be thread-safe.
   **/
-  void playMidiEvent(const juce::MidiMessageSequence::MidiEventHolder* const midiEvent);
+  void playMidiMessage(const juce::MidiMessage& message);
+
+  void suspendAudioProcessing();
+  void enableAudioProcessing();
 
 private:
   static AudioTools* singleton;

@@ -1,4 +1,3 @@
-#include <JuceAudioThread.h>
 #include <JuceScript.h>
 #include "console/console.h"
 
@@ -39,7 +38,6 @@ void MidiPlayer::loadMidiFile(const char* filePath)
 
   juce::MidiFile midiFile;
   midiFile.readFrom(stream);
-
   for (unsigned int i = 0; i < midiFile.getNumTracks(); ++i)
   {
     sequences.push_back(juce::MidiMessageSequence(*midiFile.getTrack(i)));
@@ -68,7 +66,10 @@ void MidiPlayer::play()
 void MidiPlayer::pause()
 {
  for (unsigned int i = 0; i < sequencer.size(); ++i)
-    sequencer[i]->pause();
+ {  
+   sequencer[i]->pause();
+   sequencer[i]->notify();
+ }
 }
 
 void MidiPlayer::unpause()
