@@ -16,7 +16,7 @@ MidiPlayer::MidiPlayer()
 MidiPlayer::~MidiPlayer()
 {
   for (unsigned int i = 0; i < sequencer.size(); ++i)
-    sequencer[i]->stop();
+    sequencer[i]->stopThread(300);
 }
 
 void MidiPlayer::loadMidiFile(const char* filePath)
@@ -46,7 +46,9 @@ void MidiPlayer::loadMidiFile(const char* filePath)
   sequencer.resize(sequences.size());
 
   for (unsigned int i = 0; i < sequencer.size(); ++i)
+  {
     sequencer[i] = new JuceModule::Track(11+i, sequences[i], midiFile.getTimeFormat());
+  }
   
 }
 
@@ -55,37 +57,27 @@ void MidiPlayer::play()
   jassert(fileLoaded);
   if (!fileLoaded)
     return;
-  //Ajoute l'item à la file d'attente du ThreadPool pour qu'il soit traité
-  for (unsigned int i = 0; i < sequencer.size(); ++i)
-    sequencer[i]->startThread();
-    //JuceModule::AudioMidiThreadPool::instance()->queueWorkItem(sequencer[i]);
-
- // JuceModule::AudioMidiThreadPool::instance()->flushWorkItems();//je sais pas encore trop pourquoi faut mettre ça
-}
-
-void MidiPlayer::pause()
-{
- for (unsigned int i = 0; i < sequencer.size(); ++i)
- {  
-   sequencer[i]->pause();
-   sequencer[i]->notify();
- }
-}
-
-void MidiPlayer::unpause()
-{
   for (unsigned int i = 0; i < sequencer.size(); ++i)
     sequencer[i]->play();
 }
 
+void MidiPlayer::pause()
+{
+ if (!fileLoaded)
+    return;
+ for (unsigned int i = 0; i < sequencer.size(); ++i)
+ {  
+   sequencer[i]->pause();
+ }
+}
+
 void MidiPlayer::stop()
 {
-  jassert(fileLoaded);
   if (!fileLoaded)
     return;
   for (unsigned int i = 0; i < sequencer.size(); ++i)
   {
-    sequencer[i]->stopThread(1000);
+    sequencer[i]->stop();
   }
 }
 
@@ -109,10 +101,5 @@ DefineEngineMethod(MidiPlayer, stop, void, (),, "Stop a MIDI sequence" )
 DefineEngineMethod(MidiPlayer, pause, void, (),, "Pause a MIDI sequence" )
 {
   object->pause();
-}
-
-DefineEngineMethod(MidiPlayer, unpause, void, (),, "Unpause a MIDI sequence" )
-{
-  object->unpause();
 }
 

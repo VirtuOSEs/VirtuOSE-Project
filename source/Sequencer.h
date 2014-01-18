@@ -61,23 +61,17 @@ class Track : public juce::Thread
 public:
 
   Track(U32 index, juce::MidiMessageSequence& sequence, short timeFormat)
-    : juce::Thread("Track"), askedToStop(false), paused(false), sequence(sequence), timeFormat(timeFormat)
+    : juce::Thread("Track"), paused(false), sequence(sequence), timeFormat(timeFormat)
   {
   }
 
-  virtual bool isCancellationRequested()
-  {return askedToStop;}
-
-  void stop()
-  {askedToStop = true;}
-
+  void stop();
   void pause();
   void play();
 
 protected:
   virtual void run();
 
-  bool askedToStop;
   bool paused;
   juce::MidiMessageSequence& sequence;
   short timeFormat;
