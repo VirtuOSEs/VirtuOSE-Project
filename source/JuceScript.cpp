@@ -9,7 +9,7 @@
 IMPLEMENT_CONOBJECT(MidiPlayer);
 
 MidiPlayer::MidiPlayer()
-  : fileLoaded(false)
+  : fileLoaded(false), trackStarted(false)
 {
 }
 
@@ -38,6 +38,8 @@ void MidiPlayer::loadMidiFile(const char* filePath)
 
   juce::MidiFile midiFile;
   midiFile.readFrom(stream);
+  clock.setTimeFormat(midiFile.getTimeFormat());
+
   for (unsigned int i = 0; i < midiFile.getNumTracks(); ++i)
   {
     sequences.push_back(juce::MidiMessageSequence(*midiFile.getTrack(i)));
@@ -47,7 +49,7 @@ void MidiPlayer::loadMidiFile(const char* filePath)
 
   for (unsigned int i = 0; i < sequencer.size(); ++i)
   {
-    sequencer[i] = new JuceModule::Track(11+i, sequences[i], midiFile.getTimeFormat());
+    sequencer[i] = new JuceModule::Track(11+i, clock, sequences[i]);
   }
   
 }
@@ -57,28 +59,39 @@ void MidiPlayer::play()
   jassert(fileLoaded);
   if (!fileLoaded)
     return;
-  for (unsigned int i = 0; i < sequencer.size(); ++i)
-    sequencer[i]->play();
+
+  if (!trackStarted)
+  {
+    for (unsigned int i = 0; i < sequencer.size(); ++i)
+      sequencer[i]->startThread();
+    trackStarted = true;
+  }
+  clock.play();
 }
 
 void MidiPlayer::pause()
 {
  if (!fileLoaded)
     return;
- for (unsigned int i = 0; i < sequencer.size(); ++i)
- {  
-   sequencer[i]->pause();
- }
+ clock.pause();
 }
 
 void MidiPlayer::stop()
 {
   if (!fileLoaded)
     return;
+
+  clock.stop();
   for (unsigned int i = 0; i < sequencer.size(); ++i)
   {
-    sequencer[i]->stop();
+    sequencer[i]->stopThread(20);
   }
+  trackStarted = false;
+}
+
+void MidiPlayer::setTempo(juce::uint32 tempo)
+{
+  clock.setTempo(tempo);
 }
 
 //-------------Torque Script Bridge
@@ -101,5 +114,10 @@ DefineEngineMethod(MidiPlayer, stop, void, (),, "Stop a MIDI sequence" )
 DefineEngineMethod(MidiPlayer, pause, void, (),, "Pause a MIDI sequence" )
 {
   object->pause();
+}
+
+DefineEngineMethod(MidiPlayer, setTempo, void, (unsigned int tempo),, "Set a new tempo for the midi sequence")
+{
+  object->setTempo(tempo);
 }
 
