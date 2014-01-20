@@ -10,6 +10,8 @@
 //**********INCLUDE TORQUE ENGINE*********
 #include "console/engineAPI.h"
 
+#include <vector>
+
 namespace JuceModule
 {
 
@@ -53,104 +55,46 @@ private:
 };
 
 /**
-  Synchronization clock for the Tracks
- **/
-class SynchroClock : public juce::Thread
+  A Track is a juce::Thread playing a midi track in background.
+  A Track goal is to play a juce::MidiMessageSequence.
+**/
+class Track
 {
 public:
-  SynchroClock()
-  : juce::Thread("SynchroClock"), paused(false), tempo(90), ticks(0.0), msPerTick(0.0),
-    stopped(false)
-  {}
 
-  SynchroClock(short timeFormat, double tempo = 90.0)
-    : juce::Thread("SynchroClock"), timeFormat(timeFormat), paused(false),
-      tempo(120), ticks(0.0), msPerTick(60000.0 / (double)tempo / timeFormat),
-      stopped(false)
-  {}
-
-  void setTimeFormat(short timeFormat)
+  Track(U32 index, juce::MidiMessageSequence& sequence)
+    : sequence(sequence), eventIndex(0)
   {
-    this->timeFormat = timeFormat;
-    msPerTick = 60000.0 / (double)tempo / timeFormat;
   }
 
-  double getTick()
-  {
-    const juce::ScopedLock modifyingTicks(ticksAccess);
-    return ticks;
-  }
-
-  void setTempo(juce::uint32 tempo)
-  {
-    const juce::ScopedLock modifyingTempo(tempoAccess);
-    this->tempo = tempo;
-    msPerTick = 60000.0 / (double)tempo / timeFormat;
-  }
-
-  void stop()
-  {
-    {
-      const juce::ScopedLock sL(stoppedAccess);
-      stopped = true;
-    }
-    {
-      const juce::ScopedLock sL(ticksAccess);
-      ticks = 0;
-    }
-    AudioTools::getInstance().disableAudioProcessing();
-  }
-
-  void pause()
-  {
-    paused = true;
-    AudioTools::getInstance().disableAudioProcessing();
-  }
-
-  void play()
-  {
-    AudioTools::getInstance().enableAudioProcessing();
-    stopped = false;
-    if (!paused)
-      startThread();
-    else
-    {
-      paused = false;
-      notify();  
-    }
-  }
+  void playAtTick(double tick);
+  void restart();
 
 protected:
-  virtual void run()
-  {
-    {
-      const juce::ScopedLock modifyingTicks(ticksAccess);
-      ticks = 0; 
-    }
+  juce::MidiMessageSequence& sequence;
+  int eventIndex;
+};
 
-    for (;;)
-    {
-      wait(msPerTick);
 
-      //Gestion de la pause
-      while (paused && !threadShouldExit())
-        wait(100);
+/**
+  Synchronization clock for the Tracks
+ **/
+class Sequencer : public juce::Thread
+{
+public:
+  Sequencer(std::vector<juce::ScopedPointer<JuceModule::Track> >& tracks, short timeFormat,
+            double tempo = 92.0);
 
-      //Interrompt la lecture si le thread doit être fermé
-      if (threadShouldExit())
-        return;
+  double getTick();
 
-      {
-      const juce::ScopedLock sL(stoppedAccess);
-        if (!stopped)
-        {
-          const juce::ScopedLock modifyingTicks(ticksAccess);
-          ticks++;
-        }
-        else return;
-      }
-    }
-  }
+  void setTempo(juce::uint32 tempo);
+
+  void stop();
+  void pause();
+  void play();
+
+protected:
+  virtual void run();
 
 private:
   short timeFormat;
@@ -163,26 +107,7 @@ private:
   juce::CriticalSection tempoAccess;
   juce::CriticalSection stoppedAccess;
 
-};
-
-/**
-  A Track is a juce::Thread playing a midi track in background.
-  A Track goal is to play a juce::MidiMessageSequence.
-**/
-class Track : public juce::Thread
-{
-public:
-
-  Track(U32 index, SynchroClock& clock, juce::MidiMessageSequence& sequence)
-    : juce::Thread("Track"), clock(clock), sequence(sequence)
-  {
-  }
-
-protected:
-  virtual void run();
-
-  SynchroClock& clock;
-  juce::MidiMessageSequence& sequence;
+  std::vector<juce::ScopedPointer<JuceModule::Track> >& tracks;
 };
 
 } // namespace JuceModule
