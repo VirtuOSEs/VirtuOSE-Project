@@ -1,4 +1,6 @@
 #include "Sequencer.h"
+#include <fstream>
+#include <sys/stat.h>
 
 namespace JuceModule
 {
@@ -9,8 +11,8 @@ AudioTools* AudioTools::singleton = nullptr;
 AudioTools::AudioTools()
 {
   juce::AudioDeviceManager::AudioDeviceSetup setup;
-  setup.inputChannels = 256;
-  setup.outputChannels = 256;
+  setup.inputChannels = 20;
+  setup.outputChannels = 20;
   setup.outputDeviceName = "ASIO4ALL v2";
   setup.inputDeviceName = "ASIO4ALL v2";
   setup.sampleRate = 44100.0000;
@@ -24,20 +26,20 @@ AudioTools::AudioTools()
   juce::String errorMessage;
   juce::PluginDescription description2;
   description2.name = "4Front Piano";
+  description2.isInstrument = true;
   description2.pluginFormatName = "VST";
   description2.category = "Instrument";
-  description2.fileOrIdentifier =  juce::File::getCurrentWorkingDirectory().getChildFile("../4Front_Piano.dll").getFullPathName();
+  description2.fileOrIdentifier =  juce::File::getCurrentWorkingDirectory().getChildFile("../sfz.dll").getFullPathName();
   plugin = formatManager.createPluginInstance(description2, errorMessage);
   Con::printf(errorMessage.getCharPointer());
-
+  
   CoInitialize(nullptr);
-  juce::String error = deviceManager.initialise (2, 2, nullptr, true, juce::String::empty, &setup);
+  juce::String error = deviceManager.initialise (20, 20, nullptr, false, juce::String::empty, &setup);
   Con::printf(error.toStdString().c_str());
 
   deviceManager.playTestSound();
   player.setProcessor(plugin);
   deviceManager.addAudioCallback(&player);
-  
 }
 
 AudioTools::~AudioTools()
@@ -63,6 +65,51 @@ AudioTools& AudioTools::getInstance()
 {
   jassert(singleton);
   return *singleton;
+}
+
+void AudioTools::generatePlugin(const juce::String& instrument)
+{ 
+  juce::AudioPluginFormatManager formatManager;
+  formatManager.addDefaultFormats();
+  juce::KnownPluginList list;
+  juce::String errorMessage;
+  juce::PluginDescription description;
+  description.name = "sfz";
+  description.isInstrument = true;
+  description.pluginFormatName = "VST";
+  description.category = "Instrument";
+  description.fileOrIdentifier =  juce::File::getCurrentWorkingDirectory().getChildFile("../sfz.dll").getFullPathName();
+
+  juce::File fxpFile = juce::File::getCurrentWorkingDirectory().getChildFile("../fxp/" + instrument + ".fxp").getFullPathName();
+  if (!fxpFile.existsAsFile())
+  {
+    Con::errorf("Impossible de charger l'instrument demandé");
+    return;
+  }
+  Con::printf(juce::String("Chargement de " + instrument).toStdString().c_str());
+
+  //Si le plugin correspondant à l'instrument n'existe pas encore
+  if (pluginsMap.find(instrument) == pluginsMap.end())
+  {
+    pluginsMap[instrument] = formatManager.createPluginInstance(description, errorMessage);
+
+    juce::MemoryBlock fxpData;
+    fxpFile.loadFileAsData(fxpData);
+    juce::VSTPluginFormat::loadFromFXBFile(pluginsMap[instrument], fxpData.getData(), fxpData.getSize());
+
+    playersMap[instrument] = new juce::AudioProcessorPlayer();
+    playersMap[instrument]->setProcessor(pluginsMap[instrument]);
+    deviceManager.addAudioCallback(playersMap[instrument]);
+  }
+}
+
+void AudioTools::makePluginPlay(const juce::String& instrument, const juce::MidiMessage& message)
+{
+  if(pluginsMap.find(instrument) == pluginsMap.end())
+    return;
+
+  const juce::ScopedLock sL(criticalSection);
+  playersMap[instrument]->handleIncomingMidiMessage(nullptr, message);
 }
 
 void AudioTools::playMidiMessage(const juce::MidiMessage& message)
@@ -189,7 +236,8 @@ void Track::playAtTick(double tick)
 
     if ( timeStamp <= tick)
     {
-      AudioTools::getInstance().playMidiMessage(midiEvent->message); 
+      //AudioTools::getInstance().playMidiMessage(midiEvent->message); 
+      AudioTools::getInstance().makePluginPlay(instrumentName, midiEvent->message);
       eventIndex++;
     }
 }

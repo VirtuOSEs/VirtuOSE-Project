@@ -11,6 +11,7 @@
 #include "console/engineAPI.h"
 
 #include <vector>
+#include <map>
 
 namespace JuceModule
 {
@@ -38,6 +39,9 @@ public:
   **/
   void playMidiMessage(const juce::MidiMessage& message);
 
+  void generatePlugin(const juce::String& instrumentName);
+  void makePluginPlay(const juce::String& instrument, const juce::MidiMessage& message);
+
   void disableAudioProcessing();
   void enableAudioProcessing();
 
@@ -47,7 +51,9 @@ private:
   ~AudioTools();
   AudioTools(const AudioTools& other);
   AudioTools& operator=(const AudioTools& other);
-
+ 
+  std::map<juce::String, juce::ScopedPointer<juce::AudioPluginInstance > > pluginsMap;
+  std::map<juce::String, juce::ScopedPointer<juce::AudioProcessorPlayer> > playersMap;
   juce::CriticalSection criticalSection;
   juce::AudioDeviceManager deviceManager;
   juce::ScopedPointer<juce::AudioPluginInstance> plugin;
@@ -64,16 +70,48 @@ public:
   typedef juce::ReferenceCountedObjectPtr<Track> Ptr;
 
   Track(U32 index, juce::MidiMessageSequence& sequence)
-    : sequence(sequence), eventIndex(0)
+    : sequence(sequence), eventIndex(0), trackName(juce::String::empty)
   {
+    int i = 0;
+    while (i < sequence.getNumEvents() && trackName == juce::String::empty)
+    {
+      juce::MidiMessage& message = sequence.getEventPointer(i)->message;
+      if (message.isTrackNameEvent())
+      {
+        int me = message.getMetaEventType();
+        trackName = message.getTextFromTextMetaEvent();
+      }
+      ++i;
+    }
+
+    instrumentName = extractInstrumentNameFromTrackName(trackName);
+    AudioTools::getInstance().generatePlugin(instrumentName);
   }
 
   void playAtTick(double tick);
   void restart();
 
 protected:
+
+  juce::String extractInstrumentNameFromTrackName(const juce::String& trackName)
+  {
+    //On regarde les noms des fichiers .fxp dans le répertoire fxp
+    //Si la trackName contient un de ces noms, c'est l'instrument qu'on cherche !
+    juce::Array<juce::File> fxpFiles;
+    juce::File fxpDirectory = juce::File::getCurrentWorkingDirectory().getChildFile("../fxp").getFullPathName();
+    fxpDirectory.findChildFiles(fxpFiles, juce::File::findFiles, false, "*.fxp");
+    for(int i = 0; i < fxpFiles.size(); ++i)
+    {
+      if (trackName.containsIgnoreCase(fxpFiles[i].getFileNameWithoutExtension()))
+        return fxpFiles[i].getFileNameWithoutExtension();
+    }
+    return juce::String::empty;
+  }
+
   juce::MidiMessageSequence& sequence;
   int eventIndex;
+  juce::String trackName;
+  juce::String instrumentName;
 };
 
 
