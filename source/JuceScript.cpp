@@ -10,14 +10,12 @@
 IMPLEMENT_CONOBJECT(MidiPlayer);
 
 MidiPlayer::MidiPlayer()
-  : fileLoaded(false), trackStarted(false)
 {
 }
 
 MidiPlayer::~MidiPlayer()
 {
-  for (unsigned int i = 0; i < sequencer.size(); ++i)
-    sequencer[i]->stopThread(300);
+  delete sequencer;
 }
 
 void MidiPlayer::loadMidiFile(const char* filePath)
@@ -30,69 +28,57 @@ void MidiPlayer::loadMidiFile(const char* filePath)
   if (stream.failedToOpen())
   {
     Con::printf("Impossible d'ouvrir le fichier midi");
-    fileLoaded = false;
+    // DEBUG CHECK : the file must be correctly loaded in order to continue
+    jassert(false);
   }
-  else fileLoaded = true;
-
-  // DEBUG CHECK : the file must be correctly loaded in order to continue
-  jassert(fileLoaded);
 
   juce::MidiFile midiFile;
   midiFile.readFrom(stream);
-  clock.setTimeFormat(midiFile.getTimeFormat());
 
   for (unsigned int i = 0; i < midiFile.getNumTracks(); ++i)
   {
     sequences.push_back(juce::MidiMessageSequence(*midiFile.getTrack(i)));
   }
 
-  sequencer.resize(sequences.size());
+  tracks.resize(sequences.size());
 
-  for (unsigned int i = 0; i < sequencer.size(); ++i)
+  for (unsigned int i = 0; i < tracks.size(); ++i)
   {
-    sequencer[i] = new JuceModule::Track(11+i, clock, sequences[i]);
+    tracks[i] = new JuceModule::Track(11+i, sequences[i]);
   }
-  
+
+  sequencer = new JuceModule::Sequencer(tracks, midiFile.getTimeFormat());
 }
 
 void MidiPlayer::play()
 {
-  jassert(fileLoaded);
-  if (!fileLoaded)
+  jassert(sequencer);
+  if (!sequencer)
     return;
 
-  if (!trackStarted)
-  {
-    for (unsigned int i = 0; i < sequencer.size(); ++i)
-      sequencer[i]->startThread();
-    trackStarted = true;
-  }
-  clock.play();
+  sequencer->play();
 }
 
 void MidiPlayer::pause()
 {
- if (!fileLoaded)
+ if (!sequencer)
     return;
- clock.pause();
+ sequencer->pause();
 }
 
 void MidiPlayer::stop()
 {
-  if (!fileLoaded)
+  if (!sequencer)
     return;
 
-  clock.stop();
-  for (unsigned int i = 0; i < sequencer.size(); ++i)
-  {
-    sequencer[i]->stopThread(20);
-  }
-  trackStarted = false;
+  sequencer->stop();
 }
 
 void MidiPlayer::setTempo(juce::uint32 tempo)
 {
-  clock.setTempo(tempo);
+  if (!sequencer)
+    return;
+  sequencer->setTempo(tempo);
 }
 
 //-------------Torque Script Bridge
