@@ -23,7 +23,7 @@ AudioTools::AudioTools()
   juce::KnownPluginList list;
   juce::String errorMessage;
   juce::PluginDescription description2;
-  description2.name = "4Front_Piano";
+  description2.name = "4Front Piano";
   description2.pluginFormatName = "VST";
   description2.category = "Instrument";
   description2.fileOrIdentifier =  juce::File::getCurrentWorkingDirectory().getChildFile("../4Front_Piano.dll").getFullPathName();
@@ -37,6 +37,7 @@ AudioTools::AudioTools()
   deviceManager.playTestSound();
   player.setProcessor(plugin);
   deviceManager.addAudioCallback(&player);
+  
 }
 
 AudioTools::~AudioTools()
@@ -64,49 +65,49 @@ AudioTools& AudioTools::getInstance()
   return *singleton;
 }
 
-void AudioTools::playMidiEvent(const juce::MidiMessageSequence::MidiEventHolder* const midiEvent)
+void AudioTools::playMidiMessage(const juce::MidiMessage& message)
 {
   const juce::ScopedLock threadLock(criticalSection);
-  player.handleIncomingMidiMessage(nullptr, midiEvent->message);
+  player.handleIncomingMidiMessage(nullptr, message);
+}
+
+void AudioTools::disableAudioProcessing()
+{
+  plugin->suspendProcessing(true);
+}
+
+void AudioTools::enableAudioProcessing()
+{
+  plugin->suspendProcessing(false);
 }
 
 //     IMPLEM TRACK
 
-void Track::pause()
-  {paused = true;}
-
-void Track::play()
-  {paused = false;}
-
 void Track::run()
 {
-  //double startTime = sequence.getStartTime();
-  double msPerTick = 60000.0 / 120.0 / timeFormat; 
-  double nextTime;
-  double prevTimestamp = 0.0;
-
-  for (int i = 0; i < sequence.getNumEvents(); ++i)
+  int eventIndex = 0;
+  while (eventIndex < sequence.getNumEvents())
   {
-    while (paused)
-    {
-      wait(300);
+    juce::MidiMessageSequence::MidiEventHolder* midiEvent = sequence.getEventPointer(eventIndex);
+    double timeStamp = midiEvent->message.getTimeStamp();
+
+    if (timeStamp == 0) 
+    { 
+      eventIndex++;
+      continue;
     }
 
-    juce::MidiMessageSequence::MidiEventHolder* midiEvent = sequence.getEventPointer(i);
-    nextTime = msPerTick * (midiEvent->message.getTimeStamp() - prevTimestamp);
-
-    wait(juce::uint32(nextTime));
-    if (midiEvent->message.getTimeStamp() != 0)
+    if ( timeStamp <= clock.getTick())
     {
-      AudioTools::getInstance().playMidiEvent(midiEvent); 
+      AudioTools::getInstance().playMidiMessage(midiEvent->message); 
+      eventIndex++;
     }
-
-    prevTimestamp = midiEvent->message.getTimeStamp();
 
     //Interrompt la lecture si le thread doit être fermé
     if (threadShouldExit())
-      break;
+      return;
   }
+  
 }
 
 } // namespace JuceModule

@@ -32,8 +32,12 @@ public:
   void unpause();
   void stop();
 
+  void setTempo(juce::uint32 tempo);
+
 private:
   bool fileLoaded;
+  bool trackStarted;
+  JuceModule::SynchroClock clock;
   std::vector<juce::ScopedPointer<JuceModule::Track> > sequencer;
   std::vector<juce::MidiMessageSequence> sequences;
 };
