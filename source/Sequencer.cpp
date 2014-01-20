@@ -83,7 +83,7 @@ void AudioTools::enableAudioProcessing()
 
 // IMPLEM SEQUENCER
 
-Sequencer::Sequencer(std::vector<juce::ScopedPointer<JuceModule::Track> >& tracks, short timeFormat, double tempo)
+Sequencer::Sequencer(std::vector<JuceModule::Track::Ptr > tracks, short timeFormat, double tempo)
   : juce::Thread("Sequencer"), tracks(tracks), timeFormat(timeFormat), paused(false), tempo(tempo),
     ticks(0.0), msPerTick(60000.0 / (double)tempo / timeFormat), stopped(false)
 {}
@@ -155,8 +155,8 @@ void Sequencer::run()
     if (threadShouldExit())
       return;
 
-    {
-    const juce::ScopedLock sL(stoppedAccess);
+    { //stoppedAccess scope
+      const juce::ScopedLock sL(stoppedAccess);
       if (!stopped)
       {
         const juce::ScopedLock modifyingTicks(ticksAccess);
@@ -164,9 +164,10 @@ void Sequencer::run()
         
         for(int i = 0; i< tracks.size(); ++i)
           tracks[i]->playAtTick(ticks);
-        }
+      }
       else return;
-    }
+    }//stoppedAccess scope
+
   }
 }
 
