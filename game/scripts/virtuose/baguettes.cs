@@ -18,3 +18,21 @@ function mainDroite(%x, %y, %z){
 function mainGauche(%x, %y, %z){
 	leftHand.position = Spawn.position.x+%x SPC Spawn.position.y+%y SPC Spawn.position.z+%z;
 }
+
+function mainDroiteHit(%x,%y,%z){
+	//Epaisseur de 2
+	if((%x+2+Spawn.position.x)>=rightHand.position.x && (%x-2+Spawn.position.x)<=rightHand.position.x && (%y+2+Spawn.position.y)>=rightHand.position.y && (%y-2+Spawn.position.y)<=rightHand.position.y && (%z+2+Spawn.position.z)>=rightHand.position.z && (%z-2+Spawn.position.z)<=rightHand.position.z){
+		%t=getTimeSinceStart(rightHand.sched);
+		if(%t==0){
+			//Demarre nouveau schedule
+			rightHand.sched=schedule(5000,rightHand.getId(), "Hit");
+		}
+	}
+	else{
+		cancel(rightHand.sched);
+	}
+}
+
+function Hit(){
+	echo("Hit");
+}

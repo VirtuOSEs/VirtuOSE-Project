@@ -1,3 +1,4 @@
+//#include <JuceAudioThread.h>
 #include <JuceScript.h>
 #include "console/console.h"
 
