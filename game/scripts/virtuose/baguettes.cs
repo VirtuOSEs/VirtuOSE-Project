@@ -1,4 +1,6 @@
 // Le script du projet Virtuose
+$handSelected="rightHand";
+$relache=0;
 
 function test(){
 	echo("Position du Spawn");
@@ -35,4 +37,41 @@ function mainDroiteHit(%x,%y,%z){
 
 function Hit(){
 	echo("Hit");
+}
+
+//Fonctions avec la souris
+function changeHand(){
+	if($relache==1){
+		if(strcmp($handSelected,"rightHand")==0){
+			$handSelected="leftHand";
+		}
+		else if(strcmp($handSelected,"leftHand")==0){
+			$handSelected="rightHand";
+		}
+		echo($handSelected);
+		$relache=0;
+	}
+	else {
+		$relache=1;
+	}
+	
+}
+
+function handMoveX(%val){
+   %x = getMouseAdjustAmount(%val);
+   $handSelected.position.x+=%x;
+}
+
+function handMoveY(%val){
+   %z = getMouseAdjustAmount(%val);
+   $handSelected.position.z-=%z;
+}
+
+function handMoveZ(%val)
+{
+	if(%val>0)
+		$handSelected.position.y+=0.5;
+	else
+		$handSelected.position.y-=0.5;
+
 }
