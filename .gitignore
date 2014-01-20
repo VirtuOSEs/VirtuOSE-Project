@@ -34,6 +34,7 @@ game/*.ilk
 game/*.exp
 game/*.pdb
 game/scripts/client/prefs.cs
+game/shaders/procedural/*
 game/NiTE2/*
 game/OpenNI2/*
 web/
