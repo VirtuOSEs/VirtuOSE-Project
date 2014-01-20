@@ -58,9 +58,10 @@ private:
   A Track is a juce::Thread playing a midi track in background.
   A Track goal is to play a juce::MidiMessageSequence.
 **/
-class Track
+class Track : public juce::ReferenceCountedObject
 {
 public:
+  typedef juce::ReferenceCountedObjectPtr<Track> Ptr;
 
   Track(U32 index, juce::MidiMessageSequence& sequence)
     : sequence(sequence), eventIndex(0)
@@ -82,7 +83,7 @@ protected:
 class Sequencer : public juce::Thread
 {
 public:
-  Sequencer(std::vector<juce::ScopedPointer<JuceModule::Track> >& tracks, short timeFormat,
+  Sequencer(std::vector<JuceModule::Track::Ptr > tracks, short timeFormat,
             double tempo = 92.0);
 
   double getTick();
@@ -107,7 +108,7 @@ private:
   juce::CriticalSection tempoAccess;
   juce::CriticalSection stoppedAccess;
 
-  std::vector<juce::ScopedPointer<JuceModule::Track> >& tracks;
+  std::vector<JuceModule::Track::Ptr > tracks;
 };
 
 } // namespace JuceModule

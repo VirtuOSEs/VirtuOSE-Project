@@ -36,7 +36,7 @@ public:
 
 private:
   JuceModule::Sequencer* sequencer;
-  std::vector<juce::ScopedPointer<JuceModule::Track> > tracks;
+  std::vector<JuceModule::Track::Ptr > tracks;
   std::vector<juce::MidiMessageSequence> sequences;
 };
 
