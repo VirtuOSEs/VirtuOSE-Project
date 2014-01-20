@@ -1,25 +1,28 @@
 // Le script du projet Virtuose
+exec( "scripts/virtuose/baguettes.cs" );
+exec( "scripts/virtuose/modifObjects.cs" );
 
-function placeInstrument(%nbInstruments,%Instruments){
+function placeInstruments(%nbInstruments){
 	for(%i=0;%i<%nbInstruments;%i++){
-		echo(Instruments[%i]);
+		echo($InstrumentsScene[%i]);
 	}
 }
 
-function placeInstrument(%type){
-	if(%type=="pop rock"){
-		%Instruments[0]="guitare";
-		%Instruments[1]="batterie";
-		%Instruments[2]="basse";
-		%Instruments[3]="chant";
-		%Instruments[4]="guitare";
-		placeInstrument(5,%Instruments);
+function placeInstrumentsType(%type){
+	if(strcmp(%type,"pop rock")==0){
+		$InstrumentsScene[0]="guitare";
+		$InstrumentsScene[1]="batterie";
+		$InstrumentsScene[2]="basse";
+		$InstrumentsScene[3]="chant";
+		$InstrumentsScene[4]="guitare";
+		placeInstruments(5);
 	}
-	else if(%type=="classique"){
-		%Instruments[0]="violon";
-		%Instruments[1]="flute";
-		%Instruments[2]="cymbale";
-		%Instruments[3]="piano";
-		placeInstrument(4,%Instruments);
+	else if(strcmp(%type,"classique")==0){
+		$InstrumentsScene[0]="violon";
+		$InstrumentsScene[1]="flute";
+		$InstrumentsScene[2]="cymbale";
+		$InstrumentsScene[3]="piano";
+
+		placeInstruments(4);
 	}
 }

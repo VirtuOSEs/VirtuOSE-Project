@@ -22,7 +22,7 @@
 
 // First we execute the core default preferences.
 exec( "core/scripts/client/defaults.cs" );
-
+exec( "scripts/virtuose/begin.cs" );
 
 // Now add your own game specific client preferences as
 // well as any overloaded core defaults here.

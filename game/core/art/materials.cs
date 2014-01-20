@@ -27,6 +27,3 @@ singleton Material( BlankWhite )
    materialTag0 = "Miscellaneous";
 };
 
-singleton Material( Empty )
-{
-};

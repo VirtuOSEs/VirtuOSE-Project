@@ -35,15 +35,15 @@ new SimGroup(MissionGroup) {
       new SpawnSphere(spawn) {
          autoSpawn = "0";
          spawnTransform = "0";
-         radius = "5";
+         radius = "0.01";
          sphereWeight = "1";
          indoorWeight = "1";
          outdoorWeight = "1";
          isAIControlled = "0";
          dataBlock = "SpawnSphereMarker";
          position = "1.29885 20.6445 5.44939";
-         rotation = "0 0 1 185.499";
-         scale = "1 1 1";
+         rotation = "1 0 0 0";
+         scale = "0.777704 0.777704 0.777704";
          internalName = "spawn";
          canSave = "1";
          canSaveDynamicFields = "1";
@@ -2151,38 +2151,6 @@ new SimGroup(MissionGroup) {
          canSaveDynamicFields = "1";
       };
    };
-   new TSStatic(Bodyguard1) {
-      shapeName = "art/shapes/virtuose/Bruce_Wayne/Bruce_Wayne.dae";
-      playAmbient = "1";
-      meshCulling = "0";
-      originSort = "0";
-      collisionType = "Collision Mesh";
-      decalType = "Collision Mesh";
-      allowPlayerStep = "1";
-      renderNormals = "0";
-      forceDetail = "-1";
-      position = "12.6241 11.5332 2.99946";
-      rotation = "0 0 1 14.7077";
-      scale = "0.642438 0.642438 0.642438";
-      canSave = "1";
-      canSaveDynamicFields = "1";
-   };
-   new TSStatic(Bodyguard11) {
-      shapeName = "art/shapes/virtuose/Bruce_Wayne/Bruce_Wayne.dae";
-      playAmbient = "1";
-      meshCulling = "0";
-      originSort = "0";
-      collisionType = "Collision Mesh";
-      decalType = "Collision Mesh";
-      allowPlayerStep = "1";
-      renderNormals = "0";
-      forceDetail = "-1";
-      position = "-6.93735 13.1278 3.27144";
-      rotation = "0 0 1 14.7077";
-      scale = "0.642438 0.642438 0.642438";
-      canSave = "1";
-      canSaveDynamicFields = "1";
-   };
    new TSStatic() {
       shapeName = "art/shapes/virtuose/Ground.dae";
       playAmbient = "1";
@@ -2215,6 +2183,22 @@ new SimGroup(MissionGroup) {
       canSave = "1";
       canSaveDynamicFields = "1";
    };
+   new TSStatic(Bodyguard1) {
+      shapeName = "art/shapes/virtuose/Bruce_Wayne/Bruce_Wayne.dae";
+      playAmbient = "1";
+      meshCulling = "0";
+      originSort = "0";
+      collisionType = "Collision Mesh";
+      decalType = "Collision Mesh";
+      allowPlayerStep = "1";
+      renderNormals = "0";
+      forceDetail = "-1";
+      position = "12.6241 11.5332 2.99946";
+      rotation = "0 0 1 14.7077";
+      scale = "0.642438 0.642438 0.642438";
+      canSave = "1";
+      canSaveDynamicFields = "1";
+   };
    new TSStatic(rightHand) {
       shapeName = "art/shapes/virtuose/sphere.dae";
       playAmbient = "1";
@@ -2225,9 +2209,28 @@ new SimGroup(MissionGroup) {
       allowPlayerStep = "1";
       renderNormals = "0";
       forceDetail = "-1";
-      position = "3.76877 25.4298 6.44939";
+      position = "3.29885 25.6445 6.44939";
       rotation = "0 0 1 176.435";
       scale = "0.191038 0.191038 0.191038";
+      internalName = "rightHand";
+      canSave = "1";
+      canSaveDynamicFields = "1";
+         color = "   0.5";
+         Sphere = "Sphere2_mat2";
+   };
+   new TSStatic(Bodyguard11) {
+      shapeName = "art/shapes/virtuose/Bruce_Wayne/Bruce_Wayne.dae";
+      playAmbient = "1";
+      meshCulling = "0";
+      originSort = "0";
+      collisionType = "Collision Mesh";
+      decalType = "Collision Mesh";
+      allowPlayerStep = "1";
+      renderNormals = "0";
+      forceDetail = "-1";
+      position = "-6.93735 13.1278 3.27144";
+      rotation = "0 0 1 14.7077";
+      scale = "0.642438 0.642438 0.642438";
       canSave = "1";
       canSaveDynamicFields = "1";
    };
@@ -2241,11 +2244,14 @@ new SimGroup(MissionGroup) {
       allowPlayerStep = "1";
       renderNormals = "0";
       forceDetail = "-1";
-      position = "-0.212825 25.8131 6.44939";
-      rotation = "1 0 0 0";
+      position = "-0.70115 25.6445 6.44939";
+      rotation = "0 0 1 176.435";
       scale = "0.191038 0.191038 0.191038";
+      internalName = "leftHand";
       canSave = "1";
       canSaveDynamicFields = "1";
+         color = "   0.5";
+         Sphere = "Sphere2_mat";
    };
 };
 //--- OBJECT WRITE END ---
