@@ -20,26 +20,12 @@ AudioTools::AudioTools()
   setup.useDefaultInputChannels = true;
   setup.useDefaultOutputChannels = true;
     
-  juce::AudioPluginFormatManager formatManager;
-  formatManager.addDefaultFormats();
-  juce::KnownPluginList list;
-  juce::String errorMessage;
-  juce::PluginDescription description2;
-  description2.name = "4Front Piano";
-  description2.isInstrument = true;
-  description2.pluginFormatName = "VST";
-  description2.category = "Instrument";
-  description2.fileOrIdentifier =  juce::File::getCurrentWorkingDirectory().getChildFile("../sfz.dll").getFullPathName();
-  plugin = formatManager.createPluginInstance(description2, errorMessage);
-  Con::printf(errorMessage.getCharPointer());
   
   CoInitialize(nullptr);
   juce::String error = deviceManager.initialise (20, 20, nullptr, false, juce::String::empty, &setup);
-  Con::printf(error.toStdString().c_str());
+  Con::errorf(error.toStdString().c_str());
 
   deviceManager.playTestSound();
-  player.setProcessor(plugin);
-  deviceManager.addAudioCallback(&player);
 }
 
 AudioTools::~AudioTools()
@@ -112,20 +98,18 @@ void AudioTools::makePluginPlay(const juce::String& instrument, const juce::Midi
   playersMap[instrument]->handleIncomingMidiMessage(nullptr, message);
 }
 
-void AudioTools::playMidiMessage(const juce::MidiMessage& message)
-{
-  const juce::ScopedLock threadLock(criticalSection);
-  player.handleIncomingMidiMessage(nullptr, message);
-}
-
 void AudioTools::disableAudioProcessing()
 {
-  plugin->suspendProcessing(true);
+  for (auto plugin = pluginsMap.begin(); plugin != pluginsMap.end(); ++plugin)
+    plugin->second->suspendProcessing(true);
+
 }
 
 void AudioTools::enableAudioProcessing()
 {
-  plugin->suspendProcessing(false);
+  for (auto plugin = pluginsMap.begin(); plugin != pluginsMap.end(); ++plugin)
+    plugin->second->suspendProcessing(false);
+
 }
 
 // IMPLEM SEQUENCER
@@ -134,6 +118,11 @@ Sequencer::Sequencer(std::vector<JuceModule::Track::Ptr > tracks, short timeForm
   : juce::Thread("Sequencer"), tracks(tracks), timeFormat(timeFormat), paused(false), tempo(tempo),
     ticks(0.0), msPerTick(60000.0 / (double)tempo / timeFormat), stopped(false)
 {}
+
+Sequencer::~Sequencer()
+{
+  stopThread(10);
+}
 
 double Sequencer::getTick()
 {
@@ -161,7 +150,7 @@ void Sequencer::stop()
   for (int i = 0; i < tracks.size(); ++i)
     tracks[i]->restart();
 
-  AudioTools::getInstance().disableAudioProcessing();
+  //AudioTools::getInstance().disableAudioProcessing();
 }
 
 void Sequencer::pause()
@@ -190,56 +179,115 @@ void Sequencer::run()
     ticks = 0; 
   }
 
+  double lag = 0.0;
+  double elapsedTime = 0.0;
+  double startTime = 0.0;
   for (;;)
   {
+    startTime = juce::Time::getMillisecondCounterHiRes();
     wait(msPerTick);
+    elapsedTime = juce::Time::getMillisecondCounterHiRes() - startTime;
+    lag += elapsedTime;
 
-    //Gestion de la pause
-    while (paused && !threadShouldExit())
-      wait(100);
+    while (lag >= msPerTick)
+    {
+      //Gestion de la pause
+      while (paused && !threadShouldExit())
+        wait(100);
 
-    //Interrompt la lecture si le thread doit être fermé
-    if (threadShouldExit())
-      return;
+      //Interrompt la lecture si le thread doit être fermé
+      if (threadShouldExit())
+        return;
 
-    { //stoppedAccess scope
-      const juce::ScopedLock sL(stoppedAccess);
-      if (!stopped)
-      {
-        const juce::ScopedLock modifyingTicks(ticksAccess);
-        ticks++;
+      { //stoppedAccess scope
+        const juce::ScopedLock sL(stoppedAccess);
+        if (!stopped)
+        {
+          const juce::ScopedLock modifyingTicks(ticksAccess);
+          ticks++;
         
-        for(int i = 0; i< tracks.size(); ++i)
-          tracks[i]->playAtTick(ticks);
-      }
-      else return;
-    }//stoppedAccess scope
+          for(int i = 0; i< tracks.size(); ++i)
+            tracks[i]->playAtTick(ticks);
+        }
+        else return;
+      }//stoppedAccess scope
 
+      lag -= msPerTick;
+    }//end of while (lag >= msPerTick)
   }
 }
 
 //     IMPLEM TRACK
 
+Track::Track(U32 index, juce::MidiMessageSequence& sequence)
+  : sequence(sequence), eventIndex(0), trackName(juce::String::empty)
+{
+  int i = 0;
+  while (i < sequence.getNumEvents() && trackName == juce::String::empty)
+  {
+    juce::MidiMessage& message = sequence.getEventPointer(i)->message;
+    if (message.isTrackNameEvent())
+    {
+      trackName = message.getTextFromTextMetaEvent();
+    }
+    ++i;
+  }
+  instrumentName = extractInstrumentNameFromTrackName(trackName);
+  AudioTools::getInstance().generatePlugin(instrumentName);
+}
+
 void Track::restart()
-  {eventIndex = 0;}
+{
+  if (eventIndex == 0)
+    return;
+
+  //Tentative d'annuler le bug de la note tenue lors d'un stop() play()
+  int i = eventIndex;
+  while (i < sequence.getNumEvents())
+  {
+    juce::MidiMessageSequence::MidiEventHolder* midiEvent = sequence.getEventPointer(i);
+    if (midiEvent->message.isNoteOff())
+      AudioTools::getInstance().makePluginPlay(instrumentName, midiEvent->message);
+    ++i;
+  }
+
+  eventIndex = 0;
+}
 
 void Track::playAtTick(double tick)
 {
-    juce::MidiMessageSequence::MidiEventHolder* midiEvent = sequence.getEventPointer(eventIndex);
-    double timeStamp = midiEvent->message.getTimeStamp();
+  if (eventIndex >= sequence.getNumEvents())
+    return;
 
-    if (timeStamp == 0) 
-    { 
-      eventIndex++;
-      return;
-    }
+  juce::MidiMessageSequence::MidiEventHolder* midiEvent = sequence.getEventPointer(eventIndex);
+  double timeStamp = midiEvent->message.getTimeStamp();
 
-    if ( timeStamp <= tick)
-    {
-      //AudioTools::getInstance().playMidiMessage(midiEvent->message); 
-      AudioTools::getInstance().makePluginPlay(instrumentName, midiEvent->message);
-      eventIndex++;
-    }
+  if (timeStamp == 0) 
+  { 
+    eventIndex++;
+    return;
+  }
+
+  if ( timeStamp <= tick)
+  {
+    AudioTools::getInstance().makePluginPlay(instrumentName, midiEvent->message);
+    eventIndex++;
+  }
+}
+
+juce::String Track::extractInstrumentNameFromTrackName(const juce::String& trackName)
+{
+  //On regarde les noms des fichiers .fxp dans le répertoire fxp
+  //Si la trackName contient un de ces noms, c'est l'instrument qu'on cherche !
+  juce::Array<juce::File> fxpFiles;
+  juce::File fxpDirectory = juce::File::getCurrentWorkingDirectory().getChildFile("../fxp").getFullPathName();
+  fxpDirectory.findChildFiles(fxpFiles, juce::File::findFiles, false, "*.fxp");
+  for(int i = 0; i < fxpFiles.size(); ++i)
+  {
+    if (trackName.containsIgnoreCase(fxpFiles[i].getFileNameWithoutExtension()))
+      return fxpFiles[i].getFileNameWithoutExtension();
+  }
+  return juce::String::empty;
 }
 
 } // namespace JuceModule
