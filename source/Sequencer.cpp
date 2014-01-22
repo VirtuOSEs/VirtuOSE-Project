@@ -121,7 +121,8 @@ Sequencer::Sequencer(std::vector<JuceModule::Track::Ptr > tracks, short timeForm
     paused(false), 
     tempo(tempo),
     ticks(0.0), 
-    msPerTick(60000.0 / (double)tempo / timeFormat), stopped(false)
+    msPerTick(60000.0 / (double)tempo / timeFormat), stopped(false),
+    tempoTrackIndex(0)
 {
   //Create the track name meta event to recognize the special tempo sequence
   //See http://home.roadrunner.com/~jgglatt/tech/midifile/example.htm
@@ -136,7 +137,7 @@ Sequencer::Sequencer(std::vector<JuceModule::Track::Ptr > tracks, short timeForm
   midiData.append(header, sizeof(header));
   midiData.append(trackName, sizeof(trackName));
   juce::MidiMessage trackNameEvent(midiData.getData(), midiData.getSize());
-  tempoTrack.addEvent(trackNameEvent);
+  newTempoTrack.addEvent(trackNameEvent);
 }
 
 Sequencer::~Sequencer()
@@ -152,13 +153,12 @@ void Sequencer::saveSequence(const juce::String& filePath)
     //Save a midiFile
   juce::MidiFile result;
   //Add the tempo track 
-  result.addTrack(tempoTrack);
+  if (newTempoTrack.getNumEvents() > 1)
+    result.addTrack(newTempoTrack);
   
   //Add all the tracks, may be modified
   for (unsigned int i = 0; i < tracks.size(); ++i)
   {
-    if (tracks[i]->getTrackName().containsIgnoreCase("symphony"))
-      continue;
     result.addTrack(tracks[i]->getSequence());
   }
   result.setTicksPerQuarterNote(timeFormat);
@@ -180,9 +180,14 @@ void Sequencer::setTempo(juce::uint32 tempo)
   
   const juce::ScopedLock modifyingTempo(tempoAccess);
   this->tempo = tempo;
-  msPerTick = 60000.0 / (double)tempo / timeFormat;
-  juce::MidiMessage tempoMessage = juce::MidiMessage::tempoMetaEvent(msPerTick * timeFormat);
-  tempoTrack.addEvent(tempoMessage);
+  msPerTick = 60000.0 / (double)tempo / (double)timeFormat;
+  int microSecPerQuarterNote = msPerTick * timeFormat * 1000.0;
+  juce::MidiMessage tempoMessage = juce::MidiMessage::tempoMetaEvent(microSecPerQuarterNote);
+  {
+    const juce::ScopedLock sL(ticksAccess);
+    tempoMessage.setTimeStamp(ticks);
+  }
+  newTempoTrack.addEvent(tempoMessage);
 }
 
 void Sequencer::stop()
@@ -197,6 +202,8 @@ void Sequencer::stop()
   }
   for (int i = 0; i < tracks.size(); ++i)
     tracks[i]->restart();
+
+  tempoTrackIndex = 0;
 
   //Si on disable l'audio on empeche les NoteOff de restart()
   //d'etre jouees
@@ -235,36 +242,59 @@ void Sequencer::run()
   for (;;)
   {
     startTime = juce::Time::getMillisecondCounterHiRes();
-    wait(msPerTick);
-    elapsedTime = juce::Time::getMillisecondCounterHiRes() - startTime;
-    lag += elapsedTime;
 
-    while (lag >= msPerTick)
     {
-      //Gestion de la pause
-      while (paused && !threadShouldExit())
-        wait(100);
+      const juce::ScopedLock tempoLock(tempoAccess);
+      wait(msPerTick);
+      elapsedTime = juce::Time::getMillisecondCounterHiRes() - startTime;
+      lag += elapsedTime;
 
-      //Interrompt la lecture si le thread doit être fermé
-      if (threadShouldExit())
-        return;
+      while (lag >= msPerTick)
+      {
+        //Gestion de la pause
+        while (paused && !threadShouldExit())
+          wait(100);
 
-      { //stoppedAccess scope
-        const juce::ScopedLock sL(stoppedAccess);
-        if (!stopped)
-        {
-          const juce::ScopedLock modifyingTicks(ticksAccess);
-          ticks++;
-        
-          for(int i = 0; i< tracks.size(); ++i)
-            tracks[i]->playAtTick(ticks);
-        }
-        else return;
-      }//stoppedAccess scope
+        //Interrompt la lecture si le thread doit être fermé
+        if (threadShouldExit())
+          return;
 
-      lag -= msPerTick;
-    }//end of while (lag >= msPerTick)
+        { //stoppedAccess scope
+          const juce::ScopedLock sL(stoppedAccess);
+          if (!stopped)
+          {
+            const juce::ScopedLock modifyingTicks(ticksAccess);
+            ticks++;
+            checkTempoChangeTrack();
+            for(int i = 0; i< tracks.size(); ++i)
+              tracks[i]->playAtTick(ticks);
+          }
+          else return;
+        }//stoppedAccess scope
+
+        lag -= msPerTick;
+      }//end of while (lag >= msPerTick)
+    }// end of tempo access (critical section)
   }
+}
+
+void Sequencer::checkTempoChangeTrack()
+{
+  if (tempoTrackIndex >= tempoTrack.getNumEvents())
+    return;
+
+  const juce::MidiMessageSequence::MidiEventHolder* midiEvent = tempoTrack.getEventPointer(tempoTrackIndex);
+  if (midiEvent->message.getTimeStamp() <= ticks)
+  {
+    if (midiEvent->message.isTempoMetaEvent())
+    {
+      juce::ScopedLock sL(tempoAccess);
+      msPerTick = midiEvent->message.getTempoMetaEventTickLength(timeFormat) * 1000.0;
+      tempo = 60000.0 / msPerTick / (double)timeFormat;
+    }
+    ++tempoTrackIndex;
+  }
+  
 }
 
 //     IMPLEM TRACK

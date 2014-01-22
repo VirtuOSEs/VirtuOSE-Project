@@ -97,6 +97,9 @@ public:
   void saveSequence(const juce::String& filePath);
   double getTick();
 
+  void setTempoTrack(const juce::MidiMessageSequence& tempoTrack)
+    {this->tempoTrack = tempoTrack; newTempoTrack = tempoTrack;}
+
   void setTempo(juce::uint32 tempo);
 
   void stop();
@@ -105,17 +108,23 @@ public:
 
 protected:
   virtual void run();
+  void checkTempoChangeTrack();
 
 private:
   short timeFormat;
   std::vector<JuceModule::Track::Ptr > tracks;
+  //On lit les tempo event depuis tempoTrack
   juce::MidiMessageSequence tempoTrack;
+  //On écrit les tempos event ajoutés par l'utilisateur dans newTempoTrack
+  juce::MidiMessageSequence newTempoTrack;
 
   bool paused;
   bool stopped;
   juce::uint32 tempo;
   double ticks;
   double msPerTick;
+  unsigned int tempoTrackIndex;
+
   juce::CriticalSection ticksAccess;
   juce::CriticalSection tempoAccess;
   juce::CriticalSection stoppedAccess;

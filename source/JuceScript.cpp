@@ -35,8 +35,17 @@ void MidiPlayer::loadMidiFile(const char* filePath)
   juce::MidiFile midiFile;
   midiFile.readFrom(stream);
 
+  juce::MidiMessageSequence tempoTrack;
   for (unsigned int i = 0; i < midiFile.getNumTracks(); ++i)
   {
+    if (midiFile.getTrack(i)->getEventPointer(0)->message.isTrackNameEvent())
+    {
+      if (midiFile.getTrack(i)->getEventPointer(0)->message.getTextFromTextMetaEvent() == "Tempo Track")
+      {
+        tempoTrack = *midiFile.getTrack(i);
+        continue;
+      }
+    }
     sequences.push_back(juce::MidiMessageSequence(*midiFile.getTrack(i)));
   }
 
@@ -48,6 +57,7 @@ void MidiPlayer::loadMidiFile(const char* filePath)
   }
 
   sequencer = new JuceModule::Sequencer(tracks, midiFile.getTimeFormat());
+  sequencer->setTempoTrack(tempoTrack);
 }
 
 void MidiPlayer::saveSequence(const char* filePath)
