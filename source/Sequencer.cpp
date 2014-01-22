@@ -190,6 +190,22 @@ void Sequencer::setTempo(juce::uint32 tempo)
   newTempoTrack.addEvent(tempoMessage);
 }
 
+void Sequencer::increaseVelocityFactorInPercent(short percentage)
+{
+  for (unsigned int i = 0; i < tracks.size(); ++i)
+  {
+    tracks[i]->increaseVelocityFactor(percentage);
+  }
+}
+
+void Sequencer::decreaseVelocityFactorInPercent(short percentage)
+{
+  for (unsigned int i = 0; i < tracks.size(); ++i)
+  {
+    tracks[i]->decreaseVelocityFactor(percentage);
+  }
+}
+
 void Sequencer::stop()
 {
   {
@@ -300,8 +316,12 @@ void Sequencer::checkTempoChangeTrack()
 //     IMPLEM TRACK
 
 Track::Track(U32 index, juce::MidiMessageSequence& sequence)
-  : sequence(sequence), eventIndex(0), trackName(juce::String::empty)
+  : sequence(sequence),
+    eventIndex(0), 
+    trackName(juce::String::empty),
+    velocityFactor(1)
 {
+  //Look for the track name meta event in the entire sequence (should be at the beginning)
   int i = 0;
   while (i < sequence.getNumEvents() && trackName == juce::String::empty)
   {
@@ -312,7 +332,10 @@ Track::Track(U32 index, juce::MidiMessageSequence& sequence)
     }
     ++i;
   }
+  //We consider that the instrument name is in the track name (ex: "2 Horns in Eb")
   instrumentName = extractInstrumentNameFromTrackName(trackName);
+
+  //We instanciate a plugin for this track with the right instrument, based on the instrumentName
   AudioTools::getInstance().generatePlugin(instrumentName);
 }
 
@@ -322,6 +345,7 @@ void Track::restart()
     return;
 
   //Tentative d'annuler le bug de la note tenue lors d'un stop() play()
+  //Ca marche mais c'est bourrin
   int i = eventIndex;
   while (i < sequence.getNumEvents())
   {
@@ -355,6 +379,7 @@ void Track::playAtTick(double tick)
 
   if ( timeStamp <= tick)
   {
+    midiEvent->message.multiplyVelocity(velocityFactor);
     AudioTools::getInstance().makePluginPlay(instrumentName, midiEvent->message);
     eventIndex++;
   }

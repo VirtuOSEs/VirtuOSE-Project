@@ -67,6 +67,12 @@ public:
   void restart();
   juce::MidiMessageSequence getSequence() const;
 
+  void increaseVelocityFactor(short percentage)
+    {velocityFactor +=  velocityFactor / 100.f * percentage;}
+
+  void decreaseVelocityFactor(short percentage)
+    {velocityFactor -= velocityFactor / 100.f * percentage;}
+
   juce::String getTrackName() const
     {return trackName;}
 
@@ -78,6 +84,7 @@ protected:
   int eventIndex;
   juce::String trackName;
   juce::String instrumentName;
+  float velocityFactor;
   juce::CriticalSection sequenceAccess;
 };
 
@@ -101,6 +108,8 @@ public:
     {this->tempoTrack = tempoTrack; newTempoTrack = tempoTrack;}
 
   void setTempo(juce::uint32 tempo);
+  void increaseVelocityFactorInPercent(short percentage);
+  void decreaseVelocityFactorInPercent(short percentage);
 
   void stop();
   void pause();

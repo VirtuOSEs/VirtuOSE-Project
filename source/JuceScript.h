@@ -29,8 +29,10 @@ public:
   void loadMidiFile(const char* filePath);
   void play();
   void pause();
-  void unpause();
   void stop();
+
+  void increaseVelocityFactor(short percentage);
+  void decreaseVelocityFactor(short percentage);
 
   void setTempo(juce::uint32 tempo);
   void saveSequence(const char* filePath);

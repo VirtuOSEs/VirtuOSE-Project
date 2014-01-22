@@ -60,6 +60,16 @@ void MidiPlayer::loadMidiFile(const char* filePath)
   sequencer->setTempoTrack(tempoTrack);
 }
 
+void MidiPlayer::increaseVelocityFactor(short percentage)
+{
+  sequencer->increaseVelocityFactorInPercent(percentage);
+}
+
+void MidiPlayer::decreaseVelocityFactor(short percentage)
+{
+  sequencer->decreaseVelocityFactorInPercent(percentage);
+}
+
 void MidiPlayer::saveSequence(const char* filePath)
 {
   sequencer->saveSequence(filePath);
@@ -127,3 +137,14 @@ DefineEngineMethod(MidiPlayer, saveSequence, void, (const char* filePath),, "Sav
 {
   object->saveSequence(filePath);
 }
+
+DefineEngineMethod(MidiPlayer, increaseVelocity, void, (int percentage),, "Increase velocity of midi notes")
+{
+  object->increaseVelocityFactor(static_cast<short>(percentage));
+}
+
+DefineEngineMethod(MidiPlayer, decreaseVelocity, void, (int percentage),, "Decrease velocity of midi notes")
+{
+  object->decreaseVelocityFactor(static_cast<short>(percentage));
+}
+
