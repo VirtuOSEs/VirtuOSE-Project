@@ -115,13 +115,58 @@ void AudioTools::enableAudioProcessing()
 // IMPLEM SEQUENCER
 
 Sequencer::Sequencer(std::vector<JuceModule::Track::Ptr > tracks, short timeFormat, double tempo)
-  : juce::Thread("Sequencer"), tracks(tracks), timeFormat(timeFormat), paused(false), tempo(tempo),
-    ticks(0.0), msPerTick(60000.0 / (double)tempo / timeFormat), stopped(false)
-{}
+  : juce::Thread("Sequencer"), 
+    tracks(tracks), 
+    timeFormat(timeFormat), 
+    paused(false), 
+    tempo(tempo),
+    ticks(0.0), 
+    msPerTick(60000.0 / (double)tempo / timeFormat), stopped(false)
+{
+  //Create the track name meta event to recognize the special tempo sequence
+  //See http://home.roadrunner.com/~jgglatt/tech/midifile/example.htm
+  unsigned char header[3];
+  header[0] = 0xFF;//meta event
+  header[1] = 0x03;//track name event
+
+  const char trackName[] = "Tempo Track";
+  header[2] = sizeof(trackName);
+
+  juce::MemoryBlock midiData;
+  midiData.append(header, sizeof(header));
+  midiData.append(trackName, sizeof(trackName));
+  juce::MidiMessage trackNameEvent(midiData.getData(), midiData.getSize());
+  tempoTrack.addEvent(trackNameEvent);
+}
 
 Sequencer::~Sequencer()
 {
-  stopThread(10);
+  signalThreadShouldExit();
+  notify();
+}
+
+void Sequencer::saveSequence(const juce::String& filePath)
+{
+  while (isThreadRunning())
+    wait(20);
+    //Save a midiFile
+  juce::MidiFile result;
+  //Add the tempo track 
+  result.addTrack(tempoTrack);
+  
+  //Add all the tracks, may be modified
+  for (unsigned int i = 0; i < tracks.size(); ++i)
+  {
+    if (tracks[i]->getTrackName().containsIgnoreCase("symphony"))
+      continue;
+    result.addTrack(tracks[i]->getSequence());
+  }
+  result.setTicksPerQuarterNote(timeFormat);
+  juce::File midiFile = juce::File::getCurrentWorkingDirectory().getChildFile(filePath);
+  if (midiFile.existsAsFile())
+    midiFile.deleteFile();
+  juce::FileOutputStream midiFileStream(midiFile);
+  jassert(result.writeTo(midiFileStream));
 }
 
 double Sequencer::getTick()
@@ -132,9 +177,12 @@ double Sequencer::getTick()
 
 void Sequencer::setTempo(juce::uint32 tempo)
 {
+  
   const juce::ScopedLock modifyingTempo(tempoAccess);
   this->tempo = tempo;
   msPerTick = 60000.0 / (double)tempo / timeFormat;
+  juce::MidiMessage tempoMessage = juce::MidiMessage::tempoMetaEvent(msPerTick * timeFormat);
+  tempoTrack.addEvent(tempoMessage);
 }
 
 void Sequencer::stop()
@@ -150,6 +198,8 @@ void Sequencer::stop()
   for (int i = 0; i < tracks.size(); ++i)
     tracks[i]->restart();
 
+  //Si on disable l'audio on empeche les NoteOff de restart()
+  //d'etre jouees
   //AudioTools::getInstance().disableAudioProcessing();
 }
 
@@ -259,7 +309,12 @@ void Track::playAtTick(double tick)
   if (eventIndex >= sequence.getNumEvents())
     return;
 
-  juce::MidiMessageSequence::MidiEventHolder* midiEvent = sequence.getEventPointer(eventIndex);
+  juce::MidiMessageSequence::MidiEventHolder* midiEvent = nullptr;
+  {
+    juce::ScopedLock sl(sequenceAccess);
+    midiEvent = sequence.getEventPointer(eventIndex);
+  }
+
   double timeStamp = midiEvent->message.getTimeStamp();
 
   if (timeStamp == 0) 
@@ -273,6 +328,13 @@ void Track::playAtTick(double tick)
     AudioTools::getInstance().makePluginPlay(instrumentName, midiEvent->message);
     eventIndex++;
   }
+}
+
+juce::MidiMessageSequence Track::getSequence() const
+{
+  juce::ScopedLock sL(sequenceAccess);
+  return sequence;
+
 }
 
 juce::String Track::extractInstrumentNameFromTrackName(const juce::String& trackName)

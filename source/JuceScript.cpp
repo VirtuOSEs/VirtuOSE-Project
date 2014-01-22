@@ -50,6 +50,11 @@ void MidiPlayer::loadMidiFile(const char* filePath)
   sequencer = new JuceModule::Sequencer(tracks, midiFile.getTimeFormat());
 }
 
+void MidiPlayer::saveSequence(const char* filePath)
+{
+  sequencer->saveSequence(filePath);
+}
+
 void MidiPlayer::play()
 {
   jassert(sequencer);
@@ -108,3 +113,7 @@ DefineEngineMethod(MidiPlayer, setTempo, void, (unsigned int tempo),, "Set a new
   object->setTempo(tempo);
 }
 
+DefineEngineMethod(MidiPlayer, saveSequence, void, (const char* filePath),, "Save the modified sequence")
+{
+  object->saveSequence(filePath);
+}

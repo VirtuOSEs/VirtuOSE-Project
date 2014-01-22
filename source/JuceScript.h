@@ -33,6 +33,7 @@ public:
   void stop();
 
   void setTempo(juce::uint32 tempo);
+  void saveSequence(const char* filePath);
 
 private:
   JuceModule::Sequencer* sequencer;

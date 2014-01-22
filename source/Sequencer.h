@@ -65,6 +65,10 @@ public:
 
   void playAtTick(double tick);
   void restart();
+  juce::MidiMessageSequence getSequence() const;
+
+  juce::String getTrackName() const
+    {return trackName;}
 
 protected:
 
@@ -74,11 +78,14 @@ protected:
   int eventIndex;
   juce::String trackName;
   juce::String instrumentName;
+  juce::CriticalSection sequenceAccess;
 };
 
 
 /**
-  Synchronization clock for the Tracks
+  The actual objects which play the midi tracks.
+  Maintains also a special MidiSequence containing all the tempo change
+  events.
  **/
 class Sequencer : public juce::Thread
 {
@@ -87,6 +94,7 @@ public:
             double tempo = 92.0);
   ~Sequencer();
 
+  void saveSequence(const juce::String& filePath);
   double getTick();
 
   void setTempo(juce::uint32 tempo);
@@ -100,6 +108,9 @@ protected:
 
 private:
   short timeFormat;
+  std::vector<JuceModule::Track::Ptr > tracks;
+  juce::MidiMessageSequence tempoTrack;
+
   bool paused;
   bool stopped;
   juce::uint32 tempo;
@@ -109,7 +120,7 @@ private:
   juce::CriticalSection tempoAccess;
   juce::CriticalSection stoppedAccess;
 
-  std::vector<JuceModule::Track::Ptr > tracks;
+
 };
 
 } // namespace JuceModule
