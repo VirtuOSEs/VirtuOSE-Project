@@ -27,6 +27,9 @@ public:
   ~MidiPlayer();
 
   void loadMidiFile(const char* filePath);
+  int getNumInstruments();
+  String getInstrumentName(int index);
+
   void play();
   void pause();
   void stop();

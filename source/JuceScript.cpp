@@ -111,6 +111,16 @@ void MidiPlayer::setTempo(juce::uint32 tempo)
   sequencer->setTempo(tempo);
 }
 
+int MidiPlayer::getNumInstruments()
+  {return tracks.size();}
+
+String MidiPlayer::getInstrumentName(int index)
+{
+  jassert (index < tracks.size());
+
+  return tracks[index]->getInstrumentName().toStdString().c_str();
+}
+
 //-------------Torque Script Bridge
 
 DefineEngineMethod(MidiPlayer, loadMidiFile, void, (const char* filePath), , "Load a Midi File. You must call this method before any other on MidiPlayer.")
@@ -156,5 +166,15 @@ DefineEngineMethod(MidiPlayer, increaseVelocity, void, (int percentage),, "Incre
 DefineEngineMethod(MidiPlayer, decreaseVelocity, void, (int percentage),, "Decrease velocity of midi notes")
 {
   object->decreaseVelocityFactor(static_cast<short>(percentage));
+}
+
+DefineEngineMethod(MidiPlayer, getInstrumentName, String, (int index),, "Get names of the instruments in the sequence")
+{
+  return object->getInstrumentName(index);
+}
+
+DefineEngineMethod(MidiPlayer, getNumInstruments, int, (),, "Return the number of instruments in the sequence")
+{
+  return object->getNumInstruments();
 }
 

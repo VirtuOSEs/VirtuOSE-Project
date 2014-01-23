@@ -321,6 +321,13 @@ void Sequencer::checkTempoChangeTrack()
 
 //     IMPLEM TRACK
 
+//La fonction TorqueScript pour changer l'opacité d'un objet
+IMPLEMENT_GLOBAL_CALLBACK( changeOpacity, void, ( const char* instrumentName, float opacity ), ( instrumentName, opacity ),
+   "A callback called by the engine when a a track will be played soon.\n"
+   "@param name The name of the instrument which will be played.\n"
+  );
+
+
 Track::Track(U32 index, juce::MidiMessageSequence& sequence)
   : sequence(sequence),
     eventIndex(0), 
@@ -385,6 +392,8 @@ void Track::playAtTick(double tick)
 
   if ( timeStamp <= tick)
   {
+    //changeOpacity_callback("rightHand", 0.5);
+
     midiEvent->message.multiplyVelocity(velocityFactor);
     AudioTools::getInstance().makePluginPlay(instrumentName, midiEvent->message);
     eventIndex++;

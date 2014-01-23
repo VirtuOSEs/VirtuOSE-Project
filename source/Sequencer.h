@@ -76,8 +76,10 @@ public:
   juce::String getTrackName() const
     {return trackName;}
 
-protected:
+  juce::String getInstrumentName() const
+    {return instrumentName;}
 
+protected:
   juce::String extractInstrumentNameFromTrackName(const juce::String& trackName);
 
   juce::MidiMessageSequence& sequence;
