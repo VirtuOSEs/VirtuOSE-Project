@@ -35,8 +35,17 @@ void MidiPlayer::loadMidiFile(const char* filePath)
   juce::MidiFile midiFile;
   midiFile.readFrom(stream);
 
+  juce::MidiMessageSequence tempoTrack;
   for (unsigned int i = 0; i < midiFile.getNumTracks(); ++i)
   {
+    if (midiFile.getTrack(i)->getEventPointer(0)->message.isTrackNameEvent())
+    {
+      if (midiFile.getTrack(i)->getEventPointer(0)->message.getTextFromTextMetaEvent() == "Tempo Track")
+      {
+        tempoTrack = *midiFile.getTrack(i);
+        continue;
+      }
+    }
     sequences.push_back(juce::MidiMessageSequence(*midiFile.getTrack(i)));
   }
 
@@ -48,6 +57,22 @@ void MidiPlayer::loadMidiFile(const char* filePath)
   }
 
   sequencer = new JuceModule::Sequencer(tracks, midiFile.getTimeFormat());
+  sequencer->setTempoTrack(tempoTrack);
+}
+
+void MidiPlayer::increaseVelocityFactor(short percentage)
+{
+  sequencer->increaseVelocityFactorInPercent(percentage);
+}
+
+void MidiPlayer::decreaseVelocityFactor(short percentage)
+{
+  sequencer->decreaseVelocityFactorInPercent(percentage);
+}
+
+void MidiPlayer::saveSequence(const char* filePath)
+{
+  sequencer->saveSequence(filePath);
 }
 
 void MidiPlayer::play()
@@ -74,11 +99,26 @@ void MidiPlayer::stop()
   sequencer->stop();
 }
 
+int MidiPlayer::getTempo() const
+{
+  return static_cast<int>(sequencer->getTempo());
+}
+
 void MidiPlayer::setTempo(juce::uint32 tempo)
 {
   if (!sequencer)
     return;
   sequencer->setTempo(tempo);
+}
+
+int MidiPlayer::getNumInstruments()
+  {return tracks.size();}
+
+String MidiPlayer::getInstrumentName(int index)
+{
+  jassert (index < tracks.size());
+
+  return tracks[index]->getInstrumentName().toStdString().c_str();
 }
 
 //-------------Torque Script Bridge
@@ -103,8 +143,38 @@ DefineEngineMethod(MidiPlayer, pause, void, (),, "Pause a MIDI sequence" )
   object->pause();
 }
 
+DefineEngineMethod(MidiPlayer, getTempo, int, (),, "Get the current tempo of the midi sequence")
+{
+  return object->getTempo();
+}
+
 DefineEngineMethod(MidiPlayer, setTempo, void, (unsigned int tempo),, "Set a new tempo for the midi sequence")
 {
   object->setTempo(tempo);
+}
+
+DefineEngineMethod(MidiPlayer, saveSequence, void, (const char* filePath),, "Save the modified sequence")
+{
+  object->saveSequence(filePath);
+}
+
+DefineEngineMethod(MidiPlayer, increaseVelocity, void, (int percentage),, "Increase velocity of midi notes")
+{
+  object->increaseVelocityFactor(static_cast<short>(percentage));
+}
+
+DefineEngineMethod(MidiPlayer, decreaseVelocity, void, (int percentage),, "Decrease velocity of midi notes")
+{
+  object->decreaseVelocityFactor(static_cast<short>(percentage));
+}
+
+DefineEngineMethod(MidiPlayer, getInstrumentName, String, (int index),, "Get names of the instruments in the sequence")
+{
+  return object->getInstrumentName(index);
+}
+
+DefineEngineMethod(MidiPlayer, getNumInstruments, int, (),, "Return the number of instruments in the sequence")
+{
+  return object->getNumInstruments();
 }
 

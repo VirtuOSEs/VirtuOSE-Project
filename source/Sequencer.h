@@ -65,20 +65,36 @@ public:
 
   void playAtTick(double tick);
   void restart();
+  juce::MidiMessageSequence getSequence() const;
+
+  void increaseVelocityFactor(short percentage)
+    {velocityFactor +=  velocityFactor / 100.f * percentage;}
+
+  void decreaseVelocityFactor(short percentage)
+    {velocityFactor -= velocityFactor / 100.f * percentage;}
+
+  juce::String getTrackName() const
+    {return trackName;}
+
+  juce::String getInstrumentName() const
+    {return instrumentName;}
 
 protected:
-
   juce::String extractInstrumentNameFromTrackName(const juce::String& trackName);
 
   juce::MidiMessageSequence& sequence;
   int eventIndex;
   juce::String trackName;
   juce::String instrumentName;
+  float velocityFactor;
+  juce::CriticalSection sequenceAccess;
 };
 
 
 /**
-  Synchronization clock for the Tracks
+  The actual objects which play the midi tracks.
+  Maintains also a special MidiSequence containing all the tempo change
+  events.
  **/
 class Sequencer : public juce::Thread
 {
@@ -87,9 +103,16 @@ public:
             double tempo = 92.0);
   ~Sequencer();
 
+  void saveSequence(const juce::String& filePath);
   double getTick();
 
+  void setTempoTrack(const juce::MidiMessageSequence& tempoTrack)
+    {this->tempoTrack = tempoTrack; newTempoTrack = tempoTrack;}
+
+  juce::uint32 getTempo() const;
   void setTempo(juce::uint32 tempo);
+  void increaseVelocityFactorInPercent(short percentage);
+  void decreaseVelocityFactorInPercent(short percentage);
 
   void stop();
   void pause();
@@ -97,19 +120,28 @@ public:
 
 protected:
   virtual void run();
+  void checkTempoChangeTrack();
 
 private:
   short timeFormat;
+  std::vector<JuceModule::Track::Ptr > tracks;
+  //On lit les tempo event depuis tempoTrack
+  juce::MidiMessageSequence tempoTrack;
+  //On écrit les tempos event ajoutés par l'utilisateur dans newTempoTrack
+  juce::MidiMessageSequence newTempoTrack;
+
   bool paused;
   bool stopped;
   juce::uint32 tempo;
   double ticks;
   double msPerTick;
+  unsigned int tempoTrackIndex;
+
   juce::CriticalSection ticksAccess;
   juce::CriticalSection tempoAccess;
   juce::CriticalSection stoppedAccess;
 
-  std::vector<JuceModule::Track::Ptr > tracks;
+
 };
 
 } // namespace JuceModule

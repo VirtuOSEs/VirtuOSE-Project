@@ -115,13 +115,58 @@ void AudioTools::enableAudioProcessing()
 // IMPLEM SEQUENCER
 
 Sequencer::Sequencer(std::vector<JuceModule::Track::Ptr > tracks, short timeFormat, double tempo)
-  : juce::Thread("Sequencer"), tracks(tracks), timeFormat(timeFormat), paused(false), tempo(tempo),
-    ticks(0.0), msPerTick(60000.0 / (double)tempo / timeFormat), stopped(false)
-{}
+  : juce::Thread("Sequencer"), 
+    tracks(tracks), 
+    timeFormat(timeFormat), 
+    paused(false), 
+    tempo(tempo),
+    ticks(0.0), 
+    msPerTick(60000.0 / (double)tempo / timeFormat), stopped(false),
+    tempoTrackIndex(0)
+{
+  //Create the track name meta event to recognize the special tempo sequence
+  //See http://home.roadrunner.com/~jgglatt/tech/midifile/example.htm
+  unsigned char header[3];
+  header[0] = 0xFF;//meta event
+  header[1] = 0x03;//track name event
+
+  const char trackName[] = "Tempo Track";
+  header[2] = sizeof(trackName);
+
+  juce::MemoryBlock midiData;
+  midiData.append(header, sizeof(header));
+  midiData.append(trackName, sizeof(trackName));
+  juce::MidiMessage trackNameEvent(midiData.getData(), midiData.getSize());
+  newTempoTrack.addEvent(trackNameEvent);
+}
 
 Sequencer::~Sequencer()
 {
-  stopThread(10);
+  signalThreadShouldExit();
+  notify();
+}
+
+void Sequencer::saveSequence(const juce::String& filePath)
+{
+  while (isThreadRunning())
+    wait(20);
+    //Save a midiFile
+  juce::MidiFile result;
+  //Add the tempo track 
+  if (newTempoTrack.getNumEvents() > 1)
+    result.addTrack(newTempoTrack);
+  
+  //Add all the tracks, may be modified
+  for (unsigned int i = 0; i < tracks.size(); ++i)
+  {
+    result.addTrack(tracks[i]->getSequence());
+  }
+  result.setTicksPerQuarterNote(timeFormat);
+  juce::File midiFile = juce::File::getCurrentWorkingDirectory().getChildFile(filePath);
+  if (midiFile.existsAsFile())
+    midiFile.deleteFile();
+  juce::FileOutputStream midiFileStream(midiFile);
+  jassert(result.writeTo(midiFileStream));
 }
 
 double Sequencer::getTick()
@@ -130,11 +175,41 @@ double Sequencer::getTick()
   return ticks;
 }
 
+juce::uint32 Sequencer::getTempo() const
+{
+  const juce::ScopedLock sL(tempoAccess);
+  return tempo;
+}
+
 void Sequencer::setTempo(juce::uint32 tempo)
 {
+  
   const juce::ScopedLock modifyingTempo(tempoAccess);
   this->tempo = tempo;
-  msPerTick = 60000.0 / (double)tempo / timeFormat;
+  msPerTick = 60000.0 / (double)tempo / (double)timeFormat;
+  int microSecPerQuarterNote = msPerTick * timeFormat * 1000.0;
+  juce::MidiMessage tempoMessage = juce::MidiMessage::tempoMetaEvent(microSecPerQuarterNote);
+  {
+    const juce::ScopedLock sL(ticksAccess);
+    tempoMessage.setTimeStamp(ticks);
+  }
+  newTempoTrack.addEvent(tempoMessage);
+}
+
+void Sequencer::increaseVelocityFactorInPercent(short percentage)
+{
+  for (unsigned int i = 0; i < tracks.size(); ++i)
+  {
+    tracks[i]->increaseVelocityFactor(percentage);
+  }
+}
+
+void Sequencer::decreaseVelocityFactorInPercent(short percentage)
+{
+  for (unsigned int i = 0; i < tracks.size(); ++i)
+  {
+    tracks[i]->decreaseVelocityFactor(percentage);
+  }
 }
 
 void Sequencer::stop()
@@ -150,6 +225,10 @@ void Sequencer::stop()
   for (int i = 0; i < tracks.size(); ++i)
     tracks[i]->restart();
 
+  tempoTrackIndex = 0;
+
+  //Si on disable l'audio on empeche les NoteOff de restart()
+  //d'etre jouees
   //AudioTools::getInstance().disableAudioProcessing();
 }
 
@@ -185,43 +264,77 @@ void Sequencer::run()
   for (;;)
   {
     startTime = juce::Time::getMillisecondCounterHiRes();
-    wait(msPerTick);
-    elapsedTime = juce::Time::getMillisecondCounterHiRes() - startTime;
-    lag += elapsedTime;
 
-    while (lag >= msPerTick)
     {
-      //Gestion de la pause
-      while (paused && !threadShouldExit())
-        wait(100);
+      const juce::ScopedLock tempoLock(tempoAccess);
+      wait(msPerTick);
+      elapsedTime = juce::Time::getMillisecondCounterHiRes() - startTime;
+      lag += elapsedTime;
 
-      //Interrompt la lecture si le thread doit être fermé
-      if (threadShouldExit())
-        return;
+      while (lag >= msPerTick)
+      {
+        //Gestion de la pause
+        while (paused && !threadShouldExit())
+          wait(100);
 
-      { //stoppedAccess scope
-        const juce::ScopedLock sL(stoppedAccess);
-        if (!stopped)
-        {
-          const juce::ScopedLock modifyingTicks(ticksAccess);
-          ticks++;
-        
-          for(int i = 0; i< tracks.size(); ++i)
-            tracks[i]->playAtTick(ticks);
-        }
-        else return;
-      }//stoppedAccess scope
+        //Interrompt la lecture si le thread doit être fermé
+        if (threadShouldExit())
+          return;
 
-      lag -= msPerTick;
-    }//end of while (lag >= msPerTick)
+        { //stoppedAccess scope
+          const juce::ScopedLock sL(stoppedAccess);
+          if (!stopped)
+          {
+            const juce::ScopedLock modifyingTicks(ticksAccess);
+            ticks++;
+            checkTempoChangeTrack();
+            for(int i = 0; i< tracks.size(); ++i)
+              tracks[i]->playAtTick(ticks);
+          }
+          else return;
+        }//stoppedAccess scope
+
+        lag -= msPerTick;
+      }//end of while (lag >= msPerTick)
+    }// end of tempo access (critical section)
   }
+}
+
+void Sequencer::checkTempoChangeTrack()
+{
+  if (tempoTrackIndex >= tempoTrack.getNumEvents())
+    return;
+
+  const juce::MidiMessageSequence::MidiEventHolder* midiEvent = tempoTrack.getEventPointer(tempoTrackIndex);
+  if (midiEvent->message.getTimeStamp() <= ticks)
+  {
+    if (midiEvent->message.isTempoMetaEvent())
+    {
+      juce::ScopedLock sL(tempoAccess);
+      msPerTick = midiEvent->message.getTempoMetaEventTickLength(timeFormat) * 1000.0;
+      tempo = 60000.0 / msPerTick / (double)timeFormat;
+    }
+    ++tempoTrackIndex;
+  }
+  
 }
 
 //     IMPLEM TRACK
 
+//La fonction TorqueScript pour changer l'opacité d'un objet
+IMPLEMENT_GLOBAL_CALLBACK( changeOpacity, void, ( const char* instrumentName, float opacity ), ( instrumentName, opacity ),
+   "A callback called by the engine when a a track will be played soon.\n"
+   "@param name The name of the instrument which will be played.\n"
+  );
+
+
 Track::Track(U32 index, juce::MidiMessageSequence& sequence)
-  : sequence(sequence), eventIndex(0), trackName(juce::String::empty)
+  : sequence(sequence),
+    eventIndex(0), 
+    trackName(juce::String::empty),
+    velocityFactor(1)
 {
+  //Look for the track name meta event in the entire sequence (should be at the beginning)
   int i = 0;
   while (i < sequence.getNumEvents() && trackName == juce::String::empty)
   {
@@ -232,7 +345,10 @@ Track::Track(U32 index, juce::MidiMessageSequence& sequence)
     }
     ++i;
   }
+  //We consider that the instrument name is in the track name (ex: "2 Horns in Eb")
   instrumentName = extractInstrumentNameFromTrackName(trackName);
+
+  //We instanciate a plugin for this track with the right instrument, based on the instrumentName
   AudioTools::getInstance().generatePlugin(instrumentName);
 }
 
@@ -242,6 +358,7 @@ void Track::restart()
     return;
 
   //Tentative d'annuler le bug de la note tenue lors d'un stop() play()
+  //Ca marche mais c'est bourrin
   int i = eventIndex;
   while (i < sequence.getNumEvents())
   {
@@ -259,7 +376,12 @@ void Track::playAtTick(double tick)
   if (eventIndex >= sequence.getNumEvents())
     return;
 
-  juce::MidiMessageSequence::MidiEventHolder* midiEvent = sequence.getEventPointer(eventIndex);
+  juce::MidiMessageSequence::MidiEventHolder* midiEvent = nullptr;
+  {
+    juce::ScopedLock sl(sequenceAccess);
+    midiEvent = sequence.getEventPointer(eventIndex);
+  }
+
   double timeStamp = midiEvent->message.getTimeStamp();
 
   if (timeStamp == 0) 
@@ -270,9 +392,19 @@ void Track::playAtTick(double tick)
 
   if ( timeStamp <= tick)
   {
+    //changeOpacity_callback("rightHand", 0.5);
+
+    midiEvent->message.multiplyVelocity(velocityFactor);
     AudioTools::getInstance().makePluginPlay(instrumentName, midiEvent->message);
     eventIndex++;
   }
+}
+
+juce::MidiMessageSequence Track::getSequence() const
+{
+  juce::ScopedLock sL(sequenceAccess);
+  return sequence;
+
 }
 
 juce::String Track::extractInstrumentNameFromTrackName(const juce::String& trackName)

@@ -26,9 +26,6 @@
     <Filter Include="Source Files\Engine\T3D\gameBase">
       <UniqueIdentifier>{d5b58fc4-4737-483d-a70c-9a2f10fc909a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Engine\T3D\gameBase\std">
-      <UniqueIdentifier>{1a8d1168-2d0a-480b-abe2-da5709884a17}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Engine\T3D\physics">
       <UniqueIdentifier>{2bd0f35f-1cb5-4972-b8f5-9c8ec774cc13}</UniqueIdentifier>
     </Filter>
@@ -358,6 +355,9 @@
     <Filter Include="Source Files\Engine\platform\input\oculusVR">
       <UniqueIdentifier>{5b8350b9-0e61-49c4-901f-171b7898585f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Engine\T3D\gameBase\extended">
+      <UniqueIdentifier>{68895278-a9ec-42f3-81b0-8c85d2efbd44}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Torque.rc">
@@ -589,12 +589,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Engine\source\T3D\gameBase\tickCache.cpp">
       <Filter>Source Files\Engine\T3D\gameBase</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Engine\source\T3D\gameBase\std\stdGameProcess.cpp">
-      <Filter>Source Files\Engine\T3D\gameBase\std</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Engine\source\T3D\gameBase\std\stdMoveList.cpp">
-      <Filter>Source Files\Engine\T3D\gameBase\std</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Engine\source\T3D\physics\physicsBody.cpp">
       <Filter>Source Files\Engine\T3D\physics</Filter>
@@ -2879,6 +2873,15 @@
     <ClCompile Include="..\..\..\source\KinectModule.cpp">
       <Filter>Source Files\source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Engine\source\T3D\gameBase\extended\extendedGameProcess.cpp">
+      <Filter>Source Files\Engine\T3D\gameBase\extended</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Engine\source\T3D\gameBase\extended\extendedMove.cpp">
+      <Filter>Source Files\Engine\T3D\gameBase\extended</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Engine\source\T3D\gameBase\extended\extendedMoveList.cpp">
+      <Filter>Source Files\Engine\T3D\gameBase\extended</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\..\Engine\source\T3D\aiClient.h">
@@ -3084,12 +3087,6 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Engine\source\T3D\gameBase\tickCache.h">
       <Filter>Source Files\Engine\T3D\gameBase</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Engine\source\T3D\gameBase\std\stdGameProcess.h">
-      <Filter>Source Files\Engine\T3D\gameBase\std</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Engine\source\T3D\gameBase\std\stdMoveList.h">
-      <Filter>Source Files\Engine\T3D\gameBase\std</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Engine\source\T3D\physics\physicsBody.h">
       <Filter>Source Files\Engine\T3D\physics</Filter>
@@ -5385,6 +5382,15 @@
     </ClInclude>
     <ClInclude Include="..\..\..\source\KinectTracker.h">
       <Filter>Source Files\source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Engine\source\T3D\gameBase\extended\extendedGameProcess.h">
+      <Filter>Source Files\Engine\T3D\gameBase\extended</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Engine\source\T3D\gameBase\extended\extendedMove.h">
+      <Filter>Source Files\Engine\T3D\gameBase\extended</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Engine\source\T3D\gameBase\extended\extendedMoveList.h">
+      <Filter>Source Files\Engine\T3D\gameBase\extended</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -27,12 +27,19 @@ public:
   ~MidiPlayer();
 
   void loadMidiFile(const char* filePath);
+  int getNumInstruments();
+  String getInstrumentName(int index);
+
   void play();
   void pause();
-  void unpause();
   void stop();
 
+  void increaseVelocityFactor(short percentage);
+  void decreaseVelocityFactor(short percentage);
+
+  int getTempo() const;
   void setTempo(juce::uint32 tempo);
+  void saveSequence(const char* filePath);
 
 private:
   JuceModule::Sequencer* sequencer;
