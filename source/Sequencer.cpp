@@ -175,6 +175,12 @@ double Sequencer::getTick()
   return ticks;
 }
 
+juce::uint32 Sequencer::getTempo() const
+{
+  const juce::ScopedLock sL(tempoAccess);
+  return tempo;
+}
+
 void Sequencer::setTempo(juce::uint32 tempo)
 {
   

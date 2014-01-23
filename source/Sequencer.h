@@ -107,6 +107,7 @@ public:
   void setTempoTrack(const juce::MidiMessageSequence& tempoTrack)
     {this->tempoTrack = tempoTrack; newTempoTrack = tempoTrack;}
 
+  juce::uint32 getTempo() const;
   void setTempo(juce::uint32 tempo);
   void increaseVelocityFactorInPercent(short percentage);
   void decreaseVelocityFactorInPercent(short percentage);

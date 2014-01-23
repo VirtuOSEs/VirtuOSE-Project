@@ -99,6 +99,11 @@ void MidiPlayer::stop()
   sequencer->stop();
 }
 
+int MidiPlayer::getTempo() const
+{
+  return static_cast<int>(sequencer->getTempo());
+}
+
 void MidiPlayer::setTempo(juce::uint32 tempo)
 {
   if (!sequencer)
@@ -126,6 +131,11 @@ DefineEngineMethod(MidiPlayer, stop, void, (),, "Stop a MIDI sequence" )
 DefineEngineMethod(MidiPlayer, pause, void, (),, "Pause a MIDI sequence" )
 {
   object->pause();
+}
+
+DefineEngineMethod(MidiPlayer, getTempo, int, (),, "Get the current tempo of the midi sequence")
+{
+  return object->getTempo();
 }
 
 DefineEngineMethod(MidiPlayer, setTempo, void, (unsigned int tempo),, "Set a new tempo for the midi sequence")

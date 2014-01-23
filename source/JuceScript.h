@@ -34,6 +34,7 @@ public:
   void increaseVelocityFactor(short percentage);
   void decreaseVelocityFactor(short percentage);
 
+  int getTempo() const;
   void setTempo(juce::uint32 tempo);
   void saveSequence(const char* filePath);
 
