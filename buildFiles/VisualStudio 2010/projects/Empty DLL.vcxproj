@@ -72,7 +72,7 @@
       <Optimization>Disabled</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <AdditionalIncludeDirectories>../../../source/ASIOSDK2.3/common;../../../source/VST3_SDK;../../../source/JuceLibraryCode;../../../source/OpenNI2/Include;../../../source/NiTE2/Include;../../../source\NiTE2\Samples\SimpleHandTracker;../../../game/shaders;../../../../../Engine/lib/lmng;../../../../../Engine/lib/lpng;../../../../../Engine/lib/ljpeg;../../../../../Engine/lib/lungif;../../../../../Engine/lib/zlib;../../../../../Engine/lib/tinyxml;../../../../../Engine/lib/opcode;../../../../../Engine/lib/squish;../../../../../Engine/lib/convexDecomp;../../../../../Engine/lib/libvorbis/include;../../../../../Engine/lib/libogg/include;../../../../../Engine/lib/libtheora/include;../../../source;../../../../../Engine/source/;../../../../../Engine/lib/;../../../../../Engine/lib/directx8;../../../../../Engine/lib/openal/win32;../../../../../Engine/lib/collada/include;../../../../../Engine/lib/collada/include/1.4;../../../../../../OculusSDK/LibOVR/Include;../../../../../../OculusSDK/LibOVR/Src;$(DXSDK_DIR)/Include;$(OPENNI2_INCLUDE);$(NITE2_INCLUDE);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>TORQUE_SHADERGEN;TORQUE_UNICODE;TORQUE_SHARED;BAN_OPCODE_AUTOLINK;ICE_NO_DLL;TORQUE_OPCODE;LTC_NO_PROTOTYPES;TORQUE_ADVANCED_LIGHTING;TORQUE_BASIC_LIGHTING;TORQUE_COLLADA;DOM_INCLUDE_TINYXML;PCRE_STATIC;TORQUE_OGGVORBIS;TORQUE_OGGTHEORA;TORQUE_OGGVORIBS;UNICODE;INITGUID;_CRT_SECURE_NO_DEPRECATE;TORQUE_DEBUG;TORQUE_DEBUG_GUARD;D3D_DEBUG_INFO;TORQUE_NET_STATS;UNICODE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>TORQUE_EXTENDED_MOVE;TORQUE_SHADERGEN;TORQUE_UNICODE;TORQUE_SHARED;BAN_OPCODE_AUTOLINK;ICE_NO_DLL;TORQUE_OPCODE;LTC_NO_PROTOTYPES;TORQUE_ADVANCED_LIGHTING;TORQUE_BASIC_LIGHTING;TORQUE_COLLADA;DOM_INCLUDE_TINYXML;PCRE_STATIC;TORQUE_OGGVORBIS;TORQUE_OGGTHEORA;TORQUE_OGGVORIBS;UNICODE;INITGUID;_CRT_SECURE_NO_DEPRECATE;TORQUE_DEBUG;TORQUE_DEBUG_GUARD;D3D_DEBUG_INFO;TORQUE_NET_STATS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Sync</ExceptionHandling>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <StringPooling>true</StringPooling>
@@ -175,7 +175,7 @@
       <Optimization>Full</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <AdditionalIncludeDirectories>../../../source/ASIOSDK2.3/common;../../../source/VST3_SDK;../../../source/JuceLibraryCode;../../../source/OpenNI2/Include;../../../source/NiTE2/Include;../../../source\NiTE2\Samples\SimpleHandTracker;../../../game/shaders;../../../../../Engine/lib/lmng;../../../../../Engine/lib/lpng;../../../../../Engine/lib/ljpeg;../../../../../Engine/lib/lungif;../../../../../Engine/lib/zlib;../../../../../Engine/lib/tinyxml;../../../../../Engine/lib/opcode;../../../../../Engine/lib/squish;../../../../../Engine/lib/convexDecomp;../../../../../Engine/lib/libvorbis/include;../../../../../Engine/lib/libogg/include;../../../../../Engine/lib/libtheora/include;../../../source;../../../../../Engine/source/;../../../../../Engine/lib/;../../../../../Engine/lib/directx8;../../../../../Engine/lib/openal/win32;../../../../../Engine/lib/collada/include;../../../../../Engine/lib/collada/include/1.4;../../../../../../OculusSDK/LibOVR/Include;../../../../../../OculusSDK/LibOVR/Src;$(DXSDK_DIR)/Include;$(OPENNI2_INCLUDE);$(NITE2_INCLUDE);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>TORQUE_SHADERGEN;TORQUE_UNICODE;TORQUE_SHARED;BAN_OPCODE_AUTOLINK;ICE_NO_DLL;TORQUE_OPCODE;LTC_NO_PROTOTYPES;TORQUE_ADVANCED_LIGHTING;TORQUE_BASIC_LIGHTING;TORQUE_COLLADA;DOM_INCLUDE_TINYXML;PCRE_STATIC;TORQUE_OGGVORBIS;TORQUE_OGGTHEORA;TORQUE_OGGVORIBS;UNICODE;INITGUID;_CRT_SECURE_NO_DEPRECATE;UNICODE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>TORQUE_EXTENDED_MOVE;TORQUE_SHADERGEN;TORQUE_UNICODE;TORQUE_SHARED;BAN_OPCODE_AUTOLINK;ICE_NO_DLL;TORQUE_OPCODE;LTC_NO_PROTOTYPES;TORQUE_ADVANCED_LIGHTING;TORQUE_BASIC_LIGHTING;TORQUE_COLLADA;DOM_INCLUDE_TINYXML;PCRE_STATIC;TORQUE_OGGVORBIS;TORQUE_OGGTHEORA;TORQUE_OGGVORIBS;UNICODE;INITGUID;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Sync</ExceptionHandling>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <StringPooling>true</StringPooling>
@@ -227,6 +227,9 @@
     <ClCompile Include="..\..\..\..\..\Engine\source\platform\input\oculusVR\oculusVRSensorDevice.cpp" />
     <ClCompile Include="..\..\..\..\..\Engine\source\platform\input\oculusVR\oculusVRUtil.cpp" />
     <ClCompile Include="..\..\..\..\..\Engine\source\T3D\aiClient.cpp" />
+    <ClCompile Include="..\..\..\..\..\Engine\source\T3D\gameBase\extended\extendedGameProcess.cpp" />
+    <ClCompile Include="..\..\..\..\..\Engine\source\T3D\gameBase\extended\extendedMove.cpp" />
+    <ClCompile Include="..\..\..\..\..\Engine\source\T3D\gameBase\extended\extendedMoveList.cpp" />
     <ClCompile Include="..\..\..\source\JuceLibraryCode\modules\juce_audio_basics\juce_audio_basics.cpp" />
     <ClCompile Include="..\..\..\source\JuceLibraryCode\modules\juce_audio_devices\juce_audio_devices.cpp" />
     <ClCompile Include="..\..\..\source\JuceLibraryCode\modules\juce_audio_formats\juce_audio_formats.cpp" />
@@ -265,6 +268,9 @@
     <ClCompile Include="..\..\..\..\..\Engine\source\T3D\debris.cpp" />
     <ClInclude Include="..\..\..\..\..\Engine\source\T3D\debris.h" />
     <ClCompile Include="..\..\..\..\..\Engine\source\T3D\gameFunctions.cpp" />
+    <ClInclude Include="..\..\..\..\..\Engine\source\T3D\gameBase\extended\extendedGameProcess.h" />
+    <ClInclude Include="..\..\..\..\..\Engine\source\T3D\gameBase\extended\extendedMove.h" />
+    <ClInclude Include="..\..\..\..\..\Engine\source\T3D\gameBase\extended\extendedMoveList.h" />
     <ClInclude Include="..\..\..\..\..\Engine\source\T3D\gameFunctions.h" />
     <ClCompile Include="..\..\..\..\..\Engine\source\T3D\gameTSCtrl.cpp" />
     <ClInclude Include="..\..\..\..\..\Engine\source\T3D\gameTSCtrl.h" />
@@ -391,10 +397,6 @@
     <ClInclude Include="..\..\..\..\..\Engine\source\T3D\gameBase\processList.h" />
     <ClCompile Include="..\..\..\..\..\Engine\source\T3D\gameBase\tickCache.cpp" />
     <ClInclude Include="..\..\..\..\..\Engine\source\T3D\gameBase\tickCache.h" />
-    <ClCompile Include="..\..\..\..\..\Engine\source\T3D\gameBase\std\stdGameProcess.cpp" />
-    <ClInclude Include="..\..\..\..\..\Engine\source\T3D\gameBase\std\stdGameProcess.h" />
-    <ClCompile Include="..\..\..\..\..\Engine\source\T3D\gameBase\std\stdMoveList.cpp" />
-    <ClInclude Include="..\..\..\..\..\Engine\source\T3D\gameBase\std\stdMoveList.h" />
     <ClCompile Include="..\..\..\..\..\Engine\source\T3D\physics\physicsBody.cpp" />
     <ClInclude Include="..\..\..\..\..\Engine\source\T3D\physics\physicsBody.h" />
     <ClInclude Include="..\..\..\..\..\Engine\source\T3D\physics\physicsCollision.h" />
