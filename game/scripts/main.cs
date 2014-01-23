@@ -112,9 +112,9 @@ function onStart()
    else
       initClient();
 
-   // $midiPlayer = new MidiPlayer();
-   // $midiPlayer.loadMidiFile("../Beethoven-Symphony5-1.mid");
-   // $midiPlayer.play();
+  //$midiPlayer = new MidiPlayer();
+ // $midiPlayer.loadMidiFile("../Beethoven-Symphony5-1.mid");
+ // $midiPlayer.play();
 
 }
 
@@ -131,7 +131,7 @@ function onExit()
    // Destroy the physics plugin.
    physicsDestroy();
      
-   $midiPlayer.stop();
+  // $midiPlayer.stop();
    
    echo("Exporting client prefs");
    export("$pref::*", "./client/prefs.cs", False);
