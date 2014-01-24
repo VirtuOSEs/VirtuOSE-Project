@@ -2,7 +2,7 @@
 
 function changeOpacity(%obj,%a){
 	
-	%mapTo=%obj.getTargetName(0);//
+	%mapTo=%obj.getTargetName(0);
 	%mapTo.diffuseColor.a=%a;
 	%mapTo.reload();
 	
@@ -10,4 +10,13 @@ function changeOpacity(%obj,%a){
 		%mapTo.translucent=0;
 	else
 		%mapTo.translucent=1;
+}
+
+function decrementOpacity(%obj){
+	%mapTo=%obj.getTargetName(0);
+	
+	while(%mapTo.diffuseColor.a>0){
+		changeOpacity(%obj,%mapTo.diffuseColor.a-0.01);
+	}
+	
 }

@@ -1800,7 +1800,39 @@ new SimGroup(MissionGroup) {
       canSave = "1";
       canSaveDynamicFields = "1";
 
-      new TSStatic(electricGuitar) {
+      new TSStatic(Caisse) {
+         shapeName = "art/shapes/cube/cube.dae";
+         playAmbient = "1";
+         meshCulling = "0";
+         originSort = "0";
+         collisionType = "Collision Mesh";
+         decalType = "Collision Mesh";
+         allowPlayerStep = "1";
+         renderNormals = "0";
+         forceDetail = "-1";
+         position = "2.60631 -20.4591 4.40063";
+         rotation = "1 0 0 0";
+         scale = "1 1 1.80553";
+         canSave = "1";
+         canSaveDynamicFields = "1";
+      };
+      new TSStatic(Amplifier) {
+         shapeName = "art/shapes/virtuose/Yamaha_Amplifier.dae";
+         playAmbient = "1";
+         meshCulling = "0";
+         originSort = "0";
+         collisionType = "Collision Mesh";
+         decalType = "Collision Mesh";
+         allowPlayerStep = "1";
+         renderNormals = "0";
+         forceDetail = "-1";
+         position = "2.53457 -20.1386 6.14673";
+         rotation = "1 0 0 0";
+         scale = "0.0400909 0.0400909 0.0400909";
+         canSave = "1";
+         canSaveDynamicFields = "1";
+      };
+      new TSStatic(Guitar2) {
          shapeName = "art/shapes/virtuose/Stratocaster.dae";
          playAmbient = "1";
          meshCulling = "0";
@@ -1810,13 +1842,13 @@ new SimGroup(MissionGroup) {
          allowPlayerStep = "1";
          renderNormals = "0";
          forceDetail = "-1";
-         position = "2.51205 -31.5895 5.02795";
+         position = "2.51205 -19.7652 5.02795";
          rotation = "0.587961 0.495009 0.63974 229.923";
          scale = "0.148423 0.148423 0.148423";
          canSave = "1";
          canSaveDynamicFields = "1";
       };
-      new TSStatic(acousticGuitar) {
+      new TSStatic(Guitar1) {
          shapeName = "art/shapes/virtuose/Guitar2.dae";
          playAmbient = "1";
          meshCulling = "0";
@@ -1826,7 +1858,7 @@ new SimGroup(MissionGroup) {
          allowPlayerStep = "1";
          renderNormals = "0";
          forceDetail = "-1";
-         position = "-6.03912 -31.2723 6.59487";
+         position = "-6.03912 -20.3801 6.59487";
          rotation = "0.886136 -0.2545 0.38729 76.6842";
          scale = "0.01 0.01 0.01";
          canSave = "1";
@@ -2083,7 +2115,7 @@ new SimGroup(MissionGroup) {
       canSave = "1";
       canSaveDynamicFields = "1";
    };
-   new TSStatic(piano) {
+   new TSStatic() {
       shapeName = "art/shapes/virtuose/piano.dae";
       playAmbient = "1";
       meshCulling = "0";
@@ -2093,7 +2125,7 @@ new SimGroup(MissionGroup) {
       allowPlayerStep = "1";
       renderNormals = "0";
       forceDetail = "-1";
-      position = "-5.08328 -30.2386 4.11716";
+      position = "-5.08328 -16.1581 4.11716";
       rotation = "-0.00900996 0.0108687 0.9999 211.669";
       scale = "1 1 1";
       canSave = "1";
@@ -2106,7 +2138,7 @@ new SimGroup(MissionGroup) {
          Color_C01noCulling = "Color_C01noCulling_mat";
          Wood_Bamboo_MediumnoCulling = "Wood_Bamboo_MediumnoCulling_mat";
    };
-   new TSStatic(doubleBass) {
+   new TSStatic() {
       shapeName = "art/shapes/virtuose/contrebass.dae";
       playAmbient = "1";
       meshCulling = "0";
@@ -2116,7 +2148,7 @@ new SimGroup(MissionGroup) {
       allowPlayerStep = "1";
       renderNormals = "0";
       forceDetail = "-1";
-      position = "1.17949 -32.0244 5.3395";
+      position = "1.17949 -20.0817 5.3395";
       rotation = "0.572972 0.329199 0.750554 117.897";
       scale = "0.35682 0.35682 0.35682";
       canSave = "1";
@@ -2124,7 +2156,7 @@ new SimGroup(MissionGroup) {
          _Black = "_Black_mat";
          w__dark = "w__dark_mat";
    };
-   new TSStatic(flute) {
+   new TSStatic() {
       shapeName = "art/shapes/virtuose/flutetraversiere.dae";
       playAmbient = "1";
       meshCulling = "0";
@@ -2134,14 +2166,14 @@ new SimGroup(MissionGroup) {
       allowPlayerStep = "1";
       renderNormals = "0";
       forceDetail = "-1";
-      position = "-0.229821 -31.1744 5.42134";
+      position = "-0.229821 -18.2195 5.42134";
       rotation = "0.972314 0.216194 -0.0886922 76.9945";
       scale = "0.806145 0.806145 0.806145";
       canSave = "1";
       canSaveDynamicFields = "1";
          flute_silver = "flute_silver_mat";
    };
-   new TSStatic(harp) {
+   new TSStatic() {
       shapeName = "art/shapes/virtuose/harpe.dae";
       playAmbient = "1";
       meshCulling = "0";
@@ -2151,7 +2183,7 @@ new SimGroup(MissionGroup) {
       allowPlayerStep = "1";
       renderNormals = "0";
       forceDetail = "-1";
-      position = "-9.96223 -29.4047 5.39114";
+      position = "-9.96223 -17.0523 5.39114";
       rotation = "1 0 0 0";
       scale = "0.563471 0.563471 0.563471";
       canSave = "1";
@@ -2161,7 +2193,7 @@ new SimGroup(MissionGroup) {
          wire_224198087 = "wire_224198087_mat";
          wire_229166215 = "wire_229166215_mat";
    };
-   new TSStatic(sax) {
+   new TSStatic() {
       shapeName = "art/shapes/virtuose/saxo.dae";
       playAmbient = "1";
       meshCulling = "0";
@@ -2171,7 +2203,7 @@ new SimGroup(MissionGroup) {
       allowPlayerStep = "1";
       renderNormals = "0";
       forceDetail = "-1";
-      position = "-2.42099 -31.6257 5.26611";
+      position = "-2.42099 -15.6305 5.26611";
       rotation = "0 0 -1 77.122";
       scale = "1.45037 1.45037 1.45037";
       canSave = "1";
@@ -2183,7 +2215,7 @@ new SimGroup(MissionGroup) {
          sax_silver = "sax_silver_mat";
          sax_wood = "sax_wood_mat";
    };
-   new TSStatic(trombone) {
+   new TSStatic() {
       shapeName = "art/shapes/virtuose/trombone.DAE";
       playAmbient = "1";
       meshCulling = "0";
@@ -2193,7 +2225,7 @@ new SimGroup(MissionGroup) {
       allowPlayerStep = "1";
       renderNormals = "0";
       forceDetail = "-1";
-      position = "1.85088 -32.8902 4.94382";
+      position = "1.85088 -15.4639 4.94382";
       rotation = "-0.264928 -0.231605 -0.936041 101.413";
       scale = "1.69024 1.69024 1.69024";
       canSave = "1";
@@ -2202,7 +2234,7 @@ new SimGroup(MissionGroup) {
          _03___Default = "_03___Default_mat";
          _07___Default = "_07___Default_mat";
    };
-   new TSStatic(trumpet) {
+   new TSStatic() {
       shapeName = "art/shapes/virtuose/trumpet.dae";
       playAmbient = "1";
       meshCulling = "0";
@@ -2212,13 +2244,13 @@ new SimGroup(MissionGroup) {
       allowPlayerStep = "1";
       renderNormals = "0";
       forceDetail = "-1";
-      position = "6.27782 -30.7282 4.53691";
+      position = "6.09364 -18.8648 4.53691";
       rotation = "-0.109817 0.258355 0.959788 214.446";
       scale = "0.19025 0.19025 0.19025";
       canSave = "1";
       canSaveDynamicFields = "1";
    };
-   new TSStatic(bass) {
+   new TSStatic() {
       shapeName = "art/shapes/virtuose/bassElec.dae";
       playAmbient = "1";
       meshCulling = "0";
@@ -2228,13 +2260,13 @@ new SimGroup(MissionGroup) {
       allowPlayerStep = "1";
       renderNormals = "0";
       forceDetail = "-1";
-      position = "0.116151 -31.7601 5.30425";
+      position = "0.116151 -19.3335 5.30425";
       rotation = "0.69326 0.0646425 0.717783 187.658";
       scale = "0.186338 0.186338 0.186338";
       canSave = "1";
       canSaveDynamicFields = "1";
    };
-   new TSStatic(drum) {
+   new TSStatic() {
       shapeName = "art/shapes/virtuose/drum.dae";
       playAmbient = "1";
       meshCulling = "0";
@@ -2244,7 +2276,7 @@ new SimGroup(MissionGroup) {
       allowPlayerStep = "1";
       renderNormals = "0";
       forceDetail = "-1";
-      position = "-2.62552 -31.8429 4.26475";
+      position = "-2.62552 -19.909 4.26475";
       rotation = "1 0 0 0";
       scale = "0.265835 0.265835 0.265835";
       canSave = "1";
@@ -2256,7 +2288,7 @@ new SimGroup(MissionGroup) {
          Material__6 = "Material__6_mat";
          Wood_Ashsen = "Wood_Ashsen_mat";
    };
-   new TSStatic(violon) {
+   new TSStatic() {
       shapeName = "art/shapes/virtuose/violon.dae";
       playAmbient = "1";
       meshCulling = "0";
@@ -2266,7 +2298,7 @@ new SimGroup(MissionGroup) {
       allowPlayerStep = "1";
       renderNormals = "0";
       forceDetail = "-1";
-      position = "2.49618 -29.5368 5.08747";
+      position = "2.49618 -17.153 5.08747";
       rotation = "-0.206425 0.581091 0.787225 137.775";
       scale = "0.666445 0.666445 0.666445";
       canSave = "1";
