@@ -53,7 +53,7 @@ AudioTools& AudioTools::getInstance()
   return *singleton;
 }
 
-void AudioTools::generatePlugin(const juce::String& instrument)
+void AudioTools::generatePlugin(const juce::String& trackName, const juce::String& instrumentName)
 { 
   juce::AudioPluginFormatManager formatManager;
   formatManager.addDefaultFormats();
@@ -66,36 +66,36 @@ void AudioTools::generatePlugin(const juce::String& instrument)
   description.category = "Instrument";
   description.fileOrIdentifier =  juce::File::getCurrentWorkingDirectory().getChildFile("../sfz.dll").getFullPathName();
 
-  juce::File fxpFile = juce::File::getCurrentWorkingDirectory().getChildFile("../fxp/" + instrument + ".fxp").getFullPathName();
+  juce::File fxpFile = juce::File::getCurrentWorkingDirectory().getChildFile("../fxp/" + instrumentName + ".fxp").getFullPathName();
   if (!fxpFile.existsAsFile())
   {
     Con::errorf("Impossible de charger l'instrument demandé");
     return;
   }
-  Con::printf(juce::String("Chargement de " + instrument).toStdString().c_str());
+  Con::printf(juce::String("Chargement de " + instrumentName).toStdString().c_str());
 
   //Si le plugin correspondant à l'instrument n'existe pas encore
-  if (pluginsMap.find(instrument) == pluginsMap.end())
+  if (pluginsMap.find(trackName) == pluginsMap.end())
   {
-    pluginsMap[instrument] = formatManager.createPluginInstance(description, errorMessage);
+    pluginsMap[trackName] = formatManager.createPluginInstance(description, errorMessage);
 
     juce::MemoryBlock fxpData;
     fxpFile.loadFileAsData(fxpData);
-    juce::VSTPluginFormat::loadFromFXBFile(pluginsMap[instrument], fxpData.getData(), fxpData.getSize());
+    juce::VSTPluginFormat::loadFromFXBFile(pluginsMap[trackName], fxpData.getData(), fxpData.getSize());
 
-    playersMap[instrument] = new juce::AudioProcessorPlayer();
-    playersMap[instrument]->setProcessor(pluginsMap[instrument]);
-    deviceManager.addAudioCallback(playersMap[instrument]);
+    playersMap[trackName] = new juce::AudioProcessorPlayer();
+    playersMap[trackName]->setProcessor(pluginsMap[trackName]);
+    deviceManager.addAudioCallback(playersMap[trackName]);
   }
 }
 
-void AudioTools::makePluginPlay(const juce::String& instrument, const juce::MidiMessage& message)
+void AudioTools::makePluginPlay(const juce::String& trackName, const juce::MidiMessage& message)
 {
-  if(pluginsMap.find(instrument) == pluginsMap.end())
+  if(pluginsMap.find(trackName) == pluginsMap.end())
     return;
 
   const juce::ScopedLock sL(criticalSection);
-  playersMap[instrument]->handleIncomingMidiMessage(nullptr, message);
+  playersMap[trackName]->handleIncomingMidiMessage(nullptr, message);
 }
 
 void AudioTools::disableAudioProcessing()
@@ -353,7 +353,7 @@ Track::Track(U32 index, juce::MidiMessageSequence& sequence)
   instrumentName = extractInstrumentNameFromTrackName(trackName);
 
   //We instanciate a plugin for this track with the right instrument, based on the instrumentName
-  AudioTools::getInstance().generatePlugin(instrumentName);
+  AudioTools::getInstance().generatePlugin(trackName, instrumentName);
 }
 
 void Track::restart()
@@ -399,7 +399,7 @@ void Track::playAtTick(double tick)
     //
     //ThreadPool::queueWorkItemOnMainThread(new ChangeOpacity(trackName));
     midiEvent->message.multiplyVelocity(velocityFactor);
-    AudioTools::getInstance().makePluginPlay(instrumentName, midiEvent->message);
+    AudioTools::getInstance().makePluginPlay(trackName, midiEvent->message);
     eventIndex++;
   }
 }
