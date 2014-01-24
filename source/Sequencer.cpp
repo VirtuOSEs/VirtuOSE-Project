@@ -327,6 +327,10 @@ IMPLEMENT_GLOBAL_CALLBACK( changeOpacity, void, ( const char* instrumentName, fl
    "@param name The name of the instrument which will be played.\n"
   );
 
+void ChangeOpacity::execute()
+{
+  changeOpacity_callback(trackName.toStdString().c_str(), 0.5);
+}
 
 Track::Track(U32 index, juce::MidiMessageSequence& sequence)
   : sequence(sequence),
@@ -392,8 +396,8 @@ void Track::playAtTick(double tick)
 
   if ( timeStamp <= tick)
   {
-    //changeOpacity_callback("rightHand", 0.5);
-
+    //
+    ThreadPool::queueWorkItemOnMainThread(new ChangeOpacity(trackName));
     midiEvent->message.multiplyVelocity(velocityFactor);
     AudioTools::getInstance().makePluginPlay(instrumentName, midiEvent->message);
     eventIndex++;
