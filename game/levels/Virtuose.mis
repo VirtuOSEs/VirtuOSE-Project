@@ -27,10 +27,27 @@ new SimGroup(MissionGroup) {
          enabled = "1";
          levelName = "Blank Room";
    };
-   new SimGroup(PlayerDropPoints) {
+   new SimGroup(PlayerSpawnPoints) {
       canSave = "1";
       canSaveDynamicFields = "1";
-         enabled = "1";
+
+      new SpawnSphere() {
+         spawnClass = "Player";
+         spawnDatablock = "DefaultPlayerData";
+         autoSpawn = "1";
+         spawnTransform = "0";
+         radius = "1";
+         sphereWeight = "100";
+         indoorWeight = "100";
+         outdoorWeight = "100";
+         isAIControlled = "0";
+         dataBlock = "SpawnSphereMarker";
+         position = "3.24946 -3.5282 3.5623";
+         rotation = "0 0 1 186.692";
+         scale = "0.50842 0.626344 0.515058";
+         canSave = "1";
+         canSaveDynamicFields = "1";
+      };
    };
    new SimGroup(CameraBookmarks) {
       canSave = "1";
@@ -1779,22 +1796,6 @@ new SimGroup(MissionGroup) {
          canSave = "1";
          canSaveDynamicFields = "1";
       };
-      new TSStatic(solSalle) {
-         shapeName = "art/shapes/virtuose/solSalle.dae";
-         playAmbient = "1";
-         meshCulling = "0";
-         originSort = "0";
-         collisionType = "Visible Mesh";
-         decalType = "Collision Mesh";
-         allowPlayerStep = "1";
-         renderNormals = "0";
-         forceDetail = "-1";
-         position = "2.86566 8.95511 2.54468";
-         rotation = "0 0 1 7.54225";
-         scale = "2.34328 2.70892 1.5163";
-         canSave = "1";
-         canSaveDynamicFields = "1";
-      };
    };
    new SimGroup(ObjetsScene) {
       canSave = "1";
@@ -2066,6 +2067,22 @@ new SimGroup(MissionGroup) {
          canSave = "1";
          canSaveDynamicFields = "1";
       };
+   };
+   new TSStatic(solSalle) {
+      shapeName = "art/shapes/virtuose/solSalle.dae";
+      playAmbient = "1";
+      meshCulling = "0";
+      originSort = "0";
+      collisionType = "Bounds";
+      decalType = "None";
+      allowPlayerStep = "1";
+      renderNormals = "0";
+      forceDetail = "-1";
+      position = "2.86566 8.95511 2.54468";
+      rotation = "0 0 1 7.54225";
+      scale = "2.34328 2.70892 1.5163";
+      canSave = "1";
+      canSaveDynamicFields = "1";
    };
    new TSStatic(Bodyguard1) {
       shapeName = "art/shapes/virtuose/Bruce_Wayne/Bruce_Wayne.dae";
