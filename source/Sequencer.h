@@ -9,6 +9,7 @@
 
 //**********INCLUDE TORQUE ENGINE*********
 #include "console/engineAPI.h"
+#include "platform/threads/threadPool.h"
 
 #include <vector>
 #include <map>
@@ -51,6 +52,15 @@ private:
   juce::CriticalSection criticalSection;
   juce::AudioDeviceManager deviceManager;
   juce::AudioProcessorPlayer player;
+};
+
+class ChangeOpacity : public ThreadPool::WorkItem
+{
+public:
+  typedef ThreadPool::WorkItem Parent;
+
+protected:
+  virtual void execute();
 };
 
 /**
