@@ -22,15 +22,25 @@ function createInstruments(%instrument){
 			   new StaticShape() 
 			   {
 				   dataBlock = %instrument;
-				   position = pos SPC "0.0 0.0";
+				   position = pos+Spawn.position.x SPC Spawn.position.y SPC Spawn.position.z;
 				   rotation = "1 0 0 0";
-				   scale = "20 20 20";
+				   scale = "1 1 1";
 				   name=%instrument;
 			   };
 			   
-			   if(strcmp(%instrument.shapeFile,"")==0){
+			   // Create a file stream object for reading
+				%fsObject = new FileStreamObject();
+
+				// Open a file for reading
+				%fsObject.open(%instrument.shapeFile, "read");
+
+				// Get the status and print it
+				%status = %fsObject.getStatus();
+				echo(%status);
+				if(%status==IOError){
 					%instrument.shapeFile="art/shapes/virtuose/drum.dae";
 			   }
+			   %fsObject.close();
 			   $pos+=2.0;
 			
 		  // }

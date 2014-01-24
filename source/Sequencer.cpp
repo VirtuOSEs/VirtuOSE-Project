@@ -397,7 +397,7 @@ void Track::playAtTick(double tick)
   if ( timeStamp <= tick)
   {
     //
-    ThreadPool::queueWorkItemOnMainThread(new ChangeOpacity(trackName));
+    //ThreadPool::queueWorkItemOnMainThread(new ChangeOpacity(trackName));
     midiEvent->message.multiplyVelocity(velocityFactor);
     AudioTools::getInstance().makePluginPlay(instrumentName, midiEvent->message);
     eventIndex++;
