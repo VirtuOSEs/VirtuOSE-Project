@@ -144,6 +144,7 @@ Sequencer::~Sequencer()
 {
   signalThreadShouldExit();
   notify();
+  this->waitForThreadToExit(100);
 }
 
 void Sequencer::saveSequence(const juce::String& filePath)
@@ -396,8 +397,7 @@ void Track::playAtTick(double tick)
 
   if ( timeStamp <= tick)
   {
-    //
-    ThreadPool::queueWorkItemOnMainThread(new ChangeOpacity(trackName));
+    //ThreadPool::queueWorkItemOnMainThread(new ChangeOpacity(trackName));
     midiEvent->message.multiplyVelocity(velocityFactor);
     AudioTools::getInstance().makePluginPlay(trackName, midiEvent->message);
     eventIndex++;

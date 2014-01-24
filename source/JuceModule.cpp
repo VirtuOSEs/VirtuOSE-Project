@@ -10,7 +10,7 @@
 MODULE_BEGIN( JuceModule )
 
   MODULE_INIT_AFTER( Sim )
-  MODULE_SHUTDOWN_BEFORE( Sim )
+  MODULE_SHUTDOWN_AFTER( Sim )
   MODULE_INIT
   {
     Con::printf("JUCE ON");
