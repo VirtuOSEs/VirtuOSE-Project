@@ -329,7 +329,7 @@ IMPLEMENT_GLOBAL_CALLBACK( changeOpacity, void, ( const char* instrumentName, fl
 
 void ChangeOpacity::execute()
 {
-  changeOpacity_callback("rightHand", 0.5);
+  changeOpacity_callback(trackName.toStdString().c_str(), 0.5);
 }
 
 Track::Track(U32 index, juce::MidiMessageSequence& sequence)
@@ -397,7 +397,7 @@ void Track::playAtTick(double tick)
   if ( timeStamp <= tick)
   {
     //
-    ThreadPool::queueWorkItemOnMainThread(new ChangeOpacity());
+    ThreadPool::queueWorkItemOnMainThread(new ChangeOpacity(trackName));
     midiEvent->message.multiplyVelocity(velocityFactor);
     AudioTools::getInstance().makePluginPlay(instrumentName, midiEvent->message);
     eventIndex++;

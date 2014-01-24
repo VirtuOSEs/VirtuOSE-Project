@@ -59,8 +59,13 @@ class ChangeOpacity : public ThreadPool::WorkItem
 public:
   typedef ThreadPool::WorkItem Parent;
 
+  explicit ChangeOpacity(const juce::String& trackName)
+    : trackName(trackName) {}
+
 protected:
   virtual void execute();
+
+  juce::String trackName;
 };
 
 /**
