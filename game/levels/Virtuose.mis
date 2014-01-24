@@ -35,7 +35,7 @@ new SimGroup(MissionGroup) {
          spawnClass = "Player";
          spawnDatablock = "DefaultPlayerData";
          autoSpawn = "1";
-         spawnTransform = "1";
+         spawnTransform = "0";
          radius = "1";
          sphereWeight = "100";
          indoorWeight = "100";
@@ -43,7 +43,7 @@ new SimGroup(MissionGroup) {
          isAIControlled = "0";
          dataBlock = "SpawnSphereMarker";
          position = "3.24946 -3.5282 3.5623";
-         rotation = "1 0 0 0";
+         rotation = "0 0 1 186.692";
          scale = "0.50842 0.626344 0.515058";
          canSave = "1";
          canSaveDynamicFields = "1";
