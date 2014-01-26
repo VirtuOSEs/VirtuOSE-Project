@@ -1587,22 +1587,6 @@ new SimGroup(MissionGroup) {
          canSave = "1";
          canSaveDynamicFields = "1";
       };
-      new TSStatic(Chair1322) {
-         shapeName = "art/shapes/virtuose/Chair.dae";
-         playAmbient = "1";
-         meshCulling = "0";
-         originSort = "0";
-         collisionType = "Collision Mesh";
-         decalType = "Collision Mesh";
-         allowPlayerStep = "1";
-         renderNormals = "0";
-         forceDetail = "-1";
-         position = "2.91157 17.7791 3.86972";
-         rotation = "0 0 1 188.958";
-         scale = "0.0351338 0.0351338 0.0351338";
-         canSave = "1";
-         canSaveDynamicFields = "1";
-      };
       new TSStatic(Chair13112) {
          shapeName = "art/shapes/virtuose/Chair.dae";
          playAmbient = "1";
@@ -1890,7 +1874,7 @@ new SimGroup(MissionGroup) {
       canSave = "1";
       canSaveDynamicFields = "1";
 
-      new TSStatic(scene) {
+      new TSStatic(Scene) {
          shapeName = "art/shapes/virtuose/scene.dae";
          playAmbient = "1";
          meshCulling = "0";
