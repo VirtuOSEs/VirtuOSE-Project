@@ -9,6 +9,7 @@
 
 //**********INCLUDE TORQUE ENGINE*********
 #include "console/engineAPI.h"
+#include "platform/threads/threadPool.h"
 
 #include <vector>
 #include <map>
@@ -33,8 +34,10 @@ public:
   static AudioTools& getInstance();
   static void deleteInstance();
 
-  void generatePlugin(const juce::String& instrumentName);
-  void makePluginPlay(const juce::String& instrument, const juce::MidiMessage& message);
+  ///Generate a plugin associated with the trackName
+  void generatePlugin(const juce::String& trackName, const juce::String& instrumentName);
+  ///Make the plugin associated with the trackName given in argument plays the message passed as a second argument
+  void makePluginPlay(const juce::String& trackName, const juce::MidiMessage& message);
 
   void disableAudioProcessing();
   void enableAudioProcessing();
@@ -51,6 +54,20 @@ private:
   juce::CriticalSection criticalSection;
   juce::AudioDeviceManager deviceManager;
   juce::AudioProcessorPlayer player;
+};
+
+class ChangeOpacity : public ThreadPool::WorkItem
+{
+public:
+  typedef ThreadPool::WorkItem Parent;
+
+  explicit ChangeOpacity(const juce::String& trackName)
+    : trackName(trackName) {}
+
+protected:
+  virtual void execute();
+
+  juce::String trackName;
 };
 
 /**

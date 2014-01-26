@@ -111,7 +111,7 @@ void MidiPlayer::setTempo(juce::uint32 tempo)
   sequencer->setTempo(tempo);
 }
 
-int MidiPlayer::getNumInstruments()
+int MidiPlayer::getNumTracks()
   {return tracks.size();}
 
 String MidiPlayer::getInstrumentName(int index)
@@ -119,6 +119,13 @@ String MidiPlayer::getInstrumentName(int index)
   jassert (index < tracks.size());
 
   return tracks[index]->getInstrumentName().toStdString().c_str();
+}
+
+String MidiPlayer::getTrackName(int index)
+{
+  jassert (index < tracks.size());
+
+  return tracks[index]->getTrackName().toStdString().c_str();
 }
 
 //-------------Torque Script Bridge
@@ -168,13 +175,17 @@ DefineEngineMethod(MidiPlayer, decreaseVelocity, void, (int percentage),, "Decre
   object->decreaseVelocityFactor(static_cast<short>(percentage));
 }
 
-DefineEngineMethod(MidiPlayer, getInstrumentName, String, (int index),, "Get names of the instruments in the sequence")
+DefineEngineMethod(MidiPlayer, getNumTracks, int, (),, "Return the number of tracks in the sequence")
+{
+  return object->getNumTracks();
+}
+
+DefineEngineMethod(MidiPlayer, getInstrumentName, String, (int index),, "Get names of the instruments in the sequence at the track of index 'index'")
 {
   return object->getInstrumentName(index);
 }
 
-DefineEngineMethod(MidiPlayer, getNumInstruments, int, (),, "Return the number of instruments in the sequence")
+DefineEngineMethod(MidiPlayer, getTrackName, String, (int index),, "Get the track name at index 'index' in the sequence")
 {
-  return object->getNumInstruments();
+  return object->getTrackName(index);
 }
-

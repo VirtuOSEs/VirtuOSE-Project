@@ -1,12 +1,12 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual C++ Express 2010
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Empty", "projects\Empty.vcxproj", "{CDECDFF9-E125-523F-87BC-2D89DB971CAB}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VirtuOSE", "projects\Empty.vcxproj", "{CDECDFF9-E125-523F-87BC-2D89DB971CAB}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NP Empty Plugin", "projects\NP Empty Plugin.vcxproj", "{CDECDFF9-E125-412E-87BC-2D89DB971CAB}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IE Empty Plugin", "projects\IE Empty Plugin.vcxproj", "{CDECDFF9-E125-412E-87CD-2D89DB971CAB}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Empty DLL", "projects\Empty DLL.vcxproj", "{C0FCDFF9-E125-412E-87BC-2D89DB971CAB}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VirtuOSE DLL", "projects\Empty DLL.vcxproj", "{C0FCDFF9-E125-412E-87BC-2D89DB971CAB}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "collada_dom", "projects\collada_dom.vcxproj", "{25D580F1-2A2C-48EB-89C6-B54CAF4BDC4E}"
 EndProject
