@@ -2320,7 +2320,7 @@ new SimGroup(MissionGroup) {
          allowPlayerStep = "1";
          renderNormals = "0";
          forceDetail = "-1";
-         position = "-3.08554 25.5 6.21945";
+         position = "2.5367 25.5 12.3368";
          rotation = "1 0 0 0";
          scale = "0.275127 0.275127 0.275127";
          canSave = "1";
@@ -2342,6 +2342,22 @@ new SimGroup(MissionGroup) {
          canSave = "1";
          canSaveDynamicFields = "1";
       };
+   };
+   new TSStatic(start) {
+      shapeName = "art/shapes/cube/cube.dae";
+      playAmbient = "1";
+      meshCulling = "0";
+      originSort = "0";
+      collisionType = "Collision Mesh";
+      decalType = "Collision Mesh";
+      allowPlayerStep = "1";
+      renderNormals = "0";
+      forceDetail = "-1";
+      position = "-0.549045 25.3348 5.50066";
+      rotation = "1 0 0 0";
+      scale = "0.0214852 0.0214852 0.0214852";
+      canSave = "1";
+      canSaveDynamicFields = "1";
    };
 };
 //--- OBJECT WRITE END ---

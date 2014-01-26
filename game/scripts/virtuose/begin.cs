@@ -2,7 +2,11 @@
 exec( "scripts/virtuose/baguettes.cs" );
 exec( "scripts/virtuose/modifObjects.cs" );
 
-$pos = 0.0;
+$posx = 0.0;
+$posy = 0.0;
+$signe= 1.0;
+
+$sens="left";
 	   
 function placeInstruments(%nbInstruments){
 	for(%i=0;%i<%nbInstruments;%i++){
@@ -18,16 +22,18 @@ function createInstruments(%instrument){
 				   shapeFile = "art/shapes/virtuose/" @ %instrument @ ".dae";   
 				   junkvar = "helloworld";
 			   };
-			   
+
+			  
 			   new StaticShape() 
 			   {
 				   dataBlock = %instrument;
-				   //position = pos+Spawn.position.x SPC Spawn.position.y SPC Spawn.position.z;
-				   position = %cpt %y %cpt;
+	
+				   		position = $signe*$posx+start.position.x SPC $posy+start.position.y SPC start.position.z;
 
 				   rotation = "1 90 0 0";
 				   scale = "1 1 1";
 				   name=%instrument;
+
 			   };
 			   
 			   // Create a file stream object for reading
@@ -43,7 +49,28 @@ function createInstruments(%instrument){
 					%instrument.shapeFile="art/shapes/virtuose/drum.dae";
 			   }
 			   %fsObject.close();
-			   $pos+=2.0;
+
+			   $posy-=0.5;
+			   echo ($sens);
+			   	echo($signe*$posx+start.position.x);
+
+			   switch$($sens){
+			   	case "right":
+			   	$signe=1.0;
+
+			   	$sens = "left";
+
+
+			   	case "left":
+			   	$signe=-1.0;
+			   				   	$posx+=2.0;
+
+			   	$sens="right";
+
+
+			   }
+
+
 			
 		  // }
 }
