@@ -22,8 +22,10 @@ function createInstruments(%instrument){
 			   new StaticShape() 
 			   {
 				   dataBlock = %instrument;
-				   position = pos+Spawn.position.x SPC Spawn.position.y SPC Spawn.position.z;
-				   rotation = "1 0 0 0";
+				   //position = pos+Spawn.position.x SPC Spawn.position.y SPC Spawn.position.z;
+				   position = %cpt %y %cpt;
+
+				   rotation = "1 90 0 0";
 				   scale = "1 1 1";
 				   name=%instrument;
 			   };
@@ -49,7 +51,7 @@ function createInstruments(%instrument){
 function placeInstrumentsTrack(){
 	
 	for(%i=0;%i<$midiPlayer.getNumTracks();%i++){
-		//echo($midiPlayer.getInstrumentName(%i));
-		createInstruments($midiPlayer.getInstrumentName(%i));
+		echo($midiPlayer.getInstrumentName(%i));
+		//createInstruments($midiPlayer.getInstrumentName(%i));
 	}
 }
