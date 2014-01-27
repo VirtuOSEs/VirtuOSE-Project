@@ -22,6 +22,9 @@ PlayerTracker::~PlayerTracker()
 {
 }
 void PlayerTracker::init(){
+	Con::printf("START NITE INITIALIZE\n");
+	nite::NiTE::initialize();
+
 	niteRc = userTracker.create();
 	
 	if (niteRc != nite::STATUS_OK)
@@ -69,7 +72,32 @@ void PlayerTracker::updateUserState(const nite::UserData& user, unsigned long lo
 	}
 }
 
-float PlayerTracker::getJointPositionX(char* joint){
+int PlayerTracker::getVelocityTest(){
+	return velocityTest;
+}
+void PlayerTracker::VelocityHandChecker(float hand, float torso){
+	float position=hand;
+	float epsilon=100;
+	float max_y=400;
+	float min_y=-400;
+
+	if((position-torso>=max_y-epsilon)&&(position-torso<=max_y+epsilon))
+		velocityTest=1;
+	else if((position+torso>=min_y-epsilon)&&(position+torso<=min_y+epsilon))
+		velocityTest=-1;
+	else
+		velocityTest=0;
+}
+
+void VelocityHandChecker2(float hand, float torso){
+	float position=hand;
+	float epsilon=100;
+	float zero = torso;
+	float max_y=450-torso;
+	float min_y=-450+torso;
+}
+
+/*float PlayerTracker::getJointPositionX(char* joint){
 	const nite::Array<nite::UserData>& users = userTrackerFrame.getUsers();
 	for (int i = 0; i < users.getSize(); ++i) {
 	
@@ -99,7 +127,7 @@ float PlayerTracker::getJointPositionX(char* joint){
 				}
 			}
 	}
-}
+}*/
 
 /*float  PlayerTracker::getJointPositionY(char* joint){
 	const nite::Array<nite::UserData>& users = userTrackerFrame.getUsers();
@@ -146,45 +174,55 @@ float  PlayerTracker::getJointPositionZ(char* joint){
 
 void PlayerTracker::readNextFrame(){
 
-	niteRc = userTracker.readFrame(&userTrackerFrame);
-	if (niteRc != nite::STATUS_OK)
-	{
-		Con::printf("Get next frame failed\n");
-		return;
-	}
+		//ONLY FOR Y COORDINATES
+		int t_p; // Torso Position
+		int lh_p; // Left Hand Position
+		int rh_p; // Right Hand Position
 
-	const nite::Array<nite::UserData>& users = userTrackerFrame.getUsers();
-	for (int i = 0; i < users.getSize(); ++i) {
-		
-		const nite::UserData& user = users[i];
-		updateUserState(user,userTrackerFrame.getTimestamp());
-		if (user.isNew())
-		{
-			userTracker.startSkeletonTracking(user.getId());
-		}
-		else if (user.getSkeleton().getState() == nite::SKELETON_TRACKED)
-		{	
-			Con::printf("Tracked \n");
-			/*Con::printf("LEFT \n");
-			const nite::SkeletonJoint& head = user.getSkeleton().getJoint(nite::JOINT_LEFT_HAND);
-			if (head.getPositionConfidence() > .5)
-			Con::printf("%d. (%5.2f, %5.2f, %5.2f)\n", user.getId(), head.getPosition().x, head.getPosition().y, head.getPosition().z);
-				
-			Con::printf("RIGHT \n");
-			const nite::SkeletonJoint& head2 = user.getSkeleton().getJoint(nite::JOINT_RIGHT_HAND);
-			if (head2.getPositionConfidence() > .5)
-			Con::printf("%d. (%5.2f, %5.2f, %5.2f)\n", user.getId(), head2.getPosition().x, head2.getPosition().y, head2.getPosition().z);
-			*/
-		}
-	}
-	
+        niteRc = userTracker.readFrame(&userTrackerFrame);
+        if (niteRc != nite::STATUS_OK)
+        {
+                Con::printf("Get next frame failed\n");
+                return;
+        }
+
+        const nite::Array<nite::UserData>& users = userTrackerFrame.getUsers();
+        for (int i = 0; i < users.getSize(); ++i) {
+                
+                const nite::UserData& user = users[i];
+                updateUserState(user,userTrackerFrame.getTimestamp());
+                if (user.isNew())
+                {
+                        userTracker.startSkeletonTracking(user.getId());
+                }
+                else if (user.getSkeleton().getState() == nite::SKELETON_TRACKED)
+                {        
+                        const nite::SkeletonJoint& lh = user.getSkeleton().getJoint(nite::JOINT_LEFT_HAND);
+						if (lh.getPositionConfidence() > .5)
+							lh_p=lh.getPosition().y;
+
+						
+						const nite::SkeletonJoint& torso = user.getSkeleton().getJoint(nite::JOINT_TORSO);
+						if (torso.getPositionConfidence() > .5)
+							t_p=torso.getPosition().y;
+
+						const nite::SkeletonJoint& rh = user.getSkeleton().getJoint(nite::JOINT_RIGHT_HAND);
+						if (rh.getPositionConfidence() > .5)
+							rh_p=rh.getPosition().y;
+
+						VelocityHandChecker(lh_p,t_p);
+						Con::printf("%d \n",velocityTest);
+                }
+        }
+        
 }
+
 
 //-------------Torque Script Bridge
 
 DefineEngineMethod(PlayerTracker, getLHXP, void, (),, "Get X Position of Left Hand")
 {
-  object->getJointPositionX("left");
+  //object->getJointPositionX("left");
 }
 
 

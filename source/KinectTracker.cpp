@@ -21,6 +21,10 @@ void KinectTracker::run()
 	for(;;)
 	{
 		UT.readNextFrame();
+		if (UT.getVelocityTest()==1)
+			sequencer.increaseVelocityFactorInPercent(5);
+		if (UT.getVelocityTest()==-1)
+			sequencer.decreaseVelocityFactorInPercent(5);
     wait(10);
     if (threadShouldExit())
       return;
