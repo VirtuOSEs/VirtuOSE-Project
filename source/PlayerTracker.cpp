@@ -22,9 +22,6 @@ PlayerTracker::~PlayerTracker()
 {
 }
 void PlayerTracker::init(){
-	Con::printf("START NITE INITIALIZE\n");
-	nite::NiTE::initialize();
-
 	niteRc = userTracker.create();
 	
 	if (niteRc != nite::STATUS_OK)
@@ -147,43 +144,40 @@ float  PlayerTracker::getJointPositionZ(char* joint){
 }*/
 
 
-void PlayerTracker::startDetection(){
-	Con::printf("START NITE DECTECTION\n");
-	Con::printf("\nStart moving around to GET detected...\n(PSI pose may be required for skeleton calibration, depending on the configuration)\n");
-	for(;;)
-	{
-		niteRc = userTracker.readFrame(&userTrackerFrame);
-		if (niteRc != nite::STATUS_OK)
-		{
-			Con::printf("Get next frame failed\n");
-			continue;
-		}
+void PlayerTracker::readNextFrame(){
 
-		const nite::Array<nite::UserData>& users = userTrackerFrame.getUsers();
-		for (int i = 0; i < users.getSize(); ++i) {
+	niteRc = userTracker.readFrame(&userTrackerFrame);
+	if (niteRc != nite::STATUS_OK)
+	{
+		Con::printf("Get next frame failed\n");
+		return;
+	}
+
+	const nite::Array<nite::UserData>& users = userTrackerFrame.getUsers();
+	for (int i = 0; i < users.getSize(); ++i) {
 		
-			const nite::UserData& user = users[i];
-			updateUserState(user,userTrackerFrame.getTimestamp());
-			if (user.isNew())
-			{
-				userTracker.startSkeletonTracking(user.getId());
-			}
-			else if (user.getSkeleton().getState() == nite::SKELETON_TRACKED)
-			{	
-				Con::printf("Tracked \n");
-				/*Con::printf("LEFT \n");
-				const nite::SkeletonJoint& head = user.getSkeleton().getJoint(nite::JOINT_LEFT_HAND);
-				if (head.getPositionConfidence() > .5)
-				Con::printf("%d. (%5.2f, %5.2f, %5.2f)\n", user.getId(), head.getPosition().x, head.getPosition().y, head.getPosition().z);
+		const nite::UserData& user = users[i];
+		updateUserState(user,userTrackerFrame.getTimestamp());
+		if (user.isNew())
+		{
+			userTracker.startSkeletonTracking(user.getId());
+		}
+		else if (user.getSkeleton().getState() == nite::SKELETON_TRACKED)
+		{	
+			Con::printf("Tracked \n");
+			/*Con::printf("LEFT \n");
+			const nite::SkeletonJoint& head = user.getSkeleton().getJoint(nite::JOINT_LEFT_HAND);
+			if (head.getPositionConfidence() > .5)
+			Con::printf("%d. (%5.2f, %5.2f, %5.2f)\n", user.getId(), head.getPosition().x, head.getPosition().y, head.getPosition().z);
 				
-				Con::printf("RIGHT \n");
-				const nite::SkeletonJoint& head2 = user.getSkeleton().getJoint(nite::JOINT_RIGHT_HAND);
-				if (head2.getPositionConfidence() > .5)
-				Con::printf("%d. (%5.2f, %5.2f, %5.2f)\n", user.getId(), head2.getPosition().x, head2.getPosition().y, head2.getPosition().z);
-				*/
-			}
+			Con::printf("RIGHT \n");
+			const nite::SkeletonJoint& head2 = user.getSkeleton().getJoint(nite::JOINT_RIGHT_HAND);
+			if (head2.getPositionConfidence() > .5)
+			Con::printf("%d. (%5.2f, %5.2f, %5.2f)\n", user.getId(), head2.getPosition().x, head2.getPosition().y, head2.getPosition().z);
+			*/
 		}
 	}
+	
 }
 
 //-------------Torque Script Bridge

@@ -19,7 +19,7 @@ public:
  	~PlayerTracker();
 
  	void updateUserState(const nite::UserData& user, unsigned long long ts);
- 	void startDetection();
+ 	void readNextFrame();
  	void init();
  	float getJointPositionX(char* joint);
  	//float getJointPositionY(char* joint);
