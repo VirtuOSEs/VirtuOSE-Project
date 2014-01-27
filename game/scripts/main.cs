@@ -113,9 +113,9 @@ function onStart()
       initClient();
 
 
-    $midiPlayer = new MidiPlayer();
-    $midiPlayer.loadMidiFile("../Beethoven-Symphony5-1.mid");
-    $midiPlayer.play();
+   $midiPlayer = new MidiPlayer();
+   $midiPlayer.loadMidiFile("../Beethoven-Symphony5-1.mid");
+   $midiPlayer.play();
 }
 
 function onExit()

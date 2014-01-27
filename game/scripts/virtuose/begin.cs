@@ -4,6 +4,7 @@ exec( "scripts/virtuose/modifObjects.cs" );
 
 $posx = 0.0;
 $posy = 0.0;
+$posz = 0.0;
 $signe= 1.0;
 
 $sens="left";
@@ -51,6 +52,7 @@ function createInstruments(%instrument){
 			   %fsObject.close();
 
 			   $posy-=0.5;
+			   $posz+=0.5;
 			   echo ($sens);
 			   	echo($signe*$posx+start.position.x);
 
@@ -63,7 +65,7 @@ function createInstruments(%instrument){
 
 			   	case "left":
 			   	$signe=-1.0;
-			   				   	$posx+=2.0;
+			   	$posx+=2.0;
 
 			   	$sens="right";
 
