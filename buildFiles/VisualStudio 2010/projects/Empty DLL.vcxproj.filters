@@ -2885,6 +2885,9 @@
     <ClCompile Include="..\..\..\source\PlayerTracker.cpp">
       <Filter>Source Files\source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\source\KinectTracker.cpp">
+      <Filter>Source Files\source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\..\Engine\source\T3D\aiClient.h">

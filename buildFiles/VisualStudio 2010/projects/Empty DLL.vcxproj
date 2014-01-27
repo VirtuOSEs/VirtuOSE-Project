@@ -244,6 +244,7 @@
     <ClCompile Include="..\..\..\source\JuceScript.cpp" />
     <ClCompile Include="..\..\..\source\JuceModule.cpp" />
     <ClCompile Include="..\..\..\source\KinectModule.cpp" />
+    <ClCompile Include="..\..\..\source\KinectTracker.cpp" />
     <ClCompile Include="..\..\..\source\PlayerTracker.cpp" />
     <ClCompile Include="..\..\..\source\Sequencer.cpp" />
     <ClInclude Include="..\..\..\..\..\Engine\source\platform\input\oculusVR\barrelDistortionPostEffect.h" />

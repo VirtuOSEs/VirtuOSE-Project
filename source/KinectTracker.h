@@ -12,24 +12,15 @@ namespace KinectModule
 class KinectTracker : public juce::Thread
 {
 public:
-	explicit KinectTracker(JuceModule::Sequencer& sequencer)
-		: juce::Thread("KinectThread"), sequencer(sequencer)
-	{
-    UT.init();
-  }
+  //Helper function to allow devs without Kinect to..dev !
+  static bool kinectEnabled;
+  static void enableKinect()
+    {kinectEnabled = true;}
+  static void disableKinect()
+    {kinectEnabled = false;}
 
-	void run()
-	{
-    Con::printf("START NITE DECTECTION\n");
-	  Con::printf("\nStart moving around to GET detected...\n(PSI pose may be required for skeleton calibration, depending on the configuration)\n");
-	  for(;;)
-	  {
-		  UT.readNextFrame();
-      wait(10);
-      if (threadShouldExit())
-        return;
-    }
-	}
+	explicit KinectTracker(JuceModule::Sequencer& sequencer);
+	void run();
 
 private:
 	PlayerTracker UT;
