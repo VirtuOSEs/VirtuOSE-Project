@@ -6,7 +6,6 @@
 #include <vector>
 #include "NiTE.h"
 
-
 class PlayerTracker : public SimObject 
 {
 public:
@@ -30,5 +29,6 @@ private:
 	nite::Status niteRc;
 	nite::UserTrackerFrameRef userTrackerFrame;
 };
+
 
 #endif // KINECT_MODULE_SCRIPT_H

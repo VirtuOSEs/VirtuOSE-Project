@@ -4,12 +4,16 @@
 #include "console/console.h"
 #include "JuceLibraryCode\JuceHeader.h"
 #include "PlayerTracker.h"
+#include "Sequencer.h"
+
+namespace KinectModule
+{
 
 class KinectTracker : public juce::Thread
 {
 public:
-	explicit KinectTracker()
-		: juce::Thread("KinectThread")
+	explicit KinectTracker(JuceModule::Sequencer& sequencer)
+		: juce::Thread("KinectThread"), sequencer(sequencer)
 	{
     UT.init();
   }
@@ -29,6 +33,9 @@ public:
 
 private:
 	PlayerTracker UT;
+  JuceModule::Sequencer& sequencer;
 };
+
+} //namespace KinectModule
 
 #endif // KINECT_MODULE_TRACKER_H

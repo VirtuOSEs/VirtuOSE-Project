@@ -142,6 +142,7 @@ Sequencer::Sequencer(std::vector<JuceModule::Track::Ptr > tracks, short timeForm
 
 Sequencer::~Sequencer()
 {
+  stop();
   signalThreadShouldExit();
   notify();
   this->waitForThreadToExit(100);

@@ -7,6 +7,7 @@
 //**********INCLUDE STD LIB*********************
 #include <vector>
 
+#include "KinectTracker.h"
 #include "Sequencer.h"
 
 /**
@@ -15,16 +16,16 @@
   (see JuceScript.cpp to see exactly which methods are accessible).
   Early implementation, should evolve a lot.
 **/
-class MidiPlayer : public SimObject
+class Orchestrator : public SimObject
 {
 public:
   typedef SimObject Parent;
-  DECLARE_CONOBJECT( MidiPlayer );
+  DECLARE_CONOBJECT( Orchestrator );
   DECLARE_CATEGORY( "Juce Module" );
   DECLARE_DESCRIPTION( "A midi file player." );
 
-  MidiPlayer();
-  ~MidiPlayer();
+  Orchestrator();
+  ~Orchestrator();
 
   void loadMidiFile(const char* filePath);
   int getNumTracks();
@@ -43,7 +44,9 @@ public:
   void saveSequence(const char* filePath);
 
 private:
-  JuceModule::Sequencer* sequencer;
+  juce::ScopedPointer<JuceModule::Sequencer> sequencer;
+  juce::ScopedPointer<KinectModule::KinectTracker> kinectTracker;
+
   std::vector<JuceModule::Track::Ptr > tracks;
   std::vector<juce::MidiMessageSequence> sequences;
 };
