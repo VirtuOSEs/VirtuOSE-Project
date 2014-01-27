@@ -2882,6 +2882,9 @@
     <ClCompile Include="..\..\..\..\..\Engine\source\T3D\gameBase\extended\extendedMoveList.cpp">
       <Filter>Source Files\Engine\T3D\gameBase\extended</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\source\PlayerTracker.cpp">
+      <Filter>Source Files\source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\..\Engine\source\T3D\aiClient.h">
@@ -5391,6 +5394,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Engine\source\T3D\gameBase\extended\extendedMoveList.h">
       <Filter>Source Files\Engine\T3D\gameBase\extended</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\PlayerTracker.h">
+      <Filter>Source Files\source</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

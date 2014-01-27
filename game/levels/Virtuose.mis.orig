@@ -1604,6 +1604,8 @@ new SimGroup(MissionGroup) {
          canSave = "1";
          canSaveDynamicFields = "1";
       };
+<<<<<<< HEAD
+=======
       new TSStatic(Chair1322) {
          shapeName = "art/shapes/virtuose/Chair.dae";
          playAmbient = "1";
@@ -1620,6 +1622,7 @@ new SimGroup(MissionGroup) {
          canSave = "1";
          canSaveDynamicFields = "1";
       };
+>>>>>>> c935acfbcedb767ce30aba95ae05829246a0050b
       new TSStatic(Chair13112) {
          shapeName = "art/shapes/virtuose/Chair.dae";
          playAmbient = "1";
@@ -1801,6 +1804,38 @@ new SimGroup(MissionGroup) {
       canSave = "1";
       canSaveDynamicFields = "1";
 
+      new TSStatic(Caisse) {
+         shapeName = "art/shapes/cube/cube.dae";
+         playAmbient = "1";
+         meshCulling = "0";
+         originSort = "0";
+         collisionType = "Collision Mesh";
+         decalType = "Collision Mesh";
+         allowPlayerStep = "1";
+         renderNormals = "0";
+         forceDetail = "-1";
+         position = "-4.8635 26.5026 4.40063";
+         rotation = "0 0 1 167.694";
+         scale = "1 1 1.80553";
+         canSave = "1";
+         canSaveDynamicFields = "1";
+      };
+      new TSStatic(Amplifier) {
+         shapeName = "art/shapes/virtuose/Yamaha_Amplifier.dae";
+         playAmbient = "1";
+         meshCulling = "0";
+         originSort = "0";
+         collisionType = "Collision Mesh";
+         decalType = "Collision Mesh";
+         allowPlayerStep = "1";
+         renderNormals = "0";
+         forceDetail = "-1";
+         position = "-4.7251 26.2048 6.14673";
+         rotation = "0 0 1 167.694";
+         scale = "0.0400909 0.0400909 0.0400909";
+         canSave = "1";
+         canSaveDynamicFields = "1";
+      };
       new TSStatic(Guitar2) {
          shapeName = "art/shapes/virtuose/Stratocaster.dae";
          playAmbient = "1";
@@ -1811,9 +1846,9 @@ new SimGroup(MissionGroup) {
          allowPlayerStep = "1";
          renderNormals = "0";
          forceDetail = "-1";
-         position = "-5.48603 30.5948 4.62108";
+         position = "-4.62351 25.8448 5.02795";
          rotation = "-0.64271 0.615324 0.4564 103.094";
-         scale = "1 1 1";
+         scale = "0.148423 0.148423 0.148423";
          canSave = "1";
          canSaveDynamicFields = "1";
       };
@@ -1827,8 +1862,8 @@ new SimGroup(MissionGroup) {
          allowPlayerStep = "1";
          renderNormals = "0";
          forceDetail = "-1";
-         position = "-8.17985 23.3659 7.09724";
-         rotation = "0.524298 -0.59083 0.613214 128.473";
+         position = "3.60013 28.268 6.59487";
+         rotation = "-0.0992478 -0.57035 0.815384 197.811";
          scale = "0.01 0.01 0.01";
          canSave = "1";
          canSaveDynamicFields = "1";
@@ -2114,8 +2149,8 @@ new SimGroup(MissionGroup) {
          allowPlayerStep = "1";
          renderNormals = "0";
          forceDetail = "-1";
-         position = "4.00975 25.8988 3.07968";
-         rotation = "0 0 1 47.5678";
+         position = "3.56608 23.9393 4.11716";
+         rotation = "-0.0561068 -0.0577178 0.996755 19.4282";
          scale = "1 1 1";
          canSave = "1";
          canSaveDynamicFields = "1";
@@ -2137,9 +2172,9 @@ new SimGroup(MissionGroup) {
          allowPlayerStep = "1";
          renderNormals = "0";
          forceDetail = "-1";
-         position = "-3.65665 27.9461 5.64107";
-         rotation = "0.519445 0.152125 0.840854 38.4053";
-         scale = "1 1 1";
+         position = "-3.38902 26.438 5.3395";
+         rotation = "-0.410244 0.563986 -0.716673 108.533";
+         scale = "0.35682 0.35682 0.35682";
          canSave = "1";
          canSaveDynamicFields = "1";
             _Black = "_Black_mat";
@@ -2155,9 +2190,9 @@ new SimGroup(MissionGroup) {
          allowPlayerStep = "1";
          renderNormals = "0";
          forceDetail = "-1";
-         position = "-7.05409 25.0031 4.74702";
-         rotation = "1 0 0 0";
-         scale = "1 1 1";
+         position = "-1.61521 24.919 5.42134";
+         rotation = "0.200613 -0.593071 0.779757 164.046";
+         scale = "0.806145 0.806145 0.806145";
          canSave = "1";
          canSaveDynamicFields = "1";
             flute_silver = "flute_silver_mat";
@@ -2172,9 +2207,9 @@ new SimGroup(MissionGroup) {
          allowPlayerStep = "1";
          renderNormals = "0";
          forceDetail = "-1";
-         position = "4.03642 26.8734 4.38544";
-         rotation = "1 0 0 0";
-         scale = "1 1 1";
+         position = "8.14235 25.8528 5.39114";
+         rotation = "0 0 1 167.694";
+         scale = "0.563471 0.563471 0.563471";
          canSave = "1";
          canSaveDynamicFields = "1";
             skp_front_defaul = "skp_front_defaul_mat";
@@ -2192,9 +2227,9 @@ new SimGroup(MissionGroup) {
          allowPlayerStep = "1";
          renderNormals = "0";
          forceDetail = "-1";
-         position = "-6.76943 28.1308 4.62381";
-         rotation = "1 0 0 0";
-         scale = "1 1 1";
+         position = "1.07741 22.8564 5.26611";
+         rotation = "0 0 1 90.5723";
+         scale = "1.45037 1.45037 1.45037";
          canSave = "1";
          canSaveDynamicFields = "1";
             sax_black = "sax_black_mat";
@@ -2214,9 +2249,9 @@ new SimGroup(MissionGroup) {
          allowPlayerStep = "1";
          renderNormals = "0";
          forceDetail = "-1";
-         position = "-7.33364 26.4712 4.44764";
-         rotation = "1 0 0 0";
-         scale = "1 1 1";
+         position = "-3.06081 21.7832 4.94382";
+         rotation = "-0.325227 0.299969 0.896798 75.9801";
+         scale = "1.69024 1.69024 1.69024";
          canSave = "1";
          canSaveDynamicFields = "1";
             _01___Default = "_01___Default_mat";
@@ -2233,9 +2268,9 @@ new SimGroup(MissionGroup) {
          allowPlayerStep = "1";
          renderNormals = "0";
          forceDetail = "-1";
-         position = "-7.39937 23.7682 4.44324";
-         rotation = "1 0 0 0";
-         scale = "1 1 1";
+         position = "-7.93092 24.2017 4.53691";
+         rotation = "-0.704691 -0.393539 0.590371 38.806";
+         scale = "0.19025 0.19025 0.19025";
          canSave = "1";
          canSaveDynamicFields = "1";
       };
@@ -2249,9 +2284,9 @@ new SimGroup(MissionGroup) {
          allowPlayerStep = "1";
          renderNormals = "0";
          forceDetail = "-1";
-         position = "-1.30392 29.2313 5.06286";
-         rotation = "1 0 0 0";
-         scale = "1 1 1";
+         position = "-2.19067 25.9336 5.30425";
+         rotation = "-0.199003 0.979885 -0.0149211 88.0209";
+         scale = "0.186338 0.186338 0.186338";
          canSave = "1";
          canSaveDynamicFields = "1";
       };
@@ -2265,9 +2300,9 @@ new SimGroup(MissionGroup) {
          allowPlayerStep = "1";
          renderNormals = "0";
          forceDetail = "-1";
-         position = "-0.129091 29.0425 4.09285";
-         rotation = "1 0 0 0";
-         scale = "1 1 1";
+         position = "0.365369 27.0802 4.26475";
+         rotation = "0 0 1 167.694";
+         scale = "0.265835 0.265835 0.265835";
          canSave = "1";
          canSaveDynamicFields = "1";
             Glass = "Glass_mat";
@@ -2287,9 +2322,9 @@ new SimGroup(MissionGroup) {
          allowPlayerStep = "1";
          renderNormals = "0";
          forceDetail = "-1";
-         position = "3.65112 27.1318 4.99118";
-         rotation = "1 0 0 0";
-         scale = "1 1 1";
+         position = "-4.05128 23.296 5.08747";
+         rotation = "-0 0 -1 17.4945";
+         scale = "0.666445 0.666445 0.666445";
          canSave = "1";
          canSaveDynamicFields = "1";
             BLANCO = "BLANCO_mat";
@@ -2320,7 +2355,7 @@ new SimGroup(MissionGroup) {
          allowPlayerStep = "1";
          renderNormals = "0";
          forceDetail = "-1";
-         position = "2.5367 25.5 12.3368";
+         position = "-3.08554 25.5 6.21945";
          rotation = "1 0 0 0";
          scale = "0.275127 0.275127 0.275127";
          canSave = "1";
@@ -2342,22 +2377,6 @@ new SimGroup(MissionGroup) {
          canSave = "1";
          canSaveDynamicFields = "1";
       };
-   };
-   new TSStatic(start) {
-      shapeName = "art/shapes/cube/cube.dae";
-      playAmbient = "1";
-      meshCulling = "0";
-      originSort = "0";
-      collisionType = "Collision Mesh";
-      decalType = "Collision Mesh";
-      allowPlayerStep = "1";
-      renderNormals = "0";
-      forceDetail = "-1";
-      position = "-0.549045 25.3348 5.50066";
-      rotation = "1 0 0 0";
-      scale = "0.0214852 0.0214852 0.0214852";
-      canSave = "1";
-      canSaveDynamicFields = "1";
    };
 };
 //--- OBJECT WRITE END ---
