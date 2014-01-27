@@ -14,14 +14,14 @@ MODULE_BEGIN( KinectModule )
 
   MODULE_INIT
   {
-    kinectTracker = new KinectTracker();
-  	kinectTracker->startThread();
+    //kinectTracker = new KinectTracker();
+  	//kinectTracker->startThread();
   }
 
   MODULE_SHUTDOWN
   {
-    nite::NiTE::shutdown();// On ferme NiTE
-    delete kinectTracker;
+    //nite::NiTE::shutdown();// On ferme NiTE
+    //delete kinectTracker;
   
   }
 
