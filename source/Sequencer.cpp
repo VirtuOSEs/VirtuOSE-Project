@@ -144,6 +144,7 @@ Sequencer::~Sequencer()
 {
   signalThreadShouldExit();
   notify();
+  this->waitForThreadToExit(100);
 }
 
 void Sequencer::saveSequence(const juce::String& filePath)
@@ -222,6 +223,7 @@ void Sequencer::stop()
     const juce::ScopedLock sL(ticksAccess);
     ticks = 0;
   }
+  
   for (int i = 0; i < tracks.size(); ++i)
     tracks[i]->restart();
 
@@ -234,6 +236,12 @@ void Sequencer::stop()
 
 void Sequencer::pause()
 {
+  {
+    const juce::ScopedLock sL(stoppedAccess);
+    if (stopped)
+      return;
+  }
+
   paused = true;
   AudioTools::getInstance().disableAudioProcessing();
 }
@@ -368,7 +376,7 @@ void Track::restart()
   {
     juce::MidiMessageSequence::MidiEventHolder* midiEvent = sequence.getEventPointer(i);
     if (midiEvent->message.isNoteOff())
-      AudioTools::getInstance().makePluginPlay(instrumentName, midiEvent->message);
+      AudioTools::getInstance().makePluginPlay(trackName, midiEvent->message);
     ++i;
   }
 
@@ -396,7 +404,6 @@ void Track::playAtTick(double tick)
 
   if ( timeStamp <= tick)
   {
-    //
     //ThreadPool::queueWorkItemOnMainThread(new ChangeOpacity(trackName));
     midiEvent->message.multiplyVelocity(velocityFactor);
     AudioTools::getInstance().makePluginPlay(trackName, midiEvent->message);

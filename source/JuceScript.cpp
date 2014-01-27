@@ -7,18 +7,18 @@
 //**********INCLUDE WINDOWS THREAD******
 #include <Objbase.h>
 
-IMPLEMENT_CONOBJECT(MidiPlayer);
+IMPLEMENT_CONOBJECT(Orchestrator);
 
-MidiPlayer::MidiPlayer()
+Orchestrator::Orchestrator()
 {
 }
 
-MidiPlayer::~MidiPlayer()
+Orchestrator::~Orchestrator()
 {
-  delete sequencer;
+  kinectTracker->stopThread(100);
 }
 
-void MidiPlayer::loadMidiFile(const char* filePath)
+void Orchestrator::loadMidiFile(const char* filePath)
 {
   juce::File myFile = juce::File::getCurrentWorkingDirectory().getChildFile (filePath);
     
@@ -58,24 +58,27 @@ void MidiPlayer::loadMidiFile(const char* filePath)
 
   sequencer = new JuceModule::Sequencer(tracks, midiFile.getTimeFormat());
   sequencer->setTempoTrack(tempoTrack);
+
+  kinectTracker = new KinectModule::KinectTracker(*sequencer);
+  kinectTracker->startThread();
 }
 
-void MidiPlayer::increaseVelocityFactor(short percentage)
+void Orchestrator::increaseVelocityFactor(short percentage)
 {
   sequencer->increaseVelocityFactorInPercent(percentage);
 }
 
-void MidiPlayer::decreaseVelocityFactor(short percentage)
+void Orchestrator::decreaseVelocityFactor(short percentage)
 {
   sequencer->decreaseVelocityFactorInPercent(percentage);
 }
 
-void MidiPlayer::saveSequence(const char* filePath)
+void Orchestrator::saveSequence(const char* filePath)
 {
   sequencer->saveSequence(filePath);
 }
 
-void MidiPlayer::play()
+void Orchestrator::play()
 {
   jassert(sequencer);
   if (!sequencer)
@@ -84,14 +87,14 @@ void MidiPlayer::play()
   sequencer->play();
 }
 
-void MidiPlayer::pause()
+void Orchestrator::pause()
 {
  if (!sequencer)
     return;
  sequencer->pause();
 }
 
-void MidiPlayer::stop()
+void Orchestrator::stop()
 {
   if (!sequencer)
     return;
@@ -99,29 +102,29 @@ void MidiPlayer::stop()
   sequencer->stop();
 }
 
-int MidiPlayer::getTempo() const
+int Orchestrator::getTempo() const
 {
   return static_cast<int>(sequencer->getTempo());
 }
 
-void MidiPlayer::setTempo(juce::uint32 tempo)
+void Orchestrator::setTempo(juce::uint32 tempo)
 {
   if (!sequencer)
     return;
   sequencer->setTempo(tempo);
 }
 
-int MidiPlayer::getNumTracks()
+int Orchestrator::getNumTracks()
   {return tracks.size();}
 
-String MidiPlayer::getInstrumentName(int index)
+String Orchestrator::getInstrumentName(int index)
 {
   jassert (index < tracks.size());
 
   return tracks[index]->getInstrumentName().toStdString().c_str();
 }
 
-String MidiPlayer::getTrackName(int index)
+String Orchestrator::getTrackName(int index)
 {
   jassert (index < tracks.size());
 
@@ -130,62 +133,62 @@ String MidiPlayer::getTrackName(int index)
 
 //-------------Torque Script Bridge
 
-DefineEngineMethod(MidiPlayer, loadMidiFile, void, (const char* filePath), , "Load a Midi File. You must call this method before any other on MidiPlayer.")
+DefineEngineMethod(Orchestrator, loadMidiFile, void, (const char* filePath), , "Load a Midi File. You must call this method before any other on Orchestrator.")
 {
   object->loadMidiFile(filePath);
 }
 
-DefineEngineMethod(MidiPlayer, play, void, (),, "Play a MIDI sequence" )
+DefineEngineMethod(Orchestrator, play, void, (),, "Play a MIDI sequence" )
 {
   object->play();
 }
 
-DefineEngineMethod(MidiPlayer, stop, void, (),, "Stop a MIDI sequence" )
+DefineEngineMethod(Orchestrator, stop, void, (),, "Stop a MIDI sequence" )
 {
   object->stop();
 }
 
-DefineEngineMethod(MidiPlayer, pause, void, (),, "Pause a MIDI sequence" )
+DefineEngineMethod(Orchestrator, pause, void, (),, "Pause a MIDI sequence" )
 {
   object->pause();
 }
 
-DefineEngineMethod(MidiPlayer, getTempo, int, (),, "Get the current tempo of the midi sequence")
+DefineEngineMethod(Orchestrator, getTempo, int, (),, "Get the current tempo of the midi sequence")
 {
   return object->getTempo();
 }
 
-DefineEngineMethod(MidiPlayer, setTempo, void, (unsigned int tempo),, "Set a new tempo for the midi sequence")
+DefineEngineMethod(Orchestrator, setTempo, void, (unsigned int tempo),, "Set a new tempo for the midi sequence")
 {
   object->setTempo(tempo);
 }
 
-DefineEngineMethod(MidiPlayer, saveSequence, void, (const char* filePath),, "Save the modified sequence")
+DefineEngineMethod(Orchestrator, saveSequence, void, (const char* filePath),, "Save the modified sequence")
 {
   object->saveSequence(filePath);
 }
 
-DefineEngineMethod(MidiPlayer, increaseVelocity, void, (int percentage),, "Increase velocity of midi notes")
+DefineEngineMethod(Orchestrator, increaseVelocity, void, (int percentage),, "Increase velocity of midi notes")
 {
   object->increaseVelocityFactor(static_cast<short>(percentage));
 }
 
-DefineEngineMethod(MidiPlayer, decreaseVelocity, void, (int percentage),, "Decrease velocity of midi notes")
+DefineEngineMethod(Orchestrator, decreaseVelocity, void, (int percentage),, "Decrease velocity of midi notes")
 {
   object->decreaseVelocityFactor(static_cast<short>(percentage));
 }
 
-DefineEngineMethod(MidiPlayer, getNumTracks, int, (),, "Return the number of tracks in the sequence")
+DefineEngineMethod(Orchestrator, getNumTracks, int, (),, "Return the number of tracks in the sequence")
 {
   return object->getNumTracks();
 }
 
-DefineEngineMethod(MidiPlayer, getInstrumentName, String, (int index),, "Get names of the instruments in the sequence at the track of index 'index'")
+DefineEngineMethod(Orchestrator, getInstrumentName, String, (int index),, "Get names of the instruments in the sequence at the track of index 'index'")
 {
   return object->getInstrumentName(index);
 }
 
-DefineEngineMethod(MidiPlayer, getTrackName, String, (int index),, "Get the track name at index 'index' in the sequence")
+DefineEngineMethod(Orchestrator, getTrackName, String, (int index),, "Get the track name at index 'index' in the sequence")
 {
   return object->getTrackName(index);
 }
