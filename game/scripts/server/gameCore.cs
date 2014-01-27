@@ -635,11 +635,11 @@ function GameCore::loadOut(%game, %player)
    
    if (%player.getDatablock().mainWeapon.image !$= "")
    {
-      %player.mountImage(%player.getDatablock().mainWeapon.image, 0);
+      // %player.mountImage(%player.getDatablock().mainWeapon.image, 0);
    }
    else
    {
-      %player.mountImage(Ryder, 0);
+      // %player.mountImage(Ryder, 0);
    }
 }
 
