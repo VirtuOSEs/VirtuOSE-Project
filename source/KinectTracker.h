@@ -10,12 +10,21 @@ class KinectTracker : public juce::Thread
 public:
 	explicit KinectTracker()
 		: juce::Thread("KinectThread")
-	{}
+	{
+    UT.init();
+  }
 
 	void run()
 	{
-		UT.init();
-		UT.startDetection();
+    Con::printf("START NITE DECTECTION\n");
+	  Con::printf("\nStart moving around to GET detected...\n(PSI pose may be required for skeleton calibration, depending on the configuration)\n");
+	  for(;;)
+	  {
+		  UT.readNextFrame();
+      wait(10);
+      if (threadShouldExit())
+        return;
+    }
 	}
 
 private:
