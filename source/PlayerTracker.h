@@ -6,6 +6,7 @@
 #include <vector>
 #include "NiTE.h"
 
+
 class PlayerTracker : public SimObject 
 {
 public:
@@ -20,7 +21,10 @@ public:
  	void updateUserState(const nite::UserData& user, unsigned long long ts);
  	void readNextFrame();
  	void init();
- 	float getJointPositionX(char* joint);
+	void VelocityHandChecker(float hand, float torso);
+	void VelocityHandChecker2(float hand, float torso);
+	int getVelocityTest();
+ 	//float getJointPositionX(char* joint);
  	//float getJointPositionY(char* joint);
  	//float getJointPositionZ(char* joint);
 
@@ -28,7 +32,7 @@ private:
 	nite::UserTracker userTracker;
 	nite::Status niteRc;
 	nite::UserTrackerFrameRef userTrackerFrame;
+	int velocityTest;
 };
-
 
 #endif // KINECT_MODULE_SCRIPT_H

@@ -23,7 +23,7 @@ public:
 	void run();
 
 private:
-	PlayerTracker UT;
+  PlayerTracker UT;
   JuceModule::Sequencer& sequencer;
 };
 
