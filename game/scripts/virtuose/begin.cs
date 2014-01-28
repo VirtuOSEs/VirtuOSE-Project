@@ -63,7 +63,7 @@ function createInstruments(%instrument){
 
 			   	case "left":
 			   	$signe=-1.0;
-			   				   	$posx+=2.0;
+			   	$posx+=2.0;
 
 			   	$sens="right";
 
@@ -82,3 +82,9 @@ function placeInstrumentsTrack(){
 		//createInstruments($midiPlayer.getInstrumentName(%i));
 	}
 }
+
+// function renderText(%text,%obj){
+	// Point2I start( %obj.position.x, %obj.position.z );
+    // drawer->drawText( mProfile->mFont, start + offset, text, mProfile->mFontColors );
+// } 
+
