@@ -38,4 +38,9 @@ void KinectTracker::run()
   }
 }
 
+float KinectTracker::getHandX()
+{
+  return 0.f;
+}
+
 } // namespace KinectModule

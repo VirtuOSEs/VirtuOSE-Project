@@ -22,6 +22,7 @@ PlayerTracker::PlayerTracker()
 PlayerTracker::~PlayerTracker()
 {
 }
+
 void PlayerTracker::init(){
 	Con::printf("START NITE INITIALIZE\n");
 	nite::NiTE::initialize();
@@ -73,9 +74,11 @@ void PlayerTracker::updateUserState(const nite::UserData& user, unsigned long lo
 	}
 }
 
-int PlayerTracker::getVelocityTest(){
+int PlayerTracker::getVelocityTest()
+{
 	return velocityTest;
 }
+
 void PlayerTracker::VelocityHandChecker(float hand, float torso){
 	float position=hand;
 	float epsilon=100;
@@ -172,7 +175,9 @@ float  PlayerTracker::getJointPositionZ(char* joint){
 	}
 }*/
 
-
+#include "T3D/tsStatic.h"
+#include "T3D/missionMarker.h"
+#include "math/mTransform.h"
 void PlayerTracker::readNextFrame(){
 
   //ONLY FOR Y COORDINATES
@@ -218,8 +223,35 @@ void PlayerTracker::readNextFrame(){
         tempoChanged = true;
       else
         tempoChanged = false;
+     
+      if (rh.getPositionConfidence() > 0.5 && torso.getPositionConfidence() > 0.5)
+      {
+        float rhandX = (rh.getPosition().x - torso.getPosition().x) / 100.f;
+        float rhandY = (rh.getPosition().y - torso.getPosition().y) / 100.f;
+        float rhandZ = (rh.getPosition().z - torso.getPosition().z) / 100.f;
+
+        float lhandX = (lh.getPosition().x - torso.getPosition().x) / 100.f;
+        float lhandY = (lh.getPosition().y - torso.getPosition().y) / 100.f;
+        float lhandZ = (lh.getPosition().z - torso.getPosition().z) / 100.f;
+
+        TSStatic* rightHandSphere = dynamic_cast<TSStatic* > (Sim::findObject("rightHand"));
+        TSStatic* leftHandSphere = dynamic_cast<TSStatic* > (Sim::findObject("leftHand"));
+        SpawnSphere* spawn = dynamic_cast<SpawnSphere* > (Sim::findObject("Spawn"));
+        if (rightHandSphere != nullptr && spawn != nullptr && leftHandSphere != nullptr)
+        {
+          MatrixF eyeMatrix;
+          spawn->getEyeTransform(&eyeMatrix);
+          Point3F eyePosition = eyeMatrix.getPosition();
+          //inversion de y et z entre Kinect et Torque, le rHandZ est aussi inversé
+          TransformF rhandTransform(Point3F(eyePosition.x + rhandX, eyePosition.y - rhandZ, eyePosition.z + rhandY), AngAxisF());
+          TransformF lhandTransform(Point3F(eyePosition.x + lhandX, eyePosition.y - lhandZ, eyePosition.z + lhandY), AngAxisF());
+          rightHandSphere->setTransform(rhandTransform.getMatrix());
+          leftHandSphere->setTransform(lhandTransform.getMatrix());
+        }
+      }
+
     }
-  }
+  } 
 
 }
 

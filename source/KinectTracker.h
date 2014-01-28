@@ -22,6 +22,11 @@ public:
 	explicit KinectTracker(JuceModule::Sequencer& sequencer);
 	void run();
 
+  //C'est sale mais en attendant une meilleure architecture globale...
+  float getHandX();
+  float getHandY();
+  float getHandZ();
+
 private:
   PlayerTracker UT;
   JuceModule::Sequencer& sequencer;
