@@ -21,10 +21,26 @@ void KinectTracker::run()
 	for(;;)
 	{
 		UT.readNextFrame();
+		if (UT.getVelocityTest()==1)
+			sequencer.increaseVelocityFactorInPercent(5);
+		else if (UT.getVelocityTest()==-1)
+			sequencer.decreaseVelocityFactorInPercent(5);
+
+    if (UT.hasTempoChanged())
+    {
+      Con::printf("Tempo changed : new Tempo %d", UT.getTempo());
+      sequencer.setTempo(UT.getTempo());
+    }
+
     wait(10);
     if (threadShouldExit())
       return;
   }
+}
+
+float KinectTracker::getHandX()
+{
+  return 0.f;
 }
 
 } // namespace KinectModule
