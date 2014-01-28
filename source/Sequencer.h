@@ -90,6 +90,8 @@ public:
   void decreaseVelocityFactor(short percentage)
     {velocityFactor -= velocityFactor / 100.f * percentage;}
 
+  void setVelocity(float value);
+
   juce::String getTrackName() const
     {return trackName;}
 
@@ -104,6 +106,8 @@ protected:
   juce::String trackName;
   juce::String instrumentName;
   float velocityFactor;
+  float velocity;
+  bool velocityChanged;
   juce::CriticalSection sequenceAccess;
 };
 
@@ -130,6 +134,7 @@ public:
   void setTempo(juce::uint32 tempo);
   void increaseVelocityFactorInPercent(short percentage);
   void decreaseVelocityFactorInPercent(short percentage);
+  void setVelocityAbsolute(float value);
 
   void stop();
   void pause();
