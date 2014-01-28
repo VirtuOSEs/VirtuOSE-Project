@@ -1244,7 +1244,7 @@ new SimGroup(MissionGroup) {
          canSaveDynamicFields = "1";
       };
    };
-   new TSStatic(start) {
+   new TSStatic(corde) {
       shapeName = "art/shapes/cube/cube.dae";
       playAmbient = "1";
       meshCulling = "0";
@@ -1254,9 +1254,57 @@ new SimGroup(MissionGroup) {
       allowPlayerStep = "1";
       renderNormals = "0";
       forceDetail = "-1";
-      position = "-0.549045 25.3348 5.50066";
+      position = "-3.75135 24.2994 5.50066";
       rotation = "1 0 0 0";
       scale = "0.0214852 0.0214852 0.0214852";
+      canSave = "1";
+      canSaveDynamicFields = "1";
+   };
+   new TSStatic(percussion) {
+      shapeName = "art/shapes/cube/cube.dae";
+      playAmbient = "1";
+      meshCulling = "0";
+      originSort = "0";
+      collisionType = "Collision Mesh";
+      decalType = "Collision Mesh";
+      allowPlayerStep = "1";
+      renderNormals = "0";
+      forceDetail = "-1";
+      position = "-7.9292 25.3713 4.24518";
+      rotation = "1 0 0 0";
+      scale = "0.01 0.01 0.01";
+      canSave = "1";
+      canSaveDynamicFields = "1";
+   };
+   new TSStatic(bois) {
+      shapeName = "art/shapes/cube/cube.dae";
+      playAmbient = "1";
+      meshCulling = "0";
+      originSort = "0";
+      collisionType = "Collision Mesh";
+      decalType = "Collision Mesh";
+      allowPlayerStep = "1";
+      renderNormals = "0";
+      forceDetail = "-1";
+      position = "0.0176687 29.7266 4.22837";
+      rotation = "1 0 0 0";
+      scale = "0.01 0.01 0.01";
+      canSave = "1";
+      canSaveDynamicFields = "1";
+   };
+   new TSStatic(cuivre) {
+      shapeName = "art/shapes/cube/cube.dae";
+      playAmbient = "1";
+      meshCulling = "0";
+      originSort = "0";
+      collisionType = "Collision Mesh";
+      decalType = "Collision Mesh";
+      allowPlayerStep = "1";
+      renderNormals = "0";
+      forceDetail = "-1";
+      position = "4.99154 20.9879 4.27437";
+      rotation = "1 0 0 0";
+      scale = "0.01 0.01 0.01";
       canSave = "1";
       canSaveDynamicFields = "1";
    };

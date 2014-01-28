@@ -24,12 +24,42 @@ function createInstruments(%instrument){
 				   junkvar = "helloworld";
 			   };
 
-			  
+			   switch$(%instrument){
+			   	case "piano":
+			   		%famille = "corde";
+			   	case "harpe":
+			   		%famille = "corde";	
+			   	case "contrebass":
+			   		%famille = "corde";
+			   	case "bassElec":
+			   		%famille = "corde";		
+			   	case "Guitar":
+			   		%famille = "corde";	
+			   	case "Guitar2":
+			   		%famille = "corde";		
+			   	case "violon":
+			   		%famille = "corde";	
+			   	case "drum":
+			   		%famille = "percussion";	
+			   	case "saxo":
+			   		%famille = "bois";
+			   	case "flutetraversiere":
+			   		%famille = "bois";	
+			   	case "contrebass":
+			   		%famille = "bois";	
+			   	case "trombone":
+			   		%famille = "cuivre";
+			   	case "trumpet":
+			   		%famille = "cuivre";			
+
+			   }
+			   
+			   
 			   new StaticShape() 
 			   {
 				   dataBlock = %instrument;
 	
-				   		position = $signe*$posx+start.position.x SPC $posy+start.position.y SPC start.position.z;
+				   		position = $signe*$posx+%famille.position.x SPC $posy+%famille.position.y SPC %famille.position.z;
 
 				   rotation = "1 90 0 0";
 				   scale = "1 1 1";
@@ -51,7 +81,7 @@ function createInstruments(%instrument){
 			   }
 			   %fsObject.close();
 
-			   $posy-=0.5;
+			 /*  $posy-=0.5;
 			   $posz+=0.5;
 			   echo ($sens);
 			   	echo($signe*$posx+start.position.x);
@@ -70,7 +100,7 @@ function createInstruments(%instrument){
 			   	$sens="right";
 
 
-			   }
+			   }*/
 
 
 			
