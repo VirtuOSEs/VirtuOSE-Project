@@ -195,6 +195,7 @@ void PlayerTracker::readNextFrame(){
     if (user.isNew())
     {
       userTracker.startSkeletonTracking(user.getId());
+      userTracker.setSkeletonSmoothingFactor(.85f);
     }
     else if (user.getSkeleton().getState() == nite::SKELETON_TRACKED)
     {        
@@ -213,7 +214,7 @@ void PlayerTracker::readNextFrame(){
 
       VelocityHandChecker(lh_p,t_p);
 
-      if (tempoGesture.checkTempoGesture(torso, rh))
+      if (tempoGesture.checkTempoGesture(user.getSkeleton()))
         tempoChanged = true;
       else
         tempoChanged = false;

@@ -19,24 +19,29 @@ public:
       tempo(92),
       yBottom(0.f),
       yTop(150.f),
-      timeOut(3000)
+      timeOut(3500)
   {}
 
-  void calibrateGesture(const nite::SkeletonJoint& torso)
+  void calibrateGesture(const nite::SkeletonJoint& rightHip)
   {
-    yBottom = torso.getPosition().y - 160.f;//30cm en dessous du torse
-    yTop = yBottom + 150.f;
+    if (rightHip.getPositionConfidence() < 0.5f)
+      return;
+    yBottom = rightHip.getPosition().y;
+    yTop = yBottom + 200.f;
     gestureCalibrated = true;
-    Con::printf("yBottom : %f, yTop : %f", yBottom, yTop);
+    Con::printf("Tempo gesture : yBottom : %f, yTop : %f", yBottom, yTop);
   }
 
   juce::int32 getTempo() const
     {return tempo;}
 
-  bool checkTempoGesture(const nite::SkeletonJoint& torso, const nite::SkeletonJoint& rightHand)
+  bool checkTempoGesture(const nite::Skeleton& skeleton)
   {
+    const nite::SkeletonJoint& rightHand = skeleton.getJoint(nite::JOINT_RIGHT_HAND);
+    const nite::SkeletonJoint& rightHip = skeleton.getJoint(nite::JOINT_RIGHT_HIP);
+
     if (!gestureCalibrated)
-      calibrateGesture(torso);
+      calibrateGesture(rightHip);
 
     if (rightHand.getPositionConfidence() < 0.5)
       return false;
@@ -49,7 +54,7 @@ public:
       //Suis-je dans la zone ?
       if (handY >= yBottom && handY <= yTop)
       {
-        Con::printf("DANS ZONE : DEBUT MOUVEMENT");
+       // Con::printf("DANS ZONE : DEBUT MOUVEMENT %f", handY);
         status = IN_ZONE;
         startTime = juce::Time::getMillisecondCounterHiRes();
       }
@@ -60,12 +65,18 @@ public:
       //Suis-je sorti de la zone ? On considère qu'on ne sort que "par le haut"
       if (handY > yTop)
       {
-        Con::printf("HORS ZONE : SUITE MOUVEMENT");
+       // Con::printf("HORS ZONE : SUITE MOUVEMENT %f", handY);
         status = OUT_ZONE;
+      }
+      //Si on sort par le bas : annulation du geste
+      else if (handY < yBottom)
+      {
+       // Con::printf("SORTIE PAR LE BAS : NO GESTURE %f", handY);
+        status = NO_GESTURE;
       }
       else if (juce::Time::getMillisecondCounterHiRes() - startTime >= timeOut)
       {
-        Con::printf("TIMEOUT");
+       // Con::printf("TIMEOUT %f", handY);
         status = NO_GESTURE;
       }
     }
@@ -74,10 +85,18 @@ public:
     {
       if (handY >= yBottom && handY <= yTop)
       {
-        Con::printf("DANS ZONE FIN MOUVEMENT");
+      //  Con::printf("DANS ZONE FIN MOUVEMENT %f", handY);
         double currentTime = juce::Time::getMillisecondCounterHiRes();
         double elapsedTime = currentTime - startTime;
-        tempo = static_cast<juce::int32>(60000 / elapsedTime);
+        
+        //Gestion des valeurs aberrantes
+        if (elapsedTime < 288) //Equivaut à peu près à tempo = 208 
+        {
+        //  Con::printf("VALEUR ABERRANTE: PASSAGE EN NO GESTURE %f", handY);
+          status = NO_GESTURE;
+          return false;
+        }
+        tempo = static_cast<juce::int32>(120000 / elapsedTime);//On bat à la blanche
         startTime = currentTime;
 
         //Pour simplifier pour l'instant on ne peut pas enchainer
@@ -86,7 +105,7 @@ public:
       }
       else if (juce::Time::getMillisecondCounterHiRes() - startTime >= timeOut)
       {
-        Con::printf("TIMEOUT");
+      //  Con::printf("TIMEOUT %f", handY);
         status = NO_GESTURE;
       }
     }
