@@ -16,6 +16,7 @@ nite::SkeletonState g_skeletonStates[MAX_USERS] = {nite::SKELETON_NONE};
 
 
 PlayerTracker::PlayerTracker()
+  : tempoChanged(false)
 {
 }
 PlayerTracker::~PlayerTracker()
@@ -174,47 +175,60 @@ float  PlayerTracker::getJointPositionZ(char* joint){
 
 void PlayerTracker::readNextFrame(){
 
-		//ONLY FOR Y COORDINATES
-		int t_p; // Torso Position
-		int lh_p; // Left Hand Position
-		int rh_p; // Right Hand Position
+  //ONLY FOR Y COORDINATES
+  int t_p; // Torso Position
+  int lh_p; // Left Hand Position
+  int rh_p; // Right Hand Position
 
-        niteRc = userTracker.readFrame(&userTrackerFrame);
-        if (niteRc != nite::STATUS_OK)
-        {
-                Con::printf("Get next frame failed\n");
-                return;
-        }
+  niteRc = userTracker.readFrame(&userTrackerFrame);
+  if (niteRc != nite::STATUS_OK)
+  {
+    Con::printf("Get next frame failed\n");
+    return;
+  }
 
-        const nite::Array<nite::UserData>& users = userTrackerFrame.getUsers();
-        for (int i = 0; i < users.getSize(); ++i) {
-                
-                const nite::UserData& user = users[i];
-                updateUserState(user,userTrackerFrame.getTimestamp());
-                if (user.isNew())
-                {
-                        userTracker.startSkeletonTracking(user.getId());
-                }
-                else if (user.getSkeleton().getState() == nite::SKELETON_TRACKED)
-                {        
-                        const nite::SkeletonJoint& lh = user.getSkeleton().getJoint(nite::JOINT_LEFT_HAND);
-						if (lh.getPositionConfidence() > .5)
-							lh_p=lh.getPosition().y;
+  const nite::Array<nite::UserData>& users = userTrackerFrame.getUsers();
+  for (int i = 0; i < users.getSize(); ++i) {
 
-						
-						const nite::SkeletonJoint& torso = user.getSkeleton().getJoint(nite::JOINT_TORSO);
-						if (torso.getPositionConfidence() > .5)
-							t_p=torso.getPosition().y;
+    const nite::UserData& user = users[i];
+    updateUserState(user,userTrackerFrame.getTimestamp());
+    if (user.isNew())
+    {
+      userTracker.startSkeletonTracking(user.getId());
+    }
+    else if (user.getSkeleton().getState() == nite::SKELETON_TRACKED)
+    {        
+      const nite::SkeletonJoint& lh = user.getSkeleton().getJoint(nite::JOINT_LEFT_HAND);
+      if (lh.getPositionConfidence() > .5)
+        lh_p=lh.getPosition().y;
 
-						const nite::SkeletonJoint& rh = user.getSkeleton().getJoint(nite::JOINT_RIGHT_HAND);
-						if (rh.getPositionConfidence() > .5)
-							rh_p=rh.getPosition().y;
 
-						VelocityHandChecker(lh_p,t_p);
-						Con::printf("%d \n",velocityTest);
-                }
-        }
-        
+      const nite::SkeletonJoint& torso = user.getSkeleton().getJoint(nite::JOINT_TORSO);
+      if (torso.getPositionConfidence() > .5)
+        t_p=torso.getPosition().y;
+
+      const nite::SkeletonJoint& rh = user.getSkeleton().getJoint(nite::JOINT_RIGHT_HAND);
+      if (rh.getPositionConfidence() > .5)
+        rh_p=rh.getPosition().y;
+
+      VelocityHandChecker(lh_p,t_p);
+
+      if (tempoGesture.checkTempoGesture(torso, rh))
+        tempoChanged = true;
+      else
+        tempoChanged = false;
+    }
+  }
+
+}
+
+bool PlayerTracker::hasTempoChanged() const
+{
+  return tempoChanged;
+}
+juce::int32 PlayerTracker::getTempo() const
+{
+  return tempoGesture.getTempo();
 }
 
 
