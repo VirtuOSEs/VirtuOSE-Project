@@ -111,11 +111,6 @@ function onStart()
       initDedicated();
    else
       initClient();
-
-
-    $orchestrator = new Orchestrator();
-    $orchestrator.loadMidiFile("../Beethoven-Symphony5-1.mid");
-    $orchestrator.play();
 }
 
 function onExit()

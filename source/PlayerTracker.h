@@ -3,8 +3,14 @@
 
 //***********INCLUDE TORQUE ENGINE***************
 #include "console/engineAPI.h"
+
+#include "T3D/tsStatic.h"
+#include "T3D/missionMarker.h"
+#include "math/mTransform.h"
+
 #include <vector>
 #include "NiTE.h"
+
 
 #include "JuceLibraryCode/JuceHeader.h"
 class TempoGesture
@@ -154,6 +160,10 @@ private:
 	int velocityTest;
   TempoGesture tempoGesture;
   bool tempoChanged;
+  TSStatic* rightHandSphere;
+  TSStatic* leftHandSphere;
+  SpawnSphere* spawn;
+  Point3F eyePosition;
 };
 
 #endif // KINECT_MODULE_SCRIPT_H

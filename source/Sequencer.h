@@ -78,7 +78,7 @@ class Track : public juce::ReferenceCountedObject
 public:
   typedef juce::ReferenceCountedObjectPtr<Track> Ptr;
 
-  Track(U32 index, juce::MidiMessageSequence& sequence);
+  Track(U32 index, juce::MidiMessageSequence sequence);
 
   void playAtTick(double tick);
   void restart();
@@ -101,7 +101,7 @@ public:
 protected:
   juce::String extractInstrumentNameFromTrackName(const juce::String& trackName);
 
-  juce::MidiMessageSequence& sequence;
+  juce::MidiMessageSequence sequence;
   int eventIndex;
   juce::String trackName;
   juce::String instrumentName;
@@ -117,9 +117,10 @@ protected:
   Maintains also a special MidiSequence containing all the tempo change
   events.
  **/
-class Sequencer : public juce::Thread
+class Sequencer : public juce::Thread, public juce::ReferenceCountedObject
 {
 public:
+  typedef juce::ReferenceCountedObjectPtr<Sequencer> Ptr;
   Sequencer(std::vector<JuceModule::Track::Ptr > tracks, short timeFormat,
             double tempo = 92.0);
   ~Sequencer();

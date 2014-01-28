@@ -44,11 +44,10 @@ public:
   void saveSequence(const char* filePath);
 
 private:
-  juce::ScopedPointer<JuceModule::Sequencer> sequencer;
+  JuceModule::Sequencer::Ptr sequencer;
   juce::ScopedPointer<KinectModule::KinectTracker> kinectTracker;
 
   std::vector<JuceModule::Track::Ptr > tracks;
-  std::vector<juce::MidiMessageSequence> sequences;
 };
 
 
