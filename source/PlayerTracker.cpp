@@ -22,10 +22,7 @@ Point3F HandsMove::eyePosition = Point3F();
 const float HandsMove::EYE_OFFSET = 2.5f;
 
 PlayerTracker::PlayerTracker()
-  : tempoChanged(false),
-    rightHandSphere(nullptr),
-    leftHandSphere(nullptr),
-    spawn(nullptr)
+  : tempoChanged(false)
 {
 }
 

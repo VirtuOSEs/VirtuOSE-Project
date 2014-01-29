@@ -129,6 +129,7 @@ private:
   float timeOut;
 };
 
+
 /** WorkItem qui modifie la position des mains.
     Envoyée au main thread par PlayerTracker
     **/
@@ -168,7 +169,6 @@ public:
 private:
   Point3F leftHand;
   Point3F rightHand;
-  //Mini optim
   static TSStatic* rightHandSphere;
   static TSStatic* leftHandSphere;
   static SpawnSphere* spawn;
@@ -208,10 +208,6 @@ private:
 	int velocityTest;
   TempoGesture tempoGesture;
   bool tempoChanged;
-  TSStatic* rightHandSphere;
-  TSStatic* leftHandSphere;
-  SpawnSphere* spawn;
-  Point3F eyePosition;
 };
 
 #endif // KINECT_MODULE_SCRIPT_H
