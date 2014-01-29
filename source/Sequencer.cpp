@@ -353,7 +353,7 @@ void ChangeOpacity::execute()
   changeOpacity_callback(trackName.toStdString().c_str(), 0.5);
 }
 
-Track::Track(U32 index, juce::MidiMessageSequence& sequence)
+Track::Track(U32 index, juce::MidiMessageSequence sequence)
   : sequence(sequence),
     eventIndex(0), 
     trackName(juce::String::empty),
