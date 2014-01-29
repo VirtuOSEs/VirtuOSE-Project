@@ -15,7 +15,7 @@ moveMap.bind(keyboard, "up", moveForward);
 moveMap.bind(keyboard, "down", movebackward);
 moveMap.bind(keyboard, "e", moveup);
 moveMap.bind(keyboard, "c", movedown);
-moveMap.bind(keyboard, "space", jump);
+moveMap.bind(keyboard, "space", playPause);
 moveMap.bind(keyboard, "lcontrol", doCrouch);
 moveMap.bind(keyboard, "lshift", doSprint);
 moveMap.bind(keyboard, "f", setZoomFOV);

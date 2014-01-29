@@ -1,6 +1,7 @@
 // Le script du projet Virtuose
 exec( "scripts/virtuose/baguettes.cs" );
 exec( "scripts/virtuose/modifObjects.cs" );
+exec( "scripts/virtuose/sounds.cs" );
 
 $posx = 0.0;
 $posy = 0.0;
