@@ -110,6 +110,28 @@ function createInstruments(%instrument){
 			   }
 			   %fsObject.close();
 
+<<<<<<< HEAD
+			   $posy-=0.5;
+			   echo ($sens);
+			   	echo($signe*$posx+start.position.x);
+
+			   switch$($sens){
+			   	case "right":
+			   	$signe=1.0;
+
+			   	$sens = "left";
+
+
+			   	case "left":
+			   	$signe=-1.0;
+			   	$posx+=2.0;
+
+			   	$sens="right";
+
+
+			   }
+=======
+>>>>>>> da5079702390e277216f2c8cbd45bd0932c5d9f0
 
 
 }
@@ -121,3 +143,9 @@ function placeInstrumentsTrack(){
 		//createInstruments($midiPlayer.getInstrumentName(%i));
 	}
 }
+
+// function renderText(%text,%obj){
+	// Point2I start( %obj.position.x, %obj.position.z );
+    // drawer->drawText( mProfile->mFont, start + offset, text, mProfile->mFontColors );
+// } 
+
