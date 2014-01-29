@@ -62,6 +62,7 @@ void Orchestrator::loadMidiFile(const char* filePath)
 
   kinectTracker = new KinectModule::KinectTracker(sequencer);
   kinectTracker->startThread();
+  kinectTracker->setPriority(10);
 }
 
 void Orchestrator::increaseVelocityFactor(short percentage)
