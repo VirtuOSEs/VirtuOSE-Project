@@ -20,10 +20,10 @@ void KinectTracker::run()
 	Con::printf("\nStart moving around to GET detected...\n(PSI pose may be required for skeleton calibration, depending on the configuration)\n");
 	for(;;)
 	{
-    wait(5);
+    wait(200);
     if (threadShouldExit())
       return;
-		UT.readNextFrame();
+		//UT.readNextFrame();
 		if (UT.getVelocityTest()==1)
 			sequencer->increaseVelocityFactorInPercent(5);
 		else if (UT.getVelocityTest()==-1)
@@ -31,6 +31,8 @@ void KinectTracker::run()
 
     if (UT.hasTempoChanged())
     {
+      //until next tempo event, UT.hasTempoChanged will return false
+      UT.resetTempoChangedFlag();
       //Con::printf("Tempo changed : new Tempo %d", UT.getTempo());
       sequencer->setTempo(UT.getTempo());
     }

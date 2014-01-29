@@ -177,7 +177,7 @@ private:
 };
 
 
-class PlayerTracker : public SimObject 
+class PlayerTracker : public SimObject, public nite::UserTracker::NewFrameListener
 {
 public:
 	typedef SimObject Parent;
@@ -188,6 +188,9 @@ public:
  	PlayerTracker();
  	~PlayerTracker();
 
+  //from nite::UserTracker::NewFrameListener
+  virtual void onNewFrame(nite::UserTracker& userTracker);
+
  	void updateUserState(const nite::UserData& user, unsigned long long ts);
  	void readNextFrame();
  	void init();
@@ -195,6 +198,7 @@ public:
 	void VelocityHandChecker2(float hand, float torso);
 	int getVelocityTest();
   bool hasTempoChanged() const;
+  void resetTempoChangedFlag();
   juce::int32 getTempo() const;
 
  	//float getJointPositionX(char* joint);
@@ -207,6 +211,7 @@ private:
 	nite::UserTrackerFrameRef userTrackerFrame;
 	int velocityTest;
   TempoGesture tempoGesture;
+  juce::CriticalSection tempoChangedAccess;
   bool tempoChanged;
 };
 
