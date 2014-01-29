@@ -1,6 +1,7 @@
 // Le script du projet Virtuose
 exec( "scripts/virtuose/baguettes.cs" );
 exec( "scripts/virtuose/modifObjects.cs" );
+exec( "scripts/virtuose/sounds.cs" );
 
 $posx = 0.0;
 $posy = 0.0;
@@ -19,19 +20,18 @@ function placeInstruments(%nbInstruments){
 
 function createInstruments(%instrument){
 				
-		// if(strcmp(%instrument,"batterie")==0){
+
 				datablock StaticShapeData(%instrument) 
 			   {   
-				   shapeFile = "art/shapes/virtuose/" @ %instrument @ ".dae";   
+				   shapeFile = "art/shapes/virtuose/" @ %instrument @ ".dae";
 				   junkvar = "helloworld";
 			   };
-
+			
 			  switch$(%instrument){
 			   	case "piano":
 			   		%famille = "corde";
 			   		$posxcorde ++;
 			   		$posx= $posxcorde;
-
 			   	case "harpe":
 			   		%famille = "corde";	
 			   		$posxcorde ++;
@@ -95,22 +95,8 @@ function createInstruments(%instrument){
 				   name=%instrument;
 
 			   };
-			   
-			   // Create a file stream object for reading
-				%fsObject = new FileStreamObject();
+			  
 
-				// Open a file for reading
-				%fsObject.open(%instrument.shapeFile, "read");
-
-				// Get the status and print it
-				%status = %fsObject.getStatus();
-				echo(%status);
-				if(%status==IOError){
-					%instrument.shapeFile="art/shapes/virtuose/drum.dae";
-			   }
-			   %fsObject.close();
-
-<<<<<<< HEAD
 			   $posy-=0.5;
 			   echo ($sens);
 			   	echo($signe*$posx+start.position.x);
@@ -130,22 +116,21 @@ function createInstruments(%instrument){
 
 
 			   }
-=======
->>>>>>> da5079702390e277216f2c8cbd45bd0932c5d9f0
-
 
 }
 
 function placeInstrumentsTrack(){
-	
-	for(%i=0;%i<$midiPlayer.getNumTracks();%i++){
-		echo($midiPlayer.getInstrumentName(%i));
-		//createInstruments($midiPlayer.getInstrumentName(%i));
+	for(%i=1;%i<$orchestrator.getNumTracks();%i++){
+		//echo($orchestrator.getInstrumentName(%i));
+		createInstruments($orchestrator.getInstrumentName(%i));
 	}
 }
 
-// function renderText(%text,%obj){
-	// Point2I start( %obj.position.x, %obj.position.z );
-    // drawer->drawText( mProfile->mFont, start + offset, text, mProfile->mFontColors );
-// } 
-
+//Initialisation
+function virtuoseStart(){
+	echo("Virtuose Start");
+    leftHand.position = Spawn.position.x-2 SPC Spawn.position.y+5 SPC Spawn.position.z+1;
+    rightHand.position = Spawn.position.x+2 SPC Spawn.position.y+5 SPC Spawn.position.z+1;
+	soleil.setHidden();
+	//placeInstrumentsTrack();
+}

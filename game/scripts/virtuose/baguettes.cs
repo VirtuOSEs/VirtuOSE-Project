@@ -7,12 +7,6 @@ function test(){
 	echo(Spawn.position);
 }
 
-function virtuoseStart(){
-	echo("Virtuose Start");
-    leftHand.position = Spawn.position.x-2 SPC Spawn.position.y+5 SPC Spawn.position.z+1;
-    rightHand.position = Spawn.position.x+2 SPC Spawn.position.y+5 SPC Spawn.position.z+1;
-}
-
 function mainDroite(%x, %y, %z){
 	rightHand.position = Spawn.position.x+%x SPC Spawn.position.y+%y SPC Spawn.position.z+%z;
 }
