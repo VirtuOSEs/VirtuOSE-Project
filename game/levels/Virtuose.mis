@@ -1254,7 +1254,7 @@ new SimGroup(MissionGroup) {
       allowPlayerStep = "1";
       renderNormals = "0";
       forceDetail = "-1";
-      position = "-3.75135 24.2994 5.50066";
+      position = "-3.76407 28.5814 5.48831";
       rotation = "1 0 0 0";
       scale = "0.0214852 0.0214852 0.0214852";
       canSave = "1";
@@ -1270,7 +1270,7 @@ new SimGroup(MissionGroup) {
       allowPlayerStep = "1";
       renderNormals = "0";
       forceDetail = "-1";
-      position = "-7.9292 25.3713 4.24518";
+      position = "-7.9292 25.3713 4.90961";
       rotation = "1 0 0 0";
       scale = "0.01 0.01 0.01";
       canSave = "1";
@@ -1286,7 +1286,7 @@ new SimGroup(MissionGroup) {
       allowPlayerStep = "1";
       renderNormals = "0";
       forceDetail = "-1";
-      position = "0.0176687 29.7266 4.22837";
+      position = "2.64432 28.0374 4.22837";
       rotation = "1 0 0 0";
       scale = "0.01 0.01 0.01";
       canSave = "1";
