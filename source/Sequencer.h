@@ -78,7 +78,7 @@ class Track : public juce::ReferenceCountedObject
 public:
   typedef juce::ReferenceCountedObjectPtr<Track> Ptr;
 
-  Track(U32 index, juce::MidiMessageSequence& sequence);
+  Track(U32 index, juce::MidiMessageSequence sequence);
 
   void playAtTick(double tick);
   void restart();
@@ -90,6 +90,8 @@ public:
   void decreaseVelocityFactor(short percentage)
     {velocityFactor -= velocityFactor / 100.f * percentage;}
 
+  void setVelocity(float value);
+
   juce::String getTrackName() const
     {return trackName;}
 
@@ -99,11 +101,13 @@ public:
 protected:
   juce::String extractInstrumentNameFromTrackName(const juce::String& trackName);
 
-  juce::MidiMessageSequence& sequence;
+  juce::MidiMessageSequence sequence;
   int eventIndex;
   juce::String trackName;
   juce::String instrumentName;
   float velocityFactor;
+  float velocity;
+  bool velocityChanged;
   juce::CriticalSection sequenceAccess;
 };
 
@@ -113,9 +117,10 @@ protected:
   Maintains also a special MidiSequence containing all the tempo change
   events.
  **/
-class Sequencer : public juce::Thread
+class Sequencer : public juce::Thread, public juce::ReferenceCountedObject
 {
 public:
+  typedef juce::ReferenceCountedObjectPtr<Sequencer> Ptr;
   Sequencer(std::vector<JuceModule::Track::Ptr > tracks, short timeFormat,
             double tempo = 92.0);
   ~Sequencer();
@@ -130,6 +135,7 @@ public:
   void setTempo(juce::uint32 tempo);
   void increaseVelocityFactorInPercent(short percentage);
   void decreaseVelocityFactorInPercent(short percentage);
+  void setVelocityAbsolute(float value);
 
   void stop();
   void pause();

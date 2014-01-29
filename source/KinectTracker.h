@@ -19,12 +19,17 @@ public:
   static void disableKinect()
     {kinectEnabled = false;}
 
-	explicit KinectTracker(JuceModule::Sequencer& sequencer);
+	explicit KinectTracker(JuceModule::Sequencer::Ptr sequencer);
 	void run();
+
+  //C'est sale mais en attendant une meilleure architecture globale...
+  float getHandX();
+  float getHandY();
+  float getHandZ();
 
 private:
   PlayerTracker UT;
-  JuceModule::Sequencer& sequencer;
+  JuceModule::Sequencer::Ptr sequencer;
 };
 
 } //namespace KinectModule

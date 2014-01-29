@@ -16,11 +16,17 @@ nite::SkeletonState g_skeletonStates[MAX_USERS] = {nite::SKELETON_NONE};
 
 
 PlayerTracker::PlayerTracker()
+  : tempoChanged(false),
+    rightHandSphere(nullptr),
+    leftHandSphere(nullptr),
+    spawn(nullptr)
 {
 }
+
 PlayerTracker::~PlayerTracker()
 {
 }
+
 void PlayerTracker::init(){
 	Con::printf("START NITE INITIALIZE\n");
 	nite::NiTE::initialize();
@@ -72,9 +78,11 @@ void PlayerTracker::updateUserState(const nite::UserData& user, unsigned long lo
 	}
 }
 
-int PlayerTracker::getVelocityTest(){
+int PlayerTracker::getVelocityTest()
+{
 	return velocityTest;
 }
+
 void PlayerTracker::VelocityHandChecker(float hand, float torso){
 	float position=hand;
 	float epsilon=100;
@@ -171,50 +179,99 @@ float  PlayerTracker::getJointPositionZ(char* joint){
 	}
 }*/
 
-
 void PlayerTracker::readNextFrame(){
 
-		//ONLY FOR Y COORDINATES
-		int t_p; // Torso Position
-		int lh_p; // Left Hand Position
-		int rh_p; // Right Hand Position
+  //ONLY FOR Y COORDINATES
+  int t_p; // Torso Position
+  int lh_p; // Left Hand Position
+  int rh_p; // Right Hand Position
 
-        niteRc = userTracker.readFrame(&userTrackerFrame);
-        if (niteRc != nite::STATUS_OK)
+  niteRc = userTracker.readFrame(&userTrackerFrame);
+  if (niteRc != nite::STATUS_OK)
+  {
+    Con::printf("Get next frame failed\n");
+    return;
+  }
+
+  const nite::Array<nite::UserData>& users = userTrackerFrame.getUsers();
+  for (int i = 0; i < users.getSize(); ++i) {
+
+    const nite::UserData& user = users[i];
+    updateUserState(user,userTrackerFrame.getTimestamp());
+    if (user.isNew())
+    {
+      userTracker.startSkeletonTracking(user.getId());
+      userTracker.setSkeletonSmoothingFactor(.85f);
+    }
+    else if (user.getSkeleton().getState() == nite::SKELETON_TRACKED)
+    {        
+      const nite::SkeletonJoint& lh = user.getSkeleton().getJoint(nite::JOINT_LEFT_HAND);
+      if (lh.getPositionConfidence() > .5)
+        lh_p=lh.getPosition().y;
+
+
+      const nite::SkeletonJoint& torso = user.getSkeleton().getJoint(nite::JOINT_TORSO);
+      if (torso.getPositionConfidence() > .5)
+        t_p=torso.getPosition().y;
+
+      const nite::SkeletonJoint& rh = user.getSkeleton().getJoint(nite::JOINT_RIGHT_HAND);
+      if (rh.getPositionConfidence() > .5)
+        rh_p=rh.getPosition().y;
+
+      VelocityHandChecker(lh_p,t_p);
+
+      if (tempoGesture.checkTempoGesture(user.getSkeleton()))
+        tempoChanged = true;
+      else
+        tempoChanged = false;
+     
+      if (rh.getPositionConfidence() > 0.5 && torso.getPositionConfidence() > 0.5)
+      {
+        float rhandX = (rh.getPosition().x - torso.getPosition().x) / 100.f;
+        float rhandY = (rh.getPosition().y - torso.getPosition().y) / 100.f;
+        float rhandZ = (rh.getPosition().z - torso.getPosition().z) / 100.f;
+
+        float lhandX = (lh.getPosition().x - torso.getPosition().x) / 100.f;
+        float lhandY = (lh.getPosition().y - torso.getPosition().y) / 100.f;
+        float lhandZ = (lh.getPosition().z - torso.getPosition().z) / 100.f;
+
+        //Mini optim pour ne faire le test qu'une fois
+        if (rightHandSphere == nullptr)
+          rightHandSphere = dynamic_cast<TSStatic* > (Sim::findObject("rightHand"));
+        if (leftHandSphere == nullptr)
+          leftHandSphere = dynamic_cast<TSStatic* > (Sim::findObject("leftHand"));
+        if (spawn == nullptr)
         {
-                Con::printf("Get next frame failed\n");
-                return;
+          spawn = dynamic_cast<SpawnSphere* > (Sim::findObject("Spawn"));
+          MatrixF eyeMatrix;
+          spawn->getEyeTransform(&eyeMatrix);
+          eyePosition = eyeMatrix.getPosition();
         }
 
-        const nite::Array<nite::UserData>& users = userTrackerFrame.getUsers();
-        for (int i = 0; i < users.getSize(); ++i) {
-                
-                const nite::UserData& user = users[i];
-                updateUserState(user,userTrackerFrame.getTimestamp());
-                if (user.isNew())
-                {
-                        userTracker.startSkeletonTracking(user.getId());
-                }
-                else if (user.getSkeleton().getState() == nite::SKELETON_TRACKED)
-                {        
-                        const nite::SkeletonJoint& lh = user.getSkeleton().getJoint(nite::JOINT_LEFT_HAND);
-						if (lh.getPositionConfidence() > .5)
-							lh_p=lh.getPosition().y;
-
-						
-						const nite::SkeletonJoint& torso = user.getSkeleton().getJoint(nite::JOINT_TORSO);
-						if (torso.getPositionConfidence() > .5)
-							t_p=torso.getPosition().y;
-
-						const nite::SkeletonJoint& rh = user.getSkeleton().getJoint(nite::JOINT_RIGHT_HAND);
-						if (rh.getPositionConfidence() > .5)
-							rh_p=rh.getPosition().y;
-
-						VelocityHandChecker(lh_p,t_p);
-						Con::printf("%d \n",velocityTest);
-                }
+        if (rightHandSphere != nullptr && spawn != nullptr && leftHandSphere != nullptr)
+        {
+          //inversion de y et z entre Kinect et Torque, le rHandZ est aussi inversé
+          MatrixF rhandTransform; rhandTransform.identity();
+          rhandTransform.setPosition(Point3F(eyePosition.x + rhandX, eyePosition.y - rhandZ, eyePosition.z + rhandY));
+          MatrixF lhandTransform; lhandTransform.identity();
+          lhandTransform.setPosition(Point3F(eyePosition.x + lhandX, eyePosition.y - lhandZ, eyePosition.z + lhandY));
+          rightHandSphere->setTransform(rhandTransform);
+          leftHandSphere->setTransform(lhandTransform);
         }
-        
+      }
+
+    }
+  } 
+
+}
+
+bool PlayerTracker::hasTempoChanged() const
+{
+  return tempoChanged;
+}
+juce::int32 PlayerTracker::getTempo() const
+{
+  return tempoGesture.getTempo();
 }
 
 

@@ -36,6 +36,7 @@ void Orchestrator::loadMidiFile(const char* filePath)
   midiFile.readFrom(stream);
 
   juce::MidiMessageSequence tempoTrack;
+  std::vector<juce::MidiMessageSequence> sequences;
   for (unsigned int i = 0; i < midiFile.getNumTracks(); ++i)
   {
     if (midiFile.getTrack(i)->getEventPointer(0)->message.isTrackNameEvent())
@@ -59,7 +60,7 @@ void Orchestrator::loadMidiFile(const char* filePath)
   sequencer = new JuceModule::Sequencer(tracks, midiFile.getTimeFormat());
   sequencer->setTempoTrack(tempoTrack);
 
-  kinectTracker = new KinectModule::KinectTracker(*sequencer);
+  kinectTracker = new KinectModule::KinectTracker(sequencer);
   kinectTracker->startThread();
 }
 

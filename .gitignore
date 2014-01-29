@@ -14,6 +14,9 @@
 
 commitmsg.txt
 *.cs~
+*.*~
+game/main_patched.cs
+game/main_prePatch.cs
 #Torque files
 game/TideProject.properties
 *.dll
@@ -23,6 +26,7 @@ buildFiles/VisualStudio 2010/*.suo
 buildFiles/VisualStudio 2010/*.opensdf
 buildFiles/VisualStudio 2010/ipch
 game/console.log
+game/core/fonts/*
 game/NiTE*
 game/OpenNi*
 game/org.openni.jar

@@ -4,9 +4,12 @@ exec( "scripts/virtuose/modifObjects.cs" );
 
 $posx = 0.0;
 $posy = 0.0;
-$signe= 1.0;
+$posz = 0.0;
+$posxcorde = 0.0;
+$posxpercu = 0.0;
+$posxbois = 0.0;
+$posxcuivre = 0.0;
 
-$sens="left";
 	   
 function placeInstruments(%nbInstruments){
 	for(%i=0;%i<%nbInstruments;%i++){
@@ -23,12 +26,69 @@ function createInstruments(%instrument){
 				   junkvar = "helloworld";
 			   };
 
-			  
+			  switch$(%instrument){
+			   	case "piano":
+			   		%famille = "corde";
+			   		$posxcorde ++;
+			   		$posx= $posxcorde;
+
+			   	case "harpe":
+			   		%famille = "corde";	
+			   		$posxcorde ++;
+			   		$posx= $posxcorde;
+			   	case "contrebass":
+			   		%famille = "corde";
+			   		$posxcorde ++;
+			   		$posx= $posxcorde;
+			   	case "bassElec":
+			   		%famille = "corde";
+			   		$posxcorde ++;
+			   		$posx= $posxcorde;		
+			   	case "Guitar":
+			   		%famille = "corde";
+			   		$posxcorde ++;
+			   		$posx= $posxcorde;	
+			   	case "Guitar2":
+			   		%famille = "corde";
+			   		$posxcorde ++;
+			   		$posx= $posxcorde;		
+			   	case "violon":
+			   		%famille = "corde";
+			   		$posxcorde ++;
+			   		$posx= $posxcorde;	
+			   	case "drum":
+			   		%famille = "percussion";
+			   		$posxpercu ++;
+			   		$posx= $posxpercu;	
+			   	case "saxo":
+			   		%famille = "bois";
+			   		$posxbois ++;
+			   		$posx= $posxbois;
+			   	case "flutetraversiere":
+			   		%famille = "bois";
+			   		$posxbois ++;
+			   		$posx= $posxbois;	
+			   	case "contrebass":
+			   		%famille = "bois";
+			   		$posxbois ++;
+			   		$posx= $posxbois;	
+			   	case "trombone":
+			   		%famille = "cuivre";
+			   		$posxcuivre ++;
+			   		$posx= $posxcuivre;
+			   	case "trumpet":
+			   		%famille = "cuivre";
+			   		$posxcuivre ++;
+			   		$posx= $posxcuivre;			
+
+			   }
+			   
+			   
 			   new StaticShape() 
 			   {
 				   dataBlock = %instrument;
 	
-				   		position = $signe*$posx+start.position.x SPC $posy+start.position.y SPC start.position.z;
+				  position = $posx+%famille.position.x SPC %famille.position.y SPC %famille.position.z;
 
 				   rotation = "1 90 0 0";
 				   scale = "1 1 1";
@@ -50,6 +110,7 @@ function createInstruments(%instrument){
 			   }
 			   %fsObject.close();
 
+<<<<<<< HEAD
 			   $posy-=0.5;
 			   echo ($sens);
 			   	echo($signe*$posx+start.position.x);
@@ -69,10 +130,10 @@ function createInstruments(%instrument){
 
 
 			   }
+=======
+>>>>>>> da5079702390e277216f2c8cbd45bd0932c5d9f0
 
 
-			
-		  // }
 }
 
 function placeInstrumentsTrack(){

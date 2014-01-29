@@ -213,6 +213,19 @@ void Sequencer::decreaseVelocityFactorInPercent(short percentage)
   }
 }
 
+void Sequencer::setVelocityAbsolute(float value)
+{
+  if (value > 1.f)
+    value = 1.f;
+  else if (value < 0.f)
+    value = 0.f;
+
+  for (unsigned int i = 0; i < tracks.size(); ++i)
+  {
+    tracks[i]->setVelocity(value);
+  }
+}
+
 void Sequencer::stop()
 {
   {
@@ -340,11 +353,13 @@ void ChangeOpacity::execute()
   changeOpacity_callback(trackName.toStdString().c_str(), 0.5);
 }
 
-Track::Track(U32 index, juce::MidiMessageSequence& sequence)
+Track::Track(U32 index, juce::MidiMessageSequence sequence)
   : sequence(sequence),
     eventIndex(0), 
     trackName(juce::String::empty),
-    velocityFactor(1)
+    velocityFactor(1),
+    velocity(0.5f),
+    velocityChanged(false)
 {
   //Look for the track name meta event in the entire sequence (should be at the beginning)
   int i = 0;
@@ -383,6 +398,13 @@ void Track::restart()
   eventIndex = 0;
 }
 
+void Track::setVelocity(float value)
+{
+  jassert(velocity >= 0.f && velocity <= 1.f);
+  velocity = value;
+  velocityChanged = true;
+}
+
 void Track::playAtTick(double tick)
 {
   if (eventIndex >= sequence.getNumEvents())
@@ -405,7 +427,8 @@ void Track::playAtTick(double tick)
   if ( timeStamp <= tick)
   {
     //ThreadPool::queueWorkItemOnMainThread(new ChangeOpacity(trackName));
-    midiEvent->message.multiplyVelocity(velocityFactor);
+    if (velocityChanged)
+      midiEvent->message.setVelocity(velocity);
     AudioTools::getInstance().makePluginPlay(trackName, midiEvent->message);
     eventIndex++;
   }

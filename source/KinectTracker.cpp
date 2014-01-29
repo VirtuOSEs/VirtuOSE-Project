@@ -5,7 +5,7 @@ namespace KinectModule
 
 bool KinectTracker::kinectEnabled = true;
 
-KinectTracker::KinectTracker(JuceModule::Sequencer& sequencer)
+KinectTracker::KinectTracker(JuceModule::Sequencer::Ptr sequencer)
 	: juce::Thread("KinectThread"), sequencer(sequencer)
 {
   if (kinectEnabled)
@@ -22,13 +22,25 @@ void KinectTracker::run()
 	{
 		UT.readNextFrame();
 		if (UT.getVelocityTest()==1)
-			sequencer.increaseVelocityFactorInPercent(5);
-		if (UT.getVelocityTest()==-1)
-			sequencer.decreaseVelocityFactorInPercent(5);
+			sequencer->increaseVelocityFactorInPercent(5);
+		else if (UT.getVelocityTest()==-1)
+			sequencer->decreaseVelocityFactorInPercent(5);
+
+    if (UT.hasTempoChanged())
+    {
+      //Con::printf("Tempo changed : new Tempo %d", UT.getTempo());
+      sequencer->setTempo(UT.getTempo());
+    }
+
     wait(10);
     if (threadShouldExit())
       return;
   }
+}
+
+float KinectTracker::getHandX()
+{
+  return 0.f;
 }
 
 } // namespace KinectModule
