@@ -48,7 +48,6 @@ moveMap.bindCmd(keyboard, "ctrl z", "carjack();", "");
 moveMap.bind(mouse0, "xaxis", yaw);
 moveMap.bind(mouse0, "yaxis", pitch);
 moveMap.bind(mouse0, "button0", changeHand);
-moveMap.bind(mouse0, "button1", mouseButtonZoom);
 moveMap.bind(mouse0, "zaxis", handMoveZ);
 moveMap.bind(gamepad0, "thumbrx", D, "-0.23 0.23", gamepadYaw);
 moveMap.bind(gamepad0, "thumbry", D, "-0.23 0.23", gamepadPitch);
