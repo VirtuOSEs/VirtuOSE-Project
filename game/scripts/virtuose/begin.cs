@@ -122,45 +122,16 @@ function createInstruments(%instrument){
 				   name=%instrument;
 
 			   };
-<<<<<<< HEAD
+
 			   
 }
 
-function placeInstrumentsTrack(){
-	for(%i=0;%i<$orchestrator.getNumTracks();%i++){
-			echo($orchestrator.getInstrumentName(%i));
 
-	createInstruments($orchestrator.getInstrumentName(%i));
-=======
-			  
-
-			   $posy-=0.5;
-			   echo ($sens);
-			   	echo($signe*$posx+start.position.x);
-
-			   switch$($sens){
-			   	case "right":
-			   	$signe=1.0;
-
-			   	$sens = "left";
-
-
-			   	case "left":
-			   	$signe=-1.0;
-			   	$posx+=2.0;
-
-			   	$sens="right";
-
-
-			   }
-
-}
 
 function placeInstrumentsTrack(){
 	for(%i=1;%i<$orchestrator.getNumTracks();%i++){
 		//echo($orchestrator.getInstrumentName(%i));
 		createInstruments($orchestrator.getInstrumentName(%i));
->>>>>>> cd51148752df0d43a0bc838fd244a28ce7251b7e
 	}
 }
 
