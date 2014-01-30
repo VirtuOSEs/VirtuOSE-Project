@@ -9,13 +9,16 @@ KinectTracker::KinectTracker(JuceModule::Sequencer::Ptr sequencer)
 	: juce::Thread("KinectThread"), sequencer(sequencer)
 {
   if (kinectEnabled)
+  {
     UT.init();
+  }
 }
 
 void KinectTracker::run()
 {
   if (!kinectEnabled)
      return;
+  UT.setVelocity(0.5f);
   Con::printf("START NITE DECTECTION\n");
 	Con::printf("\nStart moving around to GET detected...\n(PSI pose may be required for skeleton calibration, depending on the configuration)\n");
 	for(;;)
@@ -24,11 +27,8 @@ void KinectTracker::run()
     if (threadShouldExit())
       return;
 		//UT.readNextFrame();
-		if (UT.getVelocityTest()==1)
-			sequencer->increaseVelocityFactorInPercent(5);
-		else if (UT.getVelocityTest()==-1)
-			sequencer->decreaseVelocityFactorInPercent(5);
 
+		sequencer->setVelocityAbsolute(UT.getVelocity());
     if (UT.hasTempoChanged())
     {
       //until next tempo event, UT.hasTempoChanged will return false
