@@ -1334,9 +1334,9 @@ new SimGroup(MissionGroup) {
       allowPlayerStep = "1";
       renderNormals = "0";
       forceDetail = "-1";
-      position = "-8.6566 18.8102 1.65272";
+      position = "-6.57216 30.0105 4.84899";
       rotation = "0 0 1 175.852";
-      scale = "6.036 5.30816 1";
+      scale = "0.01 0.01 0.0331474";
       canSave = "1";
       canSaveDynamicFields = "1";
    };
@@ -1356,6 +1356,24 @@ new SimGroup(MissionGroup) {
       canSave = "1";
       canSaveDynamicFields = "1";
    };
+
+    new TSStatic(vent) {
+      shapeName = "art/shapes/cube/cube.dae";
+      playAmbient = "1";
+      meshCulling = "0";
+      originSort = "0";
+      collisionType = "Collision Mesh";
+      decalType = "Collision Mesh";
+      allowPlayerStep = "1";
+      renderNormals = "0";
+      forceDetail = "-1";
+      position = "5.3251 20.1338 4.34209";
+      rotation = "1 0 0 0";
+      scale = "0.01 0.01 0.01";
+      canSave = "1";
+      canSaveDynamicFields = "1";
+   };
+
    new TSStatic() {
       shapeName = "art/shapes/virtuose/solSalle.dae";
       playAmbient = "1";
@@ -1369,6 +1387,22 @@ new SimGroup(MissionGroup) {
       position = "1.00769 -4.45136 2.57161";
       rotation = "0 0 -1 4.51864";
       scale = "2.63 2.98687 1";
+      canSave = "1";
+      canSaveDynamicFields = "1";
+   };
+   new TSStatic(vent) {
+      shapeName = "art/shapes/cube/cube.dae";
+      playAmbient = "1";
+      meshCulling = "0";
+      originSort = "0";
+      collisionType = "Collision Mesh";
+      decalType = "Collision Mesh";
+      allowPlayerStep = "1";
+      renderNormals = "0";
+      forceDetail = "-1";
+      position = "2.83877 25.7397 4.40855";
+      rotation = "1 0 0 0";
+      scale = "0.01 0.01 0.01";
       canSave = "1";
       canSaveDynamicFields = "1";
    };
