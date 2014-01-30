@@ -200,10 +200,8 @@ public:
   bool hasTempoChanged() const;
   void resetTempoChangedFlag();
   juce::int32 getTempo() const;
-
- 	//float getJointPositionX(char* joint);
- 	//float getJointPositionY(char* joint);
- 	//float getJointPositionZ(char* joint);
+  float getVelocity();
+  void setVelocity(float v);
 
 private:
 	nite::UserTracker userTracker;
@@ -213,6 +211,7 @@ private:
   TempoGesture tempoGesture;
   juce::CriticalSection tempoChangedAccess;
   bool tempoChanged;
+  float velocity;
 };
 
 #endif // KINECT_MODULE_SCRIPT_H

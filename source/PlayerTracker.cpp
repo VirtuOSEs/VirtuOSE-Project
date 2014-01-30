@@ -47,6 +47,36 @@ void PlayerTracker::init(){
   userTracker.addNewFrameListener(this);
 	Con::printf("END NITE INITIALIZE\n");
 }
+
+float PlayerTracker::getVelocity()
+{
+	return velocity;
+}
+
+void PlayerTracker::setVelocity(float v)
+{
+	velocity=v;
+}
+
+void PlayerTracker::VelocityHandChecker2(float hand, float torso){
+	float position=hand;
+	float epsilon=100;
+	float zero = torso;
+	float max_y=200;
+	float min_y=-200;
+	float tmp;
+
+	if ((position<=max_y+torso)&&(position>=min_y+torso)) {
+		tmp=hand-torso;
+		tmp=tmp+200;
+		//tmp=hand+450;
+		tmp=tmp/400;
+		velocity=tmp;
+	}
+	else
+	  velocity=velocity;
+}
+
 void PlayerTracker::updateUserState(const nite::UserData& user, unsigned long long ts)
 {
 	if (user.isNew())
@@ -112,80 +142,6 @@ void VelocityHandChecker2(float hand, float torso){
 	float min_y=-450+torso;
 }
 
-/*float PlayerTracker::getJointPositionX(char* joint){
-	const nite::Array<nite::UserData>& users = userTrackerFrame.getUsers();
-	for (int i = 0; i < users.getSize(); ++i) {
-	
-		const nite::UserData& user = users[i];
-		updateUserState(user,userTrackerFrame.getTimestamp());
-		if (user.isNew())
-			{
-				userTracker.startSkeletonTracking(user.getId());
-			}
-
-			else if (user.getSkeleton().getState() == nite::SKELETON_TRACKED)
-			{
-				if(strcmp(joint,"left")==0){
-					const nite::SkeletonJoint& head = user.getSkeleton().getJoint(nite::JOINT_LEFT_HAND);
-					if (head.getPositionConfidence() > .5)
-						return head.getPosition().x;
-					else
-						return head.getPosition().x;
-				}	
-
-				if(strcmp(joint,"right")==0){
-					const nite::SkeletonJoint& head = user.getSkeleton().getJoint(nite::JOINT_RIGHT_HAND);
-						if (head.getPositionConfidence() > .5)
-						return head.getPosition().x;
-					else
-						return head.getPosition().x;
-				}
-			}
-	}
-}*/
-
-/*float  PlayerTracker::getJointPositionY(char* joint){
-	const nite::Array<nite::UserData>& users = userTrackerFrame.getUsers();
-	const nite::UserData& user = users[0];
-	if(strcmp(joint,"left")==0){
-		const nite::SkeletonJoint& head = user.getSkeleton().getJoint(nite::JOINT_LEFT_HAND);
-		if (head.getPositionConfidence() > .5)
-			return head.getPosition().y;
-		else
-			return head.getPosition().y;
-	}	
-
-	if(strcmp(joint,"right")==0){
-		const nite::SkeletonJoint& head = user.getSkeleton().getJoint(nite::JOINT_RIGHT_HAND);
-			if (head.getPositionConfidence() > .5)
-			return head.getPosition().y;
-		else
-			return head.getPosition().y;
-	}
-}
-
-float  PlayerTracker::getJointPositionZ(char* joint){
-	const nite::Array<nite::UserData>& users = userTrackerFrame.getUsers();
-	const nite::UserData& user = users[0];
-	updateUserState(user,userTrackerFrame.getTimestamp());
-	if(strcmp(joint,"left")==0){
-		const nite::SkeletonJoint& head = user.getSkeleton().getJoint(nite::JOINT_LEFT_HAND);
-		if (head.getPositionConfidence() > .5)
-			return head.getPosition().z;
-		else
-			return head.getPosition().z;
-	}	
-
-	if(strcmp(joint,"right")==0){
-
-		const nite::SkeletonJoint& head = user.getSkeleton().getJoint(nite::JOINT_RIGHT_HAND);
-			if (head.getPositionConfidence() > .5)
-			return head.getPosition().z;
-		else
-			return head.getPosition().z;
-	}
-}*/
-
 void PlayerTracker::resetTempoChangedFlag()
 {
   juce::ScopedLock sL(tempoChangedAccess);
@@ -229,8 +185,7 @@ void PlayerTracker::onNewFrame(nite::UserTracker& userTracker)
       if (rh.getPositionConfidence() > .5)
         rh_p=rh.getPosition().y;
 
-      VelocityHandChecker(lh_p,t_p);
-
+      VelocityHandChecker2(lh_p,t_p);
       if (tempoGesture.checkTempoGesture(user.getSkeleton()))
       {
         juce::ScopedLock sL(tempoChangedAccess);

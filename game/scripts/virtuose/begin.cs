@@ -43,35 +43,39 @@ function createInstruments(%instrument){
 			  switch$(%instrument){
 			   	case "piano":
 			   		%famille = "corde";
-			   		$posxcorde ++;
+			   		$posxcorde +=1.5;
 			   		$posx= $posxcorde;
 			   	case "harp":
 			   		%famille = "corde";	
-			   		$posxcorde ++;
+			   		$posxcorde +=1.5;
 			   		$posx= $posxcorde;
 			   	case "electricbass":
 			   		%famille = "corde";
-			   		$posxcorde ++;
+			   		$posxcorde +=1.5;
 			   		$posx= $posxcorde;		
 			   	case "Guitar":
 			   		%famille = "corde";
-			   		$posxcorde ++;
+			   		$posxcorde +=1.5;
 			   		$posx= $posxcorde;	
 			   	case "acousticguitar":
 			   		%famille = "corde";
-			   		$posxcorde ++;
+			   		$posxcorde +=1.5;
 			   		$posx= $posxcorde;		
 			   	case "violins":
 			   		%famille = "corde";
-			   		$posxcorde ++;
+			   		$posxcorde +=1.5;
 			   		$posx= $posxcorde;	
 			   	case "cellos":
 			   		%famille = "corde";
-			   		$posxcorde ++;
+			   		$posxcorde +=1.5;
 			   		$posx= $posxcorde;	
 			   	case "violas":
 			   		%famille = "corde";
-			   		$posxcorde ++;
+			   		$posxcorde +=1.5;
+			   		$posx= $posxcorde;
+			   	case "bass":
+			   		%famille = "corde";
+			   		$posxcorde +=1.5;
 			   		$posx= $posxcorde;
 			   	case "drum":
 			   		%famille = "percussion";
@@ -89,10 +93,6 @@ function createInstruments(%instrument){
 			   		%famille = "bois";
 			   		$posxbois ++;
 			   		$posx= $posxbois;	
-			   	case "bass":
-			   		%famille = "bois";
-			   		$posxbois ++;
-			   		$posx= $posxbois;
 			   	case "bassoons":
 			   		%famille = "bois";
 			   		$posxbois ++;
