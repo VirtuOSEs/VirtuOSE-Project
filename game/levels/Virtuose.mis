@@ -1302,7 +1302,7 @@ new SimGroup(MissionGroup) {
       allowPlayerStep = "1";
       renderNormals = "0";
       forceDetail = "-1";
-      position = "-3.76407 28.5814 5.48831";
+      position = "-6.68602 28.5814 5.48831";
       rotation = "1 0 0 0";
       scale = "0.0214852 0.0214852 0.0214852";
       canSave = "1";
@@ -1334,7 +1334,7 @@ new SimGroup(MissionGroup) {
       allowPlayerStep = "1";
       renderNormals = "0";
       forceDetail = "-1";
-      position = "-6.57216 30.0105 4.84899";
+      position = "-6.57216 22.5325 4.84899";
       rotation = "0 0 1 175.852";
       scale = "0.01 0.01 0.0331474";
       canSave = "1";
@@ -1385,22 +1385,6 @@ new SimGroup(MissionGroup) {
       position = "1.00769 -4.45136 2.57161";
       rotation = "0 0 -1 4.51864";
       scale = "2.63 2.98687 1";
-      canSave = "1";
-      canSaveDynamicFields = "1";
-   };
-   new TSStatic() {
-      shapeName = "art/shapes/virtuose/clarinets.dae";
-      playAmbient = "1";
-      meshCulling = "0";
-      originSort = "0";
-      collisionType = "Collision Mesh";
-      decalType = "Collision Mesh";
-      allowPlayerStep = "1";
-      renderNormals = "0";
-      forceDetail = "-1";
-      position = "-0.867569 23.5808 5.9037";
-      rotation = "1 0 0 0";
-      scale = "0.46984 0.46984 0.46984";
       canSave = "1";
       canSaveDynamicFields = "1";
    };
