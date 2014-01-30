@@ -131,9 +131,8 @@ function createInstruments(%instrument){
 				   name=%instrument;
 
 			   };
-			   
+		   
 }
-
 
 function placeInstrumentsTrack(){
 	for(%i=1;%i<$orchestrator.getNumTracks();%i++){
