@@ -10,6 +10,7 @@ $posxcorde = 0.0;
 $posxpercu = 0.0;
 $posxbois = 0.0;
 $posxcuivre = 0.0;
+$posxvent = 0.0;
 
  //Initialisation
 function virtuoseStart(){
@@ -17,8 +18,7 @@ function virtuoseStart(){
 	HideSun();
     leftHand.position = Spawn.position.x-2 SPC Spawn.position.y+5 SPC Spawn.position.z+1;
     rightHand.position = Spawn.position.x+2 SPC Spawn.position.y+5 SPC Spawn.position.z+1;
-	
-	//placeInstrumentsTrack();
+	placeInstrumentsTrack();
 }
   
 function placeInstruments(%nbInstruments){
@@ -41,15 +41,11 @@ function createInstruments(%instrument){
 			   		%famille = "corde";
 			   		$posxcorde ++;
 			   		$posx= $posxcorde;
-			   	case "harpe":
+			   	case "harp":
 			   		%famille = "corde";	
 			   		$posxcorde ++;
 			   		$posx= $posxcorde;
-			   	case "contrebass":
-			   		%famille = "corde";
-			   		$posxcorde ++;
-			   		$posx= $posxcorde;
-			   	case "bassElec":
+			   	case "electricbass":
 			   		%famille = "corde";
 			   		$posxcorde ++;
 			   		$posx= $posxcorde;		
@@ -57,27 +53,43 @@ function createInstruments(%instrument){
 			   		%famille = "corde";
 			   		$posxcorde ++;
 			   		$posx= $posxcorde;	
-			   	case "Guitar2":
+			   	case "acousticguitar":
 			   		%famille = "corde";
 			   		$posxcorde ++;
 			   		$posx= $posxcorde;		
-			   	case "violon":
+			   	case "violins":
 			   		%famille = "corde";
 			   		$posxcorde ++;
 			   		$posx= $posxcorde;	
+			   	case "cellos":
+			   		%famille = "corde";
+			   		$posxcorde ++;
+			   		$posx= $posxcorde;	
+			   	case "violas":
+			   		%famille = "corde";
+			   		$posxcorde ++;
+			   		$posx= $posxcorde;
 			   	case "drum":
 			   		%famille = "percussion";
 			   		$posxpercu ++;
+			   		$posx= $posxpercu;
+			   	case "timpani":
+			   		%famille = "percussion";
+			   		$posxpercu ++;
 			   		$posx= $posxpercu;	
-			   	case "saxo":
+			   	case "saxophone":
 			   		%famille = "bois";
 			   		$posxbois ++;
 			   		$posx= $posxbois;
-			   	case "flutetraversiere":
+			   	case "oboes":
 			   		%famille = "bois";
 			   		$posxbois ++;
 			   		$posx= $posxbois;	
-			   	case "contrebass":
+			   	case "bass":
+			   		%famille = "bois";
+			   		$posxbois ++;
+			   		$posx= $posxbois;
+			   	case "bassoons":
 			   		%famille = "bois";
 			   		$posxbois ++;
 			   		$posx= $posxbois;	
@@ -85,10 +97,24 @@ function createInstruments(%instrument){
 			   		%famille = "cuivre";
 			   		$posxcuivre ++;
 			   		$posx= $posxcuivre;
-			   	case "trumpet":
+			   	case "trumpets":
 			   		%famille = "cuivre";
 			   		$posxcuivre ++;
-			   		$posx= $posxcuivre;			
+			   		$posx= $posxcuivre;
+			   	case "flutes":
+			   		%famille = "vent";
+			   		$posxvent ++;
+			   		$posx= $posxvent;
+			   	case "clarinets":
+			   		%famille = "vent";
+			   		$posxvent ++;
+			   		$posx= $posxvent;
+			   	case "horns":
+			   		%famille = "vent";
+			   		$posxvent ++;
+			   		$posx= $posxvent;	
+			
+		
 
 			   }
 			   
@@ -104,33 +130,13 @@ function createInstruments(%instrument){
 				   name=%instrument;
 
 			   };
-			  
-
-			   $posy-=0.5;
-			   echo ($sens);
-			   	echo($signe*$posx+start.position.x);
-
-			   switch$($sens){
-			   	case "right":
-			   	$signe=1.0;
-
-			   	$sens = "left";
-
-
-			   	case "left":
-			   	$signe=-1.0;
-			   	$posx+=2.0;
-
-			   	$sens="right";
-
-
-			   }
-
+			   
 }
 
+
 function placeInstrumentsTrack(){
-	for(%i=0;%i<$orchestrator.getNumTracks();%i++){
-		echo($orchestrator.getInstrumentName(%i));
-		//createInstruments($orchestrator.getInstrumentName(%i));
+	for(%i=1;%i<$orchestrator.getNumTracks();%i++){
+		//echo($orchestrator.getInstrumentName(%i));
+		createInstruments($orchestrator.getInstrumentName(%i));
 	}
 }
