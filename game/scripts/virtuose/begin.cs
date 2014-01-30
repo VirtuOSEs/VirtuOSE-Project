@@ -16,6 +16,7 @@ $posxvent = 0.0;
 function virtuoseStart(){
 	echo("Virtuose is beginning");
 	HideSun();
+	HideSun();
     leftHand.position = Spawn.position.x-2 SPC Spawn.position.y+5 SPC Spawn.position.z+1;
     rightHand.position = Spawn.position.x+2 SPC Spawn.position.y+5 SPC Spawn.position.z+1;
 	placeInstrumentsTrack();

@@ -81,6 +81,9 @@ function onStart()
    exec("./scripts/gui/guiTreeViewCtrl.cs");
    exec("./scripts/gui/messageBoxes/messageBox.ed.cs");
    
+   //Virtuose
+   // virtuoseStart();
+   
    echo(" % - Initialized Core");
 }
 
