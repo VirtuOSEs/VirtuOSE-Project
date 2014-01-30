@@ -96,7 +96,7 @@ public:
         double elapsedTime = currentTime - startTime;
         
         //Gestion des valeurs aberrantes
-        if (elapsedTime < 288) //Equivaut à peu près à tempo = 208 
+        if (elapsedTime < 288) //Equivaut à peu près à tempo = 208 (on bat à la blanche)
         {
         //  Con::printf("VALEUR ABERRANTE: PASSAGE EN NO GESTURE %f", handY);
           status = NO_GESTURE;

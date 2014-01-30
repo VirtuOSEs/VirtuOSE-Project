@@ -4,6 +4,7 @@
 #include <string.h>
 #include <NiteSampleUtilities.h>
 #include "PlayerTracker.h"
+#include "KinectTracker.h"
 
 IMPLEMENT_CONOBJECT(PlayerTracker);
 
@@ -28,7 +29,8 @@ PlayerTracker::PlayerTracker()
 
 PlayerTracker::~PlayerTracker()
 {
-  userTracker.removeNewFrameListener(this);
+  if (KinectModule::KinectTracker::kinectEnabled) 
+    userTracker.removeNewFrameListener(this);
 }
 
 void PlayerTracker::init(){

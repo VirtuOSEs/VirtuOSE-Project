@@ -145,6 +145,7 @@ Sequencer::~Sequencer()
   signalThreadShouldExit();
   notify();
   this->waitForThreadToExit(100);
+  stop();
 }
 
 void Sequencer::saveSequence(const juce::String& filePath)
