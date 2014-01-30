@@ -1111,7 +1111,7 @@ new SimGroup(MissionGroup) {
          playAmbient = "1";
          meshCulling = "0";
          originSort = "0";
-         collisionType = "Visible Mesh";
+         collisionType = "None";
          decalType = "Collision Mesh";
          allowPlayerStep = "1";
          renderNormals = "0";
@@ -1127,7 +1127,7 @@ new SimGroup(MissionGroup) {
          playAmbient = "1";
          meshCulling = "0";
          originSort = "0";
-         collisionType = "Visible Mesh";
+         collisionType = "None";
          decalType = "Collision Mesh";
          allowPlayerStep = "1";
          renderNormals = "0";
@@ -1143,7 +1143,7 @@ new SimGroup(MissionGroup) {
          playAmbient = "1";
          meshCulling = "0";
          originSort = "0";
-         collisionType = "Visible Mesh";
+         collisionType = "None";
          decalType = "Collision Mesh";
          allowPlayerStep = "1";
          renderNormals = "0";
@@ -1159,7 +1159,7 @@ new SimGroup(MissionGroup) {
          playAmbient = "1";
          meshCulling = "0";
          originSort = "0";
-         collisionType = "Visible Mesh";
+         collisionType = "None";
          decalType = "Collision Mesh";
          allowPlayerStep = "1";
          renderNormals = "0";
@@ -1175,7 +1175,7 @@ new SimGroup(MissionGroup) {
          playAmbient = "1";
          meshCulling = "0";
          originSort = "0";
-         collisionType = "Visible Mesh";
+         collisionType = "None";
          decalType = "Collision Mesh";
          allowPlayerStep = "1";
          renderNormals = "0";
@@ -1191,7 +1191,7 @@ new SimGroup(MissionGroup) {
          playAmbient = "1";
          meshCulling = "0";
          originSort = "0";
-         collisionType = "Visible Mesh";
+         collisionType = "None";
          decalType = "Collision Mesh";
          allowPlayerStep = "1";
          renderNormals = "0";
@@ -1207,7 +1207,7 @@ new SimGroup(MissionGroup) {
          playAmbient = "1";
          meshCulling = "0";
          originSort = "0";
-         collisionType = "Visible Mesh";
+         collisionType = "None";
          decalType = "Collision Mesh";
          allowPlayerStep = "1";
          renderNormals = "0";
@@ -1223,7 +1223,7 @@ new SimGroup(MissionGroup) {
          playAmbient = "1";
          meshCulling = "0";
          originSort = "0";
-         collisionType = "Visible Mesh";
+         collisionType = "None";
          decalType = "Collision Mesh";
          allowPlayerStep = "1";
          renderNormals = "0";
@@ -1239,7 +1239,7 @@ new SimGroup(MissionGroup) {
          playAmbient = "1";
          meshCulling = "0";
          originSort = "0";
-         collisionType = "Visible Mesh";
+         collisionType = "None";
          decalType = "Collision Mesh";
          allowPlayerStep = "1";
          renderNormals = "0";

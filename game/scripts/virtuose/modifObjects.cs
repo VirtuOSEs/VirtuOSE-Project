@@ -20,3 +20,7 @@ function decrementOpacity(%obj){
 	}
 	
 }
+
+function HideSun(){
+	soleil.setHidden(!soleil.hidden);	
+}

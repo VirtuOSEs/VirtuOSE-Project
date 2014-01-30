@@ -1,12 +1,11 @@
 // Le script du projet Virtuose
-$playing=true;
+$playing=false;
 $relache=0;
 
 function playPause(){
 	if($relache==1){
 		if($playing){
 			$orchestrator.pause();
-			
 		}
 		else if(!$playing){
 			$orchestrator.play();

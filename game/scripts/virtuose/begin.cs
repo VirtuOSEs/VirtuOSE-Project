@@ -12,7 +12,20 @@ $posxbois = 0.0;
 $posxcuivre = 0.0;
 $posxvent = 0.0;
 
-	   
+ //Initialisation
+function virtuoseStart(){
+	echo("Virtuose is beginning");
+   $orchestrator = new Orchestrator();
+   $orchestrator.loadMidiFile("../Beethoven-Symphony5-1.mid");
+   // $orchestrator.play();
+   
+	HideSun();
+	HideSun();
+    leftHand.position = Spawn.position.x-2 SPC Spawn.position.y+5 SPC Spawn.position.z+1;
+    rightHand.position = Spawn.position.x+2 SPC Spawn.position.y+5 SPC Spawn.position.z+1;
+	placeInstrumentsTrack();
+}
+  
 function placeInstruments(%nbInstruments){
 	for(%i=0;%i<%nbInstruments;%i++){
 		$InstrumentsScene[%i].position.y+=5;
@@ -122,24 +135,12 @@ function createInstruments(%instrument){
 				   name=%instrument;
 
 			   };
-
-			   
+		   
 }
-
-
 
 function placeInstrumentsTrack(){
 	for(%i=1;%i<$orchestrator.getNumTracks();%i++){
 		//echo($orchestrator.getInstrumentName(%i));
 		createInstruments($orchestrator.getInstrumentName(%i));
 	}
-}
-
-//Initialisation
-function virtuoseStart(){
-	echo("Virtuose Start");
-    leftHand.position = Spawn.position.x-2 SPC Spawn.position.y+5 SPC Spawn.position.z+1;
-    rightHand.position = Spawn.position.x+2 SPC Spawn.position.y+5 SPC Spawn.position.z+1;
-	soleil.setHidden();
-	//placeInstrumentsTrack();
 }

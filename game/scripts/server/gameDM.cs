@@ -37,9 +37,6 @@ function DeathMatchGame::onMissionLoaded(%game)
 
    $Server::MissionType = "DeathMatch";
    parent::onMissionLoaded(%game);
-   $orchestrator = new Orchestrator();
-   $orchestrator.loadMidiFile("../Beethoven-Symphony5-1.mid");
-   $orchestrator.play();
 }
 
 function DeathMatchGame::initGameVars(%game)
@@ -81,8 +78,9 @@ function DeathMatchGame::initGameVars(%game)
 function DeathMatchGame::startGame(%game)
 {
    //echo (%game @"\c4 -> "@ %game.class @" -> DeathMatchGame::startGame");
-
+	
    parent::startGame(%game);
+   virtuoseStart();
 }
 
 function DeathMatchGame::endGame(%game)
