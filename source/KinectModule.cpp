@@ -34,6 +34,7 @@ MODULE_BEGIN( KinectModule )
 
   MODULE_SHUTDOWN
   {
+    Con::printf("NITE SHUTDOWN");
     nite::NiTE::shutdown();// On ferme NiTE
   }
 

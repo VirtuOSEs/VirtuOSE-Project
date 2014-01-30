@@ -1,6 +1,7 @@
 // Le script du projet Virtuose
 exec( "scripts/virtuose/baguettes.cs" );
 exec( "scripts/virtuose/modifObjects.cs" );
+exec( "scripts/virtuose/sounds.cs" );
 
 $posx = 0.0;
 $posy = 0.0;
@@ -20,19 +21,18 @@ function placeInstruments(%nbInstruments){
 
 function createInstruments(%instrument){
 				
-		// if(strcmp(%instrument,"batterie")==0){
+
 				datablock StaticShapeData(%instrument) 
 			   {   
-				   shapeFile = "art/shapes/virtuose/" @ %instrument @ ".dae";   
+				   shapeFile = "art/shapes/virtuose/" @ %instrument @ ".dae";
 				   junkvar = "helloworld";
 			   };
-
+			
 			  switch$(%instrument){
 			   	case "piano":
 			   		%famille = "corde";
 			   		$posxcorde ++;
 			   		$posx= $posxcorde;
-
 			   	case "harp":
 			   		%famille = "corde";	
 			   		$posxcorde ++;
@@ -41,7 +41,7 @@ function createInstruments(%instrument){
 			   		%famille = "corde";
 			   		$posxcorde ++;
 			   		$posx= $posxcorde;		
-			   	case "electricguitar":
+			   	case "Guitar":
 			   		%famille = "corde";
 			   		$posxcorde ++;
 			   		$posx= $posxcorde;	
@@ -74,10 +74,6 @@ function createInstruments(%instrument){
 			   		$posxbois ++;
 			   		$posx= $posxbois;
 			   	case "oboes":
-			   		%famille = "bois";
-			   		$posxbois ++;
-			   		$posx= $posxbois;
-			   	case "traverseflutes":
 			   		%famille = "bois";
 			   		$posxbois ++;
 			   		$posx= $posxbois;	
@@ -126,6 +122,7 @@ function createInstruments(%instrument){
 				   name=%instrument;
 
 			   };
+<<<<<<< HEAD
 			   
 }
 
@@ -134,5 +131,44 @@ function placeInstrumentsTrack(){
 			echo($orchestrator.getInstrumentName(%i));
 
 	createInstruments($orchestrator.getInstrumentName(%i));
+=======
+			  
+
+			   $posy-=0.5;
+			   echo ($sens);
+			   	echo($signe*$posx+start.position.x);
+
+			   switch$($sens){
+			   	case "right":
+			   	$signe=1.0;
+
+			   	$sens = "left";
+
+
+			   	case "left":
+			   	$signe=-1.0;
+			   	$posx+=2.0;
+
+			   	$sens="right";
+
+
+			   }
+
+}
+
+function placeInstrumentsTrack(){
+	for(%i=1;%i<$orchestrator.getNumTracks();%i++){
+		//echo($orchestrator.getInstrumentName(%i));
+		createInstruments($orchestrator.getInstrumentName(%i));
+>>>>>>> cd51148752df0d43a0bc838fd244a28ce7251b7e
 	}
+}
+
+//Initialisation
+function virtuoseStart(){
+	echo("Virtuose Start");
+    leftHand.position = Spawn.position.x-2 SPC Spawn.position.y+5 SPC Spawn.position.z+1;
+    rightHand.position = Spawn.position.x+2 SPC Spawn.position.y+5 SPC Spawn.position.z+1;
+	soleil.setHidden();
+	//placeInstrumentsTrack();
 }

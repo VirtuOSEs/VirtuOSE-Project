@@ -167,7 +167,7 @@ void Sequencer::saveSequence(const juce::String& filePath)
   if (midiFile.existsAsFile())
     midiFile.deleteFile();
   juce::FileOutputStream midiFileStream(midiFile);
-  jassert(result.writeTo(midiFileStream));
+  result.writeTo(midiFileStream);
 }
 
 double Sequencer::getTick()
@@ -185,10 +185,14 @@ juce::uint32 Sequencer::getTempo() const
 void Sequencer::setTempo(juce::uint32 tempo)
 {
   
+  int microSecPerQuarterNote = 0;
   const juce::ScopedLock modifyingTempo(tempoAccess);
-  this->tempo = tempo;
-  msPerTick = 60000.0 / (double)tempo / (double)timeFormat;
-  int microSecPerQuarterNote = msPerTick * timeFormat * 1000.0;
+  {
+    const juce::ScopedLock lockTempo(tempoAccess);
+    this->tempo = tempo;
+    msPerTick = 60000.0 / (double)tempo / (double)timeFormat;
+    microSecPerQuarterNote = msPerTick * timeFormat * 1000.0;
+  }
   juce::MidiMessage tempoMessage = juce::MidiMessage::tempoMetaEvent(microSecPerQuarterNote);
   {
     const juce::ScopedLock sL(ticksAccess);
@@ -262,7 +266,10 @@ void Sequencer::pause()
 void Sequencer::play()
 {
   AudioTools::getInstance().enableAudioProcessing();
-  stopped = false;
+  {
+    const juce::ScopedLock sL(stoppedAccess);
+    stopped = false;
+  }
   if (!paused)
     startThread();
   else
@@ -282,41 +289,48 @@ void Sequencer::run()
   double lag = 0.0;
   double elapsedTime = 0.0;
   double startTime = 0.0;
+  //Tentative d'optimisation de l'accès concurrentiel 
+  //à msPerTick et stopped
+  double localMsPerTick = 0.0;
+  bool localStopped = false;
   for (;;)
   {
     startTime = juce::Time::getMillisecondCounterHiRes();
-
+    //Tentative d'optimisation de l'accès concurrentiel 
+    //à msPerTick
     {
       const juce::ScopedLock tempoLock(tempoAccess);
-      wait(msPerTick);
-      elapsedTime = juce::Time::getMillisecondCounterHiRes() - startTime;
-      lag += elapsedTime;
+      localMsPerTick = msPerTick;
+    }
+    wait(localMsPerTick);
+    elapsedTime = juce::Time::getMillisecondCounterHiRes() - startTime;
+    lag += elapsedTime;
 
-      while (lag >= msPerTick)
+    while (lag >= localMsPerTick)
+    {
+      //Gestion de la pause
+      while (paused && !threadShouldExit())
+        wait(100);
+
+      //Interrompt la lecture si le thread doit être fermé
+      if (threadShouldExit())
+        return;
+
+      { //stoppedAccess scope
+        const juce::ScopedLock sL(stoppedAccess);
+        localStopped = stopped;
+      }
+      if (!localStopped)
       {
-        //Gestion de la pause
-        while (paused && !threadShouldExit())
-          wait(100);
-
-        //Interrompt la lecture si le thread doit être fermé
-        if (threadShouldExit())
-          return;
-
-        { //stoppedAccess scope
-          const juce::ScopedLock sL(stoppedAccess);
-          if (!stopped)
-          {
-            const juce::ScopedLock modifyingTicks(ticksAccess);
-            ticks++;
-            checkTempoChangeTrack();
-            for(int i = 0; i< tracks.size(); ++i)
-              tracks[i]->playAtTick(ticks);
-          }
-          else return;
-        }//stoppedAccess scope
-
-        lag -= msPerTick;
-      }//end of while (lag >= msPerTick)
+        const juce::ScopedLock modifyingTicks(ticksAccess);
+        ticks++;
+        checkTempoChangeTrack();
+        for(int i = 0; i< tracks.size(); ++i)
+          tracks[i]->playAtTick(ticks);
+      }
+      else return;
+      lag -= localMsPerTick;
+      
     }// end of tempo access (critical section)
   }
 }

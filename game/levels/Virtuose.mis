@@ -36,7 +36,7 @@ new SimGroup(MissionGroup) {
          spawnDatablock = "DefaultPlayerData";
          autoSpawn = "1";
          spawnTransform = "0";
-         radius = "1";
+         radius = "0.01";
          sphereWeight = "100";
          indoorWeight = "100";
          outdoorWeight = "100";
@@ -44,7 +44,7 @@ new SimGroup(MissionGroup) {
          dataBlock = "SpawnSphereMarker";
          position = "-1.01341 19.9451 5.40856";
          rotation = "1 0 0 0";
-         scale = "0.50842 0.626344 0.515058";
+         scale = "0.25598 0.277492 0.262618";
          canSave = "1";
          canSaveDynamicFields = "1";
       };
@@ -98,6 +98,7 @@ new SimGroup(MissionGroup) {
          position = "15.6854 -47.0667 4.73879";
          rotation = "0 0 1 167.694";
          scale = "1 1 1";
+         hidden = "1";
          canSave = "1";
          canSaveDynamicFields = "1";
             Direction = "1 1 -1";
@@ -108,7 +109,7 @@ new SimGroup(MissionGroup) {
          outerAngle = "45";
          isEnabled = "1";
          color = "1 1 1 1";
-         brightness = "1";
+         brightness = "0.5";
          castShadows = "0";
          priority = "1";
          animate = "1";
@@ -139,7 +140,7 @@ new SimGroup(MissionGroup) {
          outerAngle = "45";
          isEnabled = "1";
          color = "1 1 1 1";
-         brightness = "1";
+         brightness = "0.5";
          castShadows = "0";
          priority = "1";
          animate = "1";
@@ -160,6 +161,37 @@ new SimGroup(MissionGroup) {
          shadowDarkenColor = "0 0 0 -1";
          includeLightmappedGeometryInShadow = "0";
          position = "-2.68122 10.6751 5.36588";
+         rotation = "0 0 1 174.152";
+         canSave = "1";
+         canSaveDynamicFields = "1";
+      };
+      new SpotLight() {
+         range = "10";
+         innerAngle = "40";
+         outerAngle = "45";
+         isEnabled = "1";
+         color = "1 1 1 1";
+         brightness = "0.5";
+         castShadows = "0";
+         priority = "1";
+         animate = "1";
+         animationPeriod = "1";
+         animationPhase = "1";
+         flareScale = "1";
+         attenuationRatio = "0 1 1";
+         shadowType = "Spot";
+         texSize = "512";
+         overDarkFactor = "2000 1000 500 100";
+         shadowDistance = "400";
+         shadowSoftness = "0.15";
+         numSplits = "1";
+         logWeight = "0.91";
+         fadeStartDistance = "0";
+         lastSplitTerrainOnly = "0";
+         representedInLightmap = "0";
+         shadowDarkenColor = "0 0 0 -1";
+         includeLightmappedGeometryInShadow = "0";
+         position = "0.729549 12.3903 4.94761";
          rotation = "0 0 1 174.152";
          canSave = "1";
          canSaveDynamicFields = "1";
@@ -1058,6 +1090,22 @@ new SimGroup(MissionGroup) {
       canSave = "1";
       canSaveDynamicFields = "1";
 
+      new TSStatic(Ground) {
+         shapeName = "art/shapes/virtuose/Ground.dae";
+         playAmbient = "1";
+         meshCulling = "0";
+         originSort = "0";
+         collisionType = "Collision Mesh";
+         decalType = "Collision Mesh";
+         allowPlayerStep = "1";
+         renderNormals = "0";
+         forceDetail = "-1";
+         position = "3.313 3.29314 1.6378";
+         rotation = "1 0 0 0";
+         scale = "5.51449 6.24475 3.22375";
+         canSave = "1";
+         canSaveDynamicFields = "1";
+      };
       new TSStatic(Scene) {
          shapeName = "art/shapes/virtuose/scene.dae";
          playAmbient = "1";
@@ -1221,7 +1269,7 @@ new SimGroup(MissionGroup) {
          allowPlayerStep = "1";
          renderNormals = "0";
          forceDetail = "-1";
-         position = "2.4206 25.5 12.288";
+         position = "0.98659 24.9451 6.40856";
          rotation = "1 0 0 0";
          scale = "0.275127 0.275127 0.275127";
          canSave = "1";
@@ -1237,7 +1285,7 @@ new SimGroup(MissionGroup) {
          allowPlayerStep = "1";
          renderNormals = "0";
          forceDetail = "-1";
-         position = "0.059482 26 6.51833";
+         position = "-3.01341 24.9451 6.40856";
          rotation = "1 0 0 0";
          scale = "0.275127 0.275127 0.275127";
          canSave = "1";
@@ -1286,9 +1334,9 @@ new SimGroup(MissionGroup) {
       allowPlayerStep = "1";
       renderNormals = "0";
       forceDetail = "-1";
-      position = "2.64432 28.0374 4.22837";
-      rotation = "1 0 0 0";
-      scale = "0.01 0.01 0.01";
+      position = "-8.6566 18.8102 1.65272";
+      rotation = "0 0 1 175.852";
+      scale = "6.036 5.30816 1";
       canSave = "1";
       canSaveDynamicFields = "1";
    };
@@ -1305,6 +1353,22 @@ new SimGroup(MissionGroup) {
       position = "4.99154 20.9879 4.27437";
       rotation = "1 0 0 0";
       scale = "0.01 0.01 0.01";
+      canSave = "1";
+      canSaveDynamicFields = "1";
+   };
+   new TSStatic() {
+      shapeName = "art/shapes/virtuose/solSalle.dae";
+      playAmbient = "1";
+      meshCulling = "0";
+      originSort = "0";
+      collisionType = "Collision Mesh";
+      decalType = "Collision Mesh";
+      allowPlayerStep = "1";
+      renderNormals = "0";
+      forceDetail = "-1";
+      position = "1.00769 -4.45136 2.57161";
+      rotation = "0 0 -1 4.51864";
+      scale = "2.63 2.98687 1";
       canSave = "1";
       canSaveDynamicFields = "1";
    };
