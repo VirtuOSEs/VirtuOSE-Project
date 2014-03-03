@@ -128,7 +128,13 @@ void PlayerTracker::onNewFrame(nite::UserTracker& userTracker)
       if (rh.getPositionConfidence() > .5)
         rh_p=rh.getPosition().y;
 
-      VelocityHandChecker(lh_p,t_p);
+      //Detect velocity changes
+      if (velocityGesture.checkVelocityGesture(user.getSkeleton()))
+      {
+        sequencer->setVelocityAbsolute(velocityGesture.getVelocityDetected());
+      }
+
+      //Detect tempo changes
       if (tempoGesture.checkTempoGesture(user.getSkeleton()))
       {
         sequencer->setTempo(tempoGesture.getTempo());
@@ -150,27 +156,6 @@ void PlayerTracker::onNewFrame(nite::UserTracker& userTracker)
       }
     }
   } 
-}
-
-void PlayerTracker::VelocityHandChecker(float hand, float torso){
-	float position=hand;
-	float epsilon=100;
-	float zero = torso;
-	float max_y=200;
-	float min_y=-200;
-	float tmp;
-
-	if ((position<=max_y+torso)&&(position>=min_y+torso)) {
-		tmp=hand-torso;
-		tmp=tmp+200;
-		//tmp=hand+450;
-		tmp=tmp/400;
-		velocity=tmp;
-	}
-	else
-	  velocity=velocity;
-
-  sequencer->setVelocityAbsolute(velocity);
 }
 
 

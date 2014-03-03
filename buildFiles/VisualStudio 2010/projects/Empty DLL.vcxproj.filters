@@ -2885,6 +2885,9 @@
     <ClCompile Include="..\..\..\source\PlayerTracker.cpp">
       <Filter>Source Files\source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\source\VelocityGesture.cpp">
+      <Filter>Source Files\source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\..\Engine\source\T3D\aiClient.h">
@@ -5396,6 +5399,9 @@
       <Filter>Source Files\source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\source\TempoGesture.h">
+      <Filter>Source Files\source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\VelocityGesture.h">
       <Filter>Source Files\source</Filter>
     </ClInclude>
   </ItemGroup>

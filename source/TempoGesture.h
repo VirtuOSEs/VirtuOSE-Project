@@ -3,6 +3,7 @@
 
 #include "JuceLibraryCode/JuceHeader.h"
 #include "console/engineAPI.h"
+#include "NiTE.h"
 
 class TempoGesture
 {
@@ -18,16 +19,6 @@ public:
       yTop(150.f),
       timeOut(3500)
   {}
-
-  void calibrateGesture(const nite::SkeletonJoint& rightHip)
-  {
-    if (rightHip.getPositionConfidence() < 0.5f)
-      return;
-    yBottom = rightHip.getPosition().y;
-    yTop = yBottom + 200.f;
-    gestureCalibrated = true;
-    Con::printf("Tempo gesture : yBottom : %f, yTop : %f", yBottom, yTop);
-  }
 
   juce::int32 getTempo() const
     {return tempo;}
@@ -110,6 +101,16 @@ public:
   }
 
 private:
+  void calibrateGesture(const nite::SkeletonJoint& rightHip)
+  {
+    if (rightHip.getPositionConfidence() < 0.5f)
+      return;
+    yBottom = rightHip.getPosition().y;
+    yTop = yBottom + 200.f;
+    gestureCalibrated = true;
+    Con::printf("Tempo gesture : yBottom : %f, yTop : %f", yBottom, yTop);
+  }
+
   GestureStatus status;
   bool gestureCalibrated;
   double startTime;

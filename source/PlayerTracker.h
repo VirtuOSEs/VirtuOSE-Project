@@ -15,6 +15,7 @@
 #include "JuceLibraryCode/JuceHeader.h"
 #include "Sequencer.h"
 #include "TempoGesture.h"
+#include "VelocityGesture.h"
 
 class PlayerTracker : public SimObject, public nite::UserTracker::NewFrameListener
 {
@@ -41,7 +42,6 @@ public:
  	void updateUserState(const nite::UserData& user, unsigned long long ts);
  	void readNextFrame();
 
-	void VelocityHandChecker(float hand, float torso);
 
 private:
   JuceModule::Sequencer::Ptr sequencer;
@@ -50,6 +50,7 @@ private:
 	nite::UserTrackerFrameRef userTrackerFrame;
 	int velocityTest;
   TempoGesture tempoGesture;
+  VelocityGesture velocityGesture;
   float velocity;
 };
 
