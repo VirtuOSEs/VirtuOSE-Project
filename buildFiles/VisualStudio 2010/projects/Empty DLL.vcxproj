@@ -244,7 +244,6 @@
     <ClCompile Include="..\..\..\source\JuceScript.cpp" />
     <ClCompile Include="..\..\..\source\JuceModule.cpp" />
     <ClCompile Include="..\..\..\source\KinectModule.cpp" />
-    <ClCompile Include="..\..\..\source\KinectTracker.cpp" />
     <ClCompile Include="..\..\..\source\PlayerTracker.cpp" />
     <ClCompile Include="..\..\..\source\Sequencer.cpp" />
     <ClInclude Include="..\..\..\..\..\Engine\source\platform\input\oculusVR\barrelDistortionPostEffect.h" />
@@ -1930,9 +1929,9 @@
     <ClInclude Include="..\..\..\source\JuceLibraryCode\AppConfig.h" />
     <ClInclude Include="..\..\..\source\JuceLibraryCode\JuceHeader.h" />
     <ClInclude Include="..\..\..\source\JuceScript.h" />
-    <ClInclude Include="..\..\..\source\KinectTracker.h" />
     <ClInclude Include="..\..\..\source\PlayerTracker.h" />
     <ClInclude Include="..\..\..\source\Sequencer.h" />
+    <ClInclude Include="..\..\..\source\TempoGesture.h" />
     <ClInclude Include="..\..\..\source\torqueConfig.h" />
   </ItemGroup>
   <ItemGroup>

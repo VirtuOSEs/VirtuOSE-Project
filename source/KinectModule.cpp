@@ -3,7 +3,9 @@
 #include "console/console.h"
 
 //********INCLUDE KINECT************
-#include "KinectTracker.h"
+#include "NiTE.h"
+
+#include "PlayerTracker.h"
 
 MODULE_BEGIN( KinectModule )
 
@@ -21,14 +23,14 @@ MODULE_BEGIN( KinectModule )
 
     if (deviceInfoList.getSize() > 0)
     {
-      KinectModule::KinectTracker::enableKinect();
       nite::NiTE::initialize();
       Con::printf("OpenNI Device found");
+      PlayerTracker::KINECT_DETECTED = true;
     }
     else
     {
       Con::errorf("Unable to find an OpenNI Device (Kinect)");
-      KinectModule::KinectTracker::disableKinect();
+      PlayerTracker::KINECT_DETECTED = false;
     }
   }
 

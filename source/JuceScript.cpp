@@ -15,7 +15,6 @@ Orchestrator::Orchestrator()
 
 Orchestrator::~Orchestrator()
 {
-  kinectTracker->stopThread(100);
 }
 
 void Orchestrator::loadMidiFile(const char* filePath)
@@ -60,9 +59,7 @@ void Orchestrator::loadMidiFile(const char* filePath)
   sequencer = new JuceModule::Sequencer(tracks, midiFile.getTimeFormat());
   sequencer->setTempoTrack(tempoTrack);
 
-  kinectTracker = new KinectModule::KinectTracker(sequencer);
-  kinectTracker->startThread();
-  kinectTracker->setPriority(10);
+  playerTracker = new PlayerTracker(sequencer);
 }
 
 void Orchestrator::increaseVelocityFactor(short percentage)

@@ -7,8 +7,8 @@
 //**********INCLUDE STD LIB*********************
 #include <vector>
 
-#include "KinectTracker.h"
 #include "Sequencer.h"
+#include "PlayerTracker.h"
 
 /**
   Bridge between C++ and TorqueScript to 
@@ -45,7 +45,8 @@ public:
 
 private:
   JuceModule::Sequencer::Ptr sequencer;
-  juce::ScopedPointer<KinectModule::KinectTracker> kinectTracker;
+  //juce::ScopedPointer<KinectModule::KinectTracker> kinectTracker;
+  juce::ScopedPointer<PlayerTracker> playerTracker;
 
   std::vector<JuceModule::Track::Ptr > tracks;
 };
