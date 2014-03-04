@@ -69,3 +69,4 @@ void VelocityGesture::tryToCalibrateGesture(const nite::Skeleton& skeleton)
 
   gestureCalibrated = true;
 }
+

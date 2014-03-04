@@ -17,16 +17,9 @@
 #include "TempoGesture.h"
 #include "VelocityGesture.h"
 
-class PlayerTracker : public SimObject, public nite::UserTracker::NewFrameListener
+class PlayerTracker : public nite::UserTracker::NewFrameListener
 {
 public:
-	typedef SimObject Parent;
-  
-  //Torque stuff
-  DECLARE_CONOBJECT( PlayerTracker );
-	DECLARE_CATEGORY( "Kinect Module" );
- 	DECLARE_DESCRIPTION( "A user tracker using Kinect." );
-
   static bool KINECT_DETECTED;
   
   //Should not be called by a programmer. 

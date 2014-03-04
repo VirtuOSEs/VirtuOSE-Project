@@ -5,7 +5,15 @@
 #include <NiteSampleUtilities.h>
 #include "PlayerTracker.h"
 
-IMPLEMENT_CONOBJECT(PlayerTracker);
+// --- TorqueScript Callbacks implementation
+IMPLEMENT_GLOBAL_CALLBACK(onTempoJustChanged, void, (int newTempo), (newTempo),
+	"Called when the the midi sequence tempo is actually changed.\n"
+);
+
+// --- TorqueScript Callbacks implementation
+IMPLEMENT_GLOBAL_CALLBACK(onVelocityChanged, void, (float newVelocity), (newVelocity),
+	"Called when the user changes the velocity.\n"
+);
 
 #define USER_MESSAGE(msg) \
 	{Con::printf("[%08llu] User #%d:\t%s\n",ts, user.getId(),msg);}
@@ -132,12 +140,14 @@ void PlayerTracker::onNewFrame(nite::UserTracker& userTracker)
       if (velocityGesture.checkVelocityGesture(user.getSkeleton()))
       {
         sequencer->setVelocityAbsolute(velocityGesture.getVelocityDetected());
+        onVelocityChanged_callback(velocityGesture.getVelocityDetected());//TorqueScript callout
       }
 
       //Detect tempo changes
       if (tempoGesture.checkTempoGesture(user.getSkeleton()))
       {
         sequencer->setTempo(tempoGesture.getTempo());
+        onTempoJustChanged_callback(tempoGesture.getTempo());//TorqueScript callout
       }
 
       //Send hands position to game (display hands as spheres)
@@ -157,15 +167,5 @@ void PlayerTracker::onNewFrame(nite::UserTracker& userTracker)
     }
   } 
 }
-
-
-//-------------Torque Script Bridge
-
-DefineEngineMethod(PlayerTracker, getLHXP, void, (),, "Get X Position of Left Hand")
-{
-  //object->getJointPositionX("left");
-}
-
-
 
 

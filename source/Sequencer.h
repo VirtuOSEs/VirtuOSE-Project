@@ -13,6 +13,7 @@
 
 #include <vector>
 #include <map>
+#include <list>
 
 namespace JuceModule
 {
@@ -78,6 +79,10 @@ class Track : public juce::ReferenceCountedObject
 public:
   typedef juce::ReferenceCountedObjectPtr<Track> Ptr;
 
+  enum PlayingStatus {DO_NOT_PLAY, PLAY, WILL_PLAY_SOON};
+  static const double WILL_PLAY_DELAY_MS;
+  static const double DO_NOT_PLAY_DELAY_MS;
+
   Track(U32 index, juce::MidiMessageSequence sequence);
 
   void playAtTick(double tick);
@@ -92,6 +97,9 @@ public:
 
   void setVelocity(float value);
 
+  void setMsPerTick(double msPerTick)
+    {this->msPerTick = msPerTick;}
+
   juce::String getTrackName() const
     {return trackName;}
 
@@ -99,7 +107,16 @@ public:
     {return instrumentName;}
 
 protected:
+  //See std::list::remove_if
+  struct equals
+  {
+    int value2;
+    bool operator() (const int& value1)
+    {return value1 == value2;}
+  };
+
   juce::String extractInstrumentNameFromTrackName(const juce::String& trackName);
+  void checkPlayingStatus(double tick, double timeStamp);
 
   juce::MidiMessageSequence sequence;
   int eventIndex;
@@ -108,7 +125,10 @@ protected:
   float velocityFactor;
   float velocity;
   bool velocityChanged;
+  PlayingStatus playingStatus;
+  double msPerTick;
   juce::CriticalSection sequenceAccess;
+  std::list<int> incomingKeyUp;
 };
 
 
@@ -144,6 +164,7 @@ public:
 protected:
   virtual void run();
   void checkTempoChangeTrack();
+  inline void updateTracksMsPerTick(double msPerTick);
 
 private:
   short timeFormat;

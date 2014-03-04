@@ -30,7 +30,7 @@ struct Zone2D
   }
 };
 
-class VelocityGesture
+class VelocityGesture : public SimObject
 {
 public:
   //Width of the gesture zone in percentage of the arm lenght
