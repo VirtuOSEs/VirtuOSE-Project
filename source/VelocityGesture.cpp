@@ -25,7 +25,7 @@ bool VelocityGesture::checkVelocityGesture(const nite::Skeleton& skeleton)
 
   float handY = hand.getPosition().y;
   float handX = hand.getPosition().x;
-
+  
   if (gestureZone.isCoordinateInZone(handX, handY))
   {
     velocityDetected = (handY - gestureZone.bottom) / gestureZone.length();
@@ -64,8 +64,8 @@ void VelocityGesture::tryToCalibrateGesture(const nite::Skeleton& skeleton)
   const VectorF elbowToShoulder = elbow - shoulder;
 
   const float distanceHandToShoulder = handToElbow.len() + elbowToShoulder.len();
-  gestureZone.left = shoulder.x;
-  gestureZone.right = shoulder.x + distanceHandToShoulder * GESTURE_WIDTH_PERCENTAGE;
+  gestureZone.right = shoulder.x;
+  gestureZone.left = shoulder.x - distanceHandToShoulder * GESTURE_WIDTH_PERCENTAGE;
   Con::printf("Head x : %f", head.getPosition().x);
   Con::printf("Zone left : %f, Zone Right : %f, Distance hand to shoulder : %f", gestureZone.left, gestureZone.right, distanceHandToShoulder);
   gestureCalibrated = true;

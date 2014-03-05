@@ -12,8 +12,7 @@ struct Zone2D
   float left;
   float right;
 
-  //" From the perspective of the camera, an object moving from left to right is moving along the increasing x axis."
-  //See http://www.openni.org/wp-content/doxygen/html/classopenni_1_1_coordinate_converter.html
+  //From the perspective of the user, x increase from left to right
   bool isCoordinateInZone(float xPosition, float yPosition) const
   {
     bool verticallyIn = yPosition > bottom && yPosition < top;
@@ -28,7 +27,7 @@ struct Zone2D
 
   float width() const
   {
-    return fabs(right - left);
+    return fabs(left - right);
   }
 };
 
