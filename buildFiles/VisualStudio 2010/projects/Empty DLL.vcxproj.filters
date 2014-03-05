@@ -2891,6 +2891,9 @@
     <ClCompile Include="..\..\..\source\TempoGesture.cpp">
       <Filter>Source Files\source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\source\TSCallback.cpp">
+      <Filter>Source Files\source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\..\Engine\source\T3D\aiClient.h">
@@ -5405,6 +5408,9 @@
       <Filter>Source Files\source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\source\VelocityGesture.h">
+      <Filter>Source Files\source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\TSCallback.h">
       <Filter>Source Files\source</Filter>
     </ClInclude>
   </ItemGroup>

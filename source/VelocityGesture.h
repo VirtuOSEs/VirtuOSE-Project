@@ -12,6 +12,8 @@ struct Zone2D
   float left;
   float right;
 
+  //" From the perspective of the camera, an object moving from left to right is moving along the increasing x axis."
+  //See http://www.openni.org/wp-content/doxygen/html/classopenni_1_1_coordinate_converter.html
   bool isCoordinateInZone(float xPosition, float yPosition) const
   {
     bool verticallyIn = yPosition > bottom && yPosition < top;
@@ -30,7 +32,7 @@ struct Zone2D
   }
 };
 
-class VelocityGesture : public SimObject
+class VelocityGesture
 {
 public:
   //Width of the gesture zone in percentage of the arm lenght
