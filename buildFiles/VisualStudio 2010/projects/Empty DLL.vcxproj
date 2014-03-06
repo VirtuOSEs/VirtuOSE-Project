@@ -244,9 +244,10 @@
     <ClCompile Include="..\..\..\source\JuceScript.cpp" />
     <ClCompile Include="..\..\..\source\JuceModule.cpp" />
     <ClCompile Include="..\..\..\source\KinectModule.cpp" />
-    <ClCompile Include="..\..\..\source\KinectTracker.cpp" />
     <ClCompile Include="..\..\..\source\PlayerTracker.cpp" />
     <ClCompile Include="..\..\..\source\Sequencer.cpp" />
+    <ClCompile Include="..\..\..\source\TempoGesture.cpp" />
+    <ClCompile Include="..\..\..\source\VelocityGesture.cpp" />
     <ClInclude Include="..\..\..\..\..\Engine\source\platform\input\oculusVR\barrelDistortionPostEffect.h" />
     <ClInclude Include="..\..\..\..\..\Engine\source\platform\input\oculusVR\oculusVRConstants.h" />
     <ClInclude Include="..\..\..\..\..\Engine\source\platform\input\oculusVR\oculusVRDevice.h" />
@@ -1326,6 +1327,7 @@
     <ClInclude Include="..\..\..\..\..\Engine\source\math\mMath.h" />
     <ClCompile Include="..\..\..\..\..\Engine\source\math\mMathAltivec.cpp" />
     <ClCompile Include="..\..\..\..\..\Engine\source\math\mMathAMD.cpp" />
+    <ClInclude Include="..\..\..\source\VelocityGesture.h" />
     <CustomBuild Include="..\..\..\..\..\Engine\source\math\mMathAMD_ASM.asm">
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"..\..\..\..\..\Engine\bin\nasm\nasm.exe" -f win32 "%(FullPath)" -o "$(IntDir)%(Filename).obj"</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename).obj;%(Outputs)</Outputs>
@@ -1930,9 +1932,9 @@
     <ClInclude Include="..\..\..\source\JuceLibraryCode\AppConfig.h" />
     <ClInclude Include="..\..\..\source\JuceLibraryCode\JuceHeader.h" />
     <ClInclude Include="..\..\..\source\JuceScript.h" />
-    <ClInclude Include="..\..\..\source\KinectTracker.h" />
     <ClInclude Include="..\..\..\source\PlayerTracker.h" />
     <ClInclude Include="..\..\..\source\Sequencer.h" />
+    <ClInclude Include="..\..\..\source\TempoGesture.h" />
     <ClInclude Include="..\..\..\source\torqueConfig.h" />
   </ItemGroup>
   <ItemGroup>

@@ -4,77 +4,61 @@
 #include <string.h>
 #include <NiteSampleUtilities.h>
 #include "PlayerTracker.h"
-#include "KinectTracker.h"
 
-IMPLEMENT_CONOBJECT(PlayerTracker);
+// --- TorqueScript Callbacks implementation
+IMPLEMENT_GLOBAL_CALLBACK(onTempoJustChanged, void, (int newTempo), (newTempo),
+	"Called when the the midi sequence tempo is actually changed.\n"
+);
+
+// --- TorqueScript Callbacks implementation
+IMPLEMENT_GLOBAL_CALLBACK(onVelocityChanged, void, (float newVelocity), (newVelocity),
+	"Called when the user changes the velocity.\n"
+);
+
+#define USER_MESSAGE(msg) \
+	{Con::printf("[%08llu] User #%d:\t%s\n",ts, user.getId(),msg);}
 
 #define MAX_USERS 10
 bool g_visibleUsers[MAX_USERS] = {false};
 nite::SkeletonState g_skeletonStates[MAX_USERS] = {nite::SKELETON_NONE};
 
-#define USER_MESSAGE(msg) \
-	{Con::printf("[%08llu] User #%d:\t%s\n",ts, user.getId(),msg);}
 
 
+// HandsMove static constants definition
 TSStatic* HandsMove::rightHandSphere = nullptr;
 TSStatic* HandsMove::leftHandSphere = nullptr;
 SpawnSphere* HandsMove::spawn = nullptr;
 Point3F HandsMove::eyePosition = Point3F();
 const float HandsMove::EYE_OFFSET = 2.5f;
 
+bool PlayerTracker::KINECT_DETECTED = false;
+
 PlayerTracker::PlayerTracker()
-  : tempoChanged(false)
 {
+}
+
+PlayerTracker::PlayerTracker(JuceModule::Sequencer::Ptr sequencer)
+  : sequencer(sequencer)
+{
+  if (!KINECT_DETECTED)
+  {
+    return;
+  }
+
+  niteRc = userTracker.create();
+	
+  if (niteRc != nite::STATUS_OK)
+  {
+  Con::printf("Couldn't create user tracker\n");
+  exit(1);
+  }
+  userTracker.addNewFrameListener(this);
 }
 
 PlayerTracker::~PlayerTracker()
 {
-  if (KinectModule::KinectTracker::kinectEnabled) 
+  if (KINECT_DETECTED) 
     userTracker.removeNewFrameListener(this);
-}
-
-void PlayerTracker::init(){
-	Con::printf("START NITE INITIALIZE\n");
-	nite::NiTE::initialize();
-
-	niteRc = userTracker.create();
-	
-	if (niteRc != nite::STATUS_OK)
-	{
-		Con::printf("Couldn't create user tracker\n");
-		exit(1);
-	}
-  userTracker.addNewFrameListener(this);
-	Con::printf("END NITE INITIALIZE\n");
-}
-
-float PlayerTracker::getVelocity()
-{
-	return velocity;
-}
-
-void PlayerTracker::setVelocity(float v)
-{
-	velocity=v;
-}
-
-void PlayerTracker::VelocityHandChecker2(float hand, float torso){
-	float position=hand;
-	float epsilon=100;
-	float zero = torso;
-	float max_y=200;
-	float min_y=-200;
-	float tmp;
-
-	if ((position<=max_y+torso)&&(position>=min_y+torso)) {
-		tmp=hand-torso;
-		tmp=tmp+200;
-		//tmp=hand+450;
-		tmp=tmp/400;
-		velocity=tmp;
-	}
-	else
-	  velocity=velocity;
 }
 
 void PlayerTracker::updateUserState(const nite::UserData& user, unsigned long long ts)
@@ -115,39 +99,6 @@ void PlayerTracker::updateUserState(const nite::UserData& user, unsigned long lo
 	}
 }
 
-int PlayerTracker::getVelocityTest()
-{
-	return velocityTest;
-}
-
-void PlayerTracker::VelocityHandChecker(float hand, float torso){
-	float position=hand;
-	float epsilon=100;
-	float max_y=400;
-	float min_y=-400;
-
-	if((position-torso>=max_y-epsilon)&&(position-torso<=max_y+epsilon))
-		velocityTest=1;
-	else if((position+torso>=min_y-epsilon)&&(position+torso<=min_y+epsilon))
-		velocityTest=-1;
-	else
-		velocityTest=0;
-}
-
-void VelocityHandChecker2(float hand, float torso){
-	float position=hand;
-	float epsilon=100;
-	float zero = torso;
-	float max_y=450-torso;
-	float min_y=-450+torso;
-}
-
-void PlayerTracker::resetTempoChangedFlag()
-{
-  juce::ScopedLock sL(tempoChangedAccess);
-  tempoChanged = false;
-}
-
 void PlayerTracker::onNewFrame(nite::UserTracker& userTracker)
 {
     //ONLY FOR Y COORDINATES
@@ -185,13 +136,21 @@ void PlayerTracker::onNewFrame(nite::UserTracker& userTracker)
       if (rh.getPositionConfidence() > .5)
         rh_p=rh.getPosition().y;
 
-      VelocityHandChecker2(lh_p,t_p);
-      if (tempoGesture.checkTempoGesture(user.getSkeleton()))
+      //Detect velocity changes
+      if (velocityGesture.checkVelocityGesture(user.getSkeleton()))
       {
-        juce::ScopedLock sL(tempoChangedAccess);
-        tempoChanged = true;
+        sequencer->setVelocityAbsolute(velocityGesture.getVelocityDetected());
+        onVelocityChanged_callback(velocityGesture.getVelocityDetected());//TorqueScript callout
       }
 
+      //Detect tempo changes
+      if (tempoGesture.checkTempoGesture(user.getSkeleton()))
+      {
+        sequencer->setTempo(tempoGesture.getTempo());
+        onTempoJustChanged_callback(tempoGesture.getTempo());//TorqueScript callout
+      }
+
+      //Send hands position to game (display hands as spheres)
       const nite::SkeletonJoint& head = user.getSkeleton().getJoint(nite::JOINT_HEAD);
       if (rh.getPositionConfidence() > 0.65 && head.getPositionConfidence() > 0.65)
       {
@@ -208,87 +167,5 @@ void PlayerTracker::onNewFrame(nite::UserTracker& userTracker)
     }
   } 
 }
-
-void PlayerTracker::readNextFrame()
-{
-  //ONLY FOR Y COORDINATES
-  int t_p; // Torso Position
-  int lh_p; // Left Hand Position
-  int rh_p; // Right Hand Position
-
-  niteRc = userTracker.readFrame(&userTrackerFrame);
-  if (niteRc != nite::STATUS_OK)
-  {
-    Con::printf("Get next frame failed\n");
-    return;
-  }
-
-  const nite::Array<nite::UserData>& users = userTrackerFrame.getUsers();
-  for (int i = 0; i < users.getSize(); ++i) {
-
-    const nite::UserData& user = users[i];
-    updateUserState(user,userTrackerFrame.getTimestamp());
-    if (user.isNew())
-    {
-      userTracker.startSkeletonTracking(user.getId());
-      userTracker.setSkeletonSmoothingFactor(.95f);
-    }
-    else if (user.getSkeleton().getState() == nite::SKELETON_TRACKED)
-    {        
-      const nite::SkeletonJoint& lh = user.getSkeleton().getJoint(nite::JOINT_LEFT_HAND);
-      if (lh.getPositionConfidence() > .5)
-        lh_p=lh.getPosition().y;
-
-
-      const nite::SkeletonJoint& torso = user.getSkeleton().getJoint(nite::JOINT_TORSO);
-      if (torso.getPositionConfidence() > .5)
-        t_p=torso.getPosition().y;
-
-      const nite::SkeletonJoint& rh = user.getSkeleton().getJoint(nite::JOINT_RIGHT_HAND);
-      if (rh.getPositionConfidence() > .5)
-        rh_p=rh.getPosition().y;
-
-      VelocityHandChecker(lh_p,t_p);
-
-      if (tempoGesture.checkTempoGesture(user.getSkeleton()))
-        tempoChanged = true;
-      else
-        tempoChanged = false;
-
-      const nite::SkeletonJoint& head = user.getSkeleton().getJoint(nite::JOINT_HEAD);
-      if (rh.getPositionConfidence() > 0.5 && head.getPositionConfidence() > 0.5)
-      {
-        float rhandX = (rh.getPosition().x - head.getPosition().x) / 150.f;
-        float rhandY = (rh.getPosition().y - head.getPosition().y) / 150.f;
-        float rhandZ = (rh.getPosition().z - head.getPosition().z) / 150.f;
-
-        float lhandX = (lh.getPosition().x - head.getPosition().x) / 150.f;
-        float lhandY = (lh.getPosition().y - head.getPosition().y) / 150.f;
-        float lhandZ = (lh.getPosition().z - head.getPosition().z) / 150.f;
-
-        ThreadPool::queueWorkItemOnMainThread(new HandsMove(Point3F(lhandX, lhandY, lhandZ), Point3F(rhandX, rhandY, rhandZ)));
-      }
-    }
-  } 
-}
-
-bool PlayerTracker::hasTempoChanged() const
-{
-  return tempoChanged;
-}
-juce::int32 PlayerTracker::getTempo() const
-{
-  return tempoGesture.getTempo();
-}
-
-
-//-------------Torque Script Bridge
-
-DefineEngineMethod(PlayerTracker, getLHXP, void, (),, "Get X Position of Left Hand")
-{
-  //object->getJointPositionX("left");
-}
-
-
 
 

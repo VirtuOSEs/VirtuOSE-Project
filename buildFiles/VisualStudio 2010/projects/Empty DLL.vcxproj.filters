@@ -2885,7 +2885,10 @@
     <ClCompile Include="..\..\..\source\PlayerTracker.cpp">
       <Filter>Source Files\source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\source\KinectTracker.cpp">
+    <ClCompile Include="..\..\..\source\VelocityGesture.cpp">
+      <Filter>Source Files\source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\TempoGesture.cpp">
       <Filter>Source Files\source</Filter>
     </ClCompile>
   </ItemGroup>
@@ -5386,9 +5389,6 @@
     <ClInclude Include="..\..\..\..\..\Engine\source\platform\input\oculusVR\oculusVRUtil.h">
       <Filter>Source Files\Engine\platform\input\oculusVR</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\source\KinectTracker.h">
-      <Filter>Source Files\source</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Engine\source\T3D\gameBase\extended\extendedGameProcess.h">
       <Filter>Source Files\Engine\T3D\gameBase\extended</Filter>
     </ClInclude>
@@ -5399,6 +5399,12 @@
       <Filter>Source Files\Engine\T3D\gameBase\extended</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\source\PlayerTracker.h">
+      <Filter>Source Files\source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\TempoGesture.h">
+      <Filter>Source Files\source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\VelocityGesture.h">
       <Filter>Source Files\source</Filter>
     </ClInclude>
   </ItemGroup>

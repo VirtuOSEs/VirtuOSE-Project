@@ -24,3 +24,38 @@ function decrementOpacity(%obj){
 function HideSun(){
 	soleil.setHidden(!soleil.hidden);	
 }
+
+function onTempoGestureStart()
+{
+  echo("Tempo Gesture Start");
+}
+
+function onTempoGestureEnd()
+{
+  echo("Tempo Gesture End");
+}
+
+function onTempoJustChanged(%newTempo)
+{
+  echo("Tempo just changed " @ %newTempo);
+}
+
+function onVelocityChanged(%newVelocity)
+{
+   echo("Velocity just changed " @ %newVelocity); 
+}
+
+function onInstrumentWillPlay(%instrumentName, %delayInMillis) 
+{
+  echo(%instrumentName @ " will play in " @ %delayInMillis);
+}
+
+function onInstrumentStartPlaying(%instrumentName)
+{
+  echo(%instrumentName @ " starts playing");
+}
+
+function onInstrumentStoppedPlaying(%instrumentName)
+{
+  echo(%instrumentName @ " stops playing");
+}
