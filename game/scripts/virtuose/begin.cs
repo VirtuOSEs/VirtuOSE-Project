@@ -16,7 +16,7 @@ $posxvent = 0.0;
 function virtuoseStart(){
 	echo("Virtuose is beginning");
    $orchestrator = new Orchestrator();
-   $orchestrator.loadMidiFile($vfileName);
+   $orchestrator.loadMidiFile("../" @ $vfileName);
    // $orchestrator.play();
 	HideSun();
 	HideSun();
