@@ -88,6 +88,7 @@ function DeathMatchGame::endGame(%game)
    //echo (%game @"\c4 -> "@ %game.class @" -> DeathMatchGame::endGame");
 
    parent::endGame(%game);
+   $orchestrator.saveSequence($vsaveFile);
 }
 
 function DeathMatchGame::onGameDurationEnd(%game)
