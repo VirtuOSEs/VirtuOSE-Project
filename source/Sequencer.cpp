@@ -1,7 +1,6 @@
 #include "Sequencer.h"
 #include <fstream>
 #include <sys/stat.h>
-#include "TSCallback.h"
 
 namespace JuceModule
 {
@@ -325,8 +324,10 @@ void Sequencer::run()
       }
       if (!localStopped)
       {
-        const juce::ScopedLock modifyingTicks(ticksAccess);
-        ticks++;
+        {
+          const juce::ScopedLock modifyingTicks(ticksAccess);
+          ticks++;
+        }
         checkTempoChangeTrack();
         for(int i = 0; i< tracks.size(); ++i)
           tracks[i]->playAtTick(ticks);
@@ -371,6 +372,24 @@ void Sequencer::updateTracksMsPerTick(double msPerTick)
 //   "A callback called by the engine when a a track will be played soon.\n"
 //   "@param name The name of the instrument which will be played.\n"
 //  );
+
+// --- TorqueScript Callbacks implementation
+
+IMPLEMENT_GLOBAL_CALLBACK( onInstrumentStartPlaying, void, (const char* instrumentName), (instrumentName),
+   "A callback called by the engine when a track begins to play actual notes.\n"
+   "@param instrumentName The name of the instrument which will be played.\n"
+  );
+
+IMPLEMENT_GLOBAL_CALLBACK( onInstrumentWillPlay, void, (const char* instrumentName, float delayInMillis), (instrumentName, delayInMillis),
+   "A callback called by the engine when a track will soon begin to play.\n"
+   "@param instrumentName The name of the instrument which will be played.\n"
+   "@param delayInMillis The time in milliseconds before the track begins to play\n"
+  );
+
+IMPLEMENT_GLOBAL_CALLBACK( onInstrumentStoppedPlaying, void, (const char* instrumentName), (instrumentName),
+   "A callback called by the engine when a track stops to play.\n"
+   "@param instrumentName The name of the instrument which will be played.\n"
+  );
 
 
 const double Track::WILL_PLAY_DELAY_MS = 2000.0;
@@ -506,12 +525,12 @@ void Track::checkPlayingStatus(double tick, double timeStamp)
     if (timeStamp <= tick)
     {
       playingStatus = PLAY;
-      ThreadPool::queueWorkItemOnMainThread(new InstrumentStartPlayingCallback(instrumentName.toStdString().c_str()));
+      onInstrumentStartPlaying_callback(instrumentName.toStdString().c_str());
     }
     else if (timeStamp > tick && (delay = (timeStamp - tick) * msPerTick) < WILL_PLAY_DELAY_MS)
     {
       playingStatus = WILL_PLAY_SOON;
-      ThreadPool::queueWorkItemOnMainThread(new InstrumentWillPlayCallback(instrumentName.toStdString().c_str(), static_cast<float>(delay)));
+      onInstrumentWillPlay_callback(instrumentName.toStdString().c_str(), static_cast<float>(delay));
     }
   }
   else if (playingStatus == WILL_PLAY_SOON)
@@ -519,7 +538,7 @@ void Track::checkPlayingStatus(double tick, double timeStamp)
     if (timeStamp <= tick)
     {
       playingStatus = PLAY;
-      ThreadPool::queueWorkItemOnMainThread(new InstrumentStartPlayingCallback(instrumentName.toStdString().c_str()));
+      onInstrumentStartPlaying_callback(instrumentName.toStdString().c_str());
     }
   }
   else if (playingStatus == PLAY)
@@ -527,7 +546,7 @@ void Track::checkPlayingStatus(double tick, double timeStamp)
     if (incomingKeyUp.empty() && (timeStamp - tick) * msPerTick > DO_NOT_PLAY_DELAY_MS)
     {
       playingStatus = DO_NOT_PLAY;
-      ThreadPool::queueWorkItemOnMainThread(new InstrumentStoppedPlayingCallback(instrumentName.toStdString().c_str()));
+      onInstrumentStoppedPlaying_callback(instrumentName.toStdString().c_str());
     }
   }
 }

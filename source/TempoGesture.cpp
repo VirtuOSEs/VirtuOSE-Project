@@ -1,8 +1,15 @@
 #include "TempoGesture.h"
-#include "TSCallback.h"
+
+IMPLEMENT_GLOBAL_CALLBACK(onTempoGestureStart, void, (), (),
+	"Called when the user starts a tempo gesture.\n"
+);
+
+IMPLEMENT_GLOBAL_CALLBACK(onTempoGestureEnd, void, (), (),
+	"Called when the user ends a tempo gesture.\n"
+
+);
 
 // TempoGesture implem
-
 TempoGesture::TempoGesture()
   : status(NO_GESTURE),
     gestureCalibrated(false),
@@ -35,7 +42,7 @@ bool TempoGesture::checkTempoGesture(const nite::Skeleton& skeleton)
       // Con::printf("DANS ZONE : DEBUT MOUVEMENT %f", handY);
       status = IN_ZONE;
       startTime = juce::Time::getMillisecondCounterHiRes();
-      ThreadPool::queueWorkItemOnMainThread(new TempoGestureStartCallback());//Call out to TorqueScript
+      onTempoGestureStart_callback();
     }
   }
   //Si au dernier check on était dans la zone, on regarde si on en est sorti...
@@ -52,13 +59,13 @@ bool TempoGesture::checkTempoGesture(const nite::Skeleton& skeleton)
     {
       // Con::printf("SORTIE PAR LE BAS : NO GESTURE %f", handY);
       status = NO_GESTURE;
-      ThreadPool::queueWorkItemOnMainThread(new TempoGestureEndCallback());//Call out to TorqueScript
+      onTempoGestureEnd_callback();
     }
     else if (juce::Time::getMillisecondCounterHiRes() - startTime >= timeOut)
     {
       // Con::printf("TIMEOUT %f", handY);
       status = NO_GESTURE;
-      ThreadPool::queueWorkItemOnMainThread(new TempoGestureEndCallback());//Call out to TorqueScript
+      onTempoGestureEnd_callback();
     }
   }
   //Si au dernier check on était hors de la zone et qu'on rentre à nouveau dedans : nouveau tempo
@@ -80,7 +87,7 @@ bool TempoGesture::checkTempoGesture(const nite::Skeleton& skeleton)
       tempo = static_cast<juce::int32>(120000 / elapsedTime);//On bat à la blanche
       startTime = currentTime;
 
-      ThreadPool::queueWorkItemOnMainThread(new TempoGestureEndCallback());//Call out to TorqueScript
+      onTempoGestureEnd_callback();
 
       //Pour simplifier pour l'instant on ne peut pas enchainer
       status = NO_GESTURE;

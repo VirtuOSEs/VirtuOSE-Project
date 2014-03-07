@@ -3,7 +3,6 @@
 #include <string.h>
 #include <NiteSampleUtilities.h>
 #include "PlayerTracker.h"
-#include "TSCallback.h"
 
 #define USER_MESSAGE(msg) \
 	{Con::printf("[%08llu] User #%d:\t%s\n",ts, user.getId(),msg);}
@@ -12,6 +11,13 @@
 bool g_visibleUsers[MAX_USERS] = {false};
 nite::SkeletonState g_skeletonStates[MAX_USERS] = {nite::SKELETON_NONE};
 
+IMPLEMENT_GLOBAL_CALLBACK(onTempoJustChanged, void, (int newTempo), (newTempo),
+	"Called when the the midi sequence tempo is actually changed.\n"
+);
+
+IMPLEMENT_GLOBAL_CALLBACK(onVelocityChanged, void, (float newVelocity), (newVelocity),
+	"Called when the user changes the velocity.\n"
+);
 
 
 // HandsMove static constants definition
@@ -130,14 +136,14 @@ void PlayerTracker::onNewFrame(nite::UserTracker& userTracker)
       if (velocityGesture.checkVelocityGesture(user.getSkeleton()))
       {
         sequencer->setVelocityAbsolute(velocityGesture.getVelocityDetected());
-        ThreadPool::queueWorkItemOnMainThread(new VelocityChangedCallback(velocityGesture.getVelocityDetected()));//TorqueScript callout
+        onVelocityChanged_callback(velocityGesture.getVelocityDetected());
       }
 
       //Detect tempo changes
       if (tempoGesture.checkTempoGesture(user.getSkeleton()))
       {
         sequencer->setTempo(tempoGesture.getTempo());
-        ThreadPool::queueWorkItemOnMainThread(new TempoJustChangedCallback(tempoGesture.getTempo()));//TorqueScript callout
+        onTempoJustChanged_callback(tempoGesture.getTempo());
       }
 
       //Send hands position to game (display hands as spheres)
