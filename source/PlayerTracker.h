@@ -31,6 +31,8 @@ public:
 
   //from nite::UserTracker::NewFrameListener
   virtual void onNewFrame(nite::UserTracker& userTracker);
+  void activateMusicalGestureDetection();
+  void deactivateMusicalGestureDetection();
 
  	void updateUserState(const nite::UserData& user, unsigned long long ts);
  	void readNextFrame();
@@ -45,6 +47,7 @@ private:
   TempoGesture tempoGesture;
   VelocityGesture velocityGesture;
   float velocity;
+  bool musicalGestureDetectionActivated;
 };
 
 /** WorkItem qui modifie la position des mains.

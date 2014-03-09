@@ -230,6 +230,7 @@
     <ClCompile Include="..\..\..\..\..\Engine\source\T3D\gameBase\extended\extendedGameProcess.cpp" />
     <ClCompile Include="..\..\..\..\..\Engine\source\T3D\gameBase\extended\extendedMove.cpp" />
     <ClCompile Include="..\..\..\..\..\Engine\source\T3D\gameBase\extended\extendedMoveList.cpp" />
+    <ClCompile Include="..\..\..\source\AudioTools.cpp" />
     <ClCompile Include="..\..\..\source\JuceLibraryCode\modules\juce_audio_basics\juce_audio_basics.cpp" />
     <ClCompile Include="..\..\..\source\JuceLibraryCode\modules\juce_audio_devices\juce_audio_devices.cpp" />
     <ClCompile Include="..\..\..\source\JuceLibraryCode\modules\juce_audio_formats\juce_audio_formats.cpp" />
@@ -247,6 +248,7 @@
     <ClCompile Include="..\..\..\source\PlayerTracker.cpp" />
     <ClCompile Include="..\..\..\source\Sequencer.cpp" />
     <ClCompile Include="..\..\..\source\TempoGesture.cpp" />
+    <ClCompile Include="..\..\..\source\Track.cpp" />
     <ClCompile Include="..\..\..\source\VelocityGesture.cpp" />
     <ClInclude Include="..\..\..\..\..\Engine\source\platform\input\oculusVR\barrelDistortionPostEffect.h" />
     <ClInclude Include="..\..\..\..\..\Engine\source\platform\input\oculusVR\oculusVRConstants.h" />
@@ -1327,6 +1329,9 @@
     <ClInclude Include="..\..\..\..\..\Engine\source\math\mMath.h" />
     <ClCompile Include="..\..\..\..\..\Engine\source\math\mMathAltivec.cpp" />
     <ClCompile Include="..\..\..\..\..\Engine\source\math\mMathAMD.cpp" />
+    <ClInclude Include="..\..\..\source\AudioTools.h" />
+    <ClInclude Include="..\..\..\source\Track.h" />
+    <ClInclude Include="..\..\..\source\TSCallback.h" />
     <ClInclude Include="..\..\..\source\VelocityGesture.h" />
     <CustomBuild Include="..\..\..\..\..\Engine\source\math\mMathAMD_ASM.asm">
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"..\..\..\..\..\Engine\bin\nasm\nasm.exe" -f win32 "%(FullPath)" -o "$(IntDir)%(Filename).obj"</Command>

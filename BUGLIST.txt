@@ -1,0 +1,6 @@
+BUG MAJEURS
+---------------------
+ * Les callbacks finissent parfois par péter une FatalAssertion de Torque.
+   En gros leur timestamp est antérieur au timeStamp courant au moment de leur exécution.
+   Solution en cours d'étude : exécuter chaque appel de callback dans un thread à part en utilisant
+   les juce::Thread.

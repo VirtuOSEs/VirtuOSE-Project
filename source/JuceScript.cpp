@@ -19,7 +19,7 @@ Orchestrator::~Orchestrator()
 
 void Orchestrator::loadMidiFile(const char* filePath)
 {
-  juce::File myFile = juce::File::getCurrentWorkingDirectory().getChildFile (filePath);
+  juce::File myFile = juce::File::getCurrentWorkingDirectory().getChildFile ("../Beethoven-Symphony5-1.mid"/*filePath*/);
     
   juce::FileInputStream stream(myFile);
   Con::printf(stream.getStatus().getErrorMessage().getCharPointer());
@@ -53,7 +53,7 @@ void Orchestrator::loadMidiFile(const char* filePath)
 
   for (unsigned int i = 0; i < tracks.size(); ++i)
   {
-    tracks[i] = new JuceModule::Track(11+i, sequences[i]);
+    tracks[i] = new JuceModule::Track(sequences[i]);
   }
 
   sequencer = new JuceModule::Sequencer(tracks, midiFile.getTimeFormat());
@@ -74,12 +74,15 @@ void Orchestrator::decreaseVelocityFactor(short percentage)
 
 void Orchestrator::saveSequence(const char* filePath)
 {
+  sequencer->stop();
   sequencer->saveSequence(filePath);
 }
 
 void Orchestrator::play()
 {
   jassert(sequencer);
+  playerTracker->activateMusicalGestureDetection();
+
   if (!sequencer)
     return;
 
@@ -88,6 +91,8 @@ void Orchestrator::play()
 
 void Orchestrator::pause()
 {
+  playerTracker->deactivateMusicalGestureDetection();
+
  if (!sequencer)
     return;
  sequencer->pause();
@@ -95,6 +100,7 @@ void Orchestrator::pause()
 
 void Orchestrator::stop()
 {
+  playerTracker->deactivateMusicalGestureDetection();
   if (!sequencer)
     return;
 

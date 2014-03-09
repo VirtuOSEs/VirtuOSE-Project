@@ -34,7 +34,7 @@ PlayerTracker::PlayerTracker()
 }
 
 PlayerTracker::PlayerTracker(JuceModule::Sequencer::Ptr sequencer)
-  : sequencer(sequencer)
+  : sequencer(sequencer), musicalGestureDetectionActivated(false)
 {
   if (!KINECT_DETECTED)
   {
@@ -95,12 +95,18 @@ void PlayerTracker::updateUserState(const nite::UserData& user, unsigned long lo
 	}
 }
 
+void PlayerTracker::activateMusicalGestureDetection()
+{
+  musicalGestureDetectionActivated = true;
+}
+
+void PlayerTracker::deactivateMusicalGestureDetection()
+{
+  musicalGestureDetectionActivated = false;
+}
+
 void PlayerTracker::onNewFrame(nite::UserTracker& userTracker)
 {
-    //ONLY FOR Y COORDINATES
-  float t_p; // Torso Position
-  float lh_p; // Left Hand Position
-  float rh_p; // Right Hand Position
   userTracker.readFrame(&userTrackerFrame);
   if (niteRc != nite::STATUS_OK)
   {
@@ -120,27 +126,17 @@ void PlayerTracker::onNewFrame(nite::UserTracker& userTracker)
     else if (user.getSkeleton().getState() == nite::SKELETON_TRACKED)
     {        
       const nite::SkeletonJoint& lh = user.getSkeleton().getJoint(nite::JOINT_LEFT_HAND);
-      if (lh.getPositionConfidence() > .5)
-        lh_p=lh.getPosition().y;
-
-
-      const nite::SkeletonJoint& torso = user.getSkeleton().getJoint(nite::JOINT_TORSO);
-      if (torso.getPositionConfidence() > .5)
-        t_p=torso.getPosition().y;
-
       const nite::SkeletonJoint& rh = user.getSkeleton().getJoint(nite::JOINT_RIGHT_HAND);
-      if (rh.getPositionConfidence() > .5)
-        rh_p=rh.getPosition().y;
 
       //Detect velocity changes
-      if (velocityGesture.checkVelocityGesture(user.getSkeleton()))
+      if (musicalGestureDetectionActivated && velocityGesture.checkVelocityGesture(user.getSkeleton()))
       {
         sequencer->setVelocityAbsolute(velocityGesture.getVelocityDetected());
         onVelocityChanged_callback(velocityGesture.getVelocityDetected());
       }
 
       //Detect tempo changes
-      if (tempoGesture.checkTempoGesture(user.getSkeleton()))
+      if (musicalGestureDetectionActivated && tempoGesture.checkTempoGesture(user.getSkeleton()))
       {
         sequencer->setTempo(tempoGesture.getTempo());
         onTempoJustChanged_callback(tempoGesture.getTempo());
