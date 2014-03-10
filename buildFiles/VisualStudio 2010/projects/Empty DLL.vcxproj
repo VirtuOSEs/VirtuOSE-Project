@@ -249,6 +249,7 @@
     <ClCompile Include="..\..\..\source\Sequencer.cpp" />
     <ClCompile Include="..\..\..\source\TempoGesture.cpp" />
     <ClCompile Include="..\..\..\source\Track.cpp" />
+    <ClCompile Include="..\..\..\source\TSCallback.cpp" />
     <ClCompile Include="..\..\..\source\VelocityGesture.cpp" />
     <ClInclude Include="..\..\..\..\..\Engine\source\platform\input\oculusVR\barrelDistortionPostEffect.h" />
     <ClInclude Include="..\..\..\..\..\Engine\source\platform\input\oculusVR\oculusVRConstants.h" />

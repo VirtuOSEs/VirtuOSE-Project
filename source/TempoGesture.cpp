@@ -1,13 +1,5 @@
 #include "TempoGesture.h"
-
-IMPLEMENT_GLOBAL_CALLBACK(onTempoGestureStart, void, (), (),
-	"Called when the user starts a tempo gesture.\n"
-);
-
-IMPLEMENT_GLOBAL_CALLBACK(onTempoGestureEnd, void, (), (),
-	"Called when the user ends a tempo gesture.\n"
-
-);
+#include "TSCallback.h"
 
 // TempoGesture implem
 TempoGesture::TempoGesture()
@@ -42,7 +34,7 @@ bool TempoGesture::checkTempoGesture(const nite::Skeleton& skeleton)
       // Con::printf("DANS ZONE : DEBUT MOUVEMENT %f", handY);
       status = IN_ZONE;
       startTime = juce::Time::getMillisecondCounterHiRes();
-      onTempoGestureStart_callback();
+      CallbackManager::tempoGestureStart();
     }
   }
   //Si au dernier check on était dans la zone, on regarde si on en est sorti...
@@ -59,13 +51,13 @@ bool TempoGesture::checkTempoGesture(const nite::Skeleton& skeleton)
     {
       // Con::printf("SORTIE PAR LE BAS : NO GESTURE %f", handY);
       status = NO_GESTURE;
-      onTempoGestureEnd_callback();
+      CallbackManager::tempoGestureEnd();
     }
     else if (juce::Time::getMillisecondCounterHiRes() - startTime >= timeOut)
     {
       // Con::printf("TIMEOUT %f", handY);
       status = NO_GESTURE;
-      onTempoGestureEnd_callback();
+      CallbackManager::tempoGestureEnd();
     }
   }
   //Si au dernier check on était hors de la zone et qu'on rentre à nouveau dedans : nouveau tempo
@@ -87,7 +79,7 @@ bool TempoGesture::checkTempoGesture(const nite::Skeleton& skeleton)
       tempo = static_cast<juce::int32>(120000 / elapsedTime);//On bat à la blanche
       startTime = currentTime;
 
-      onTempoGestureEnd_callback();
+      CallbackManager::tempoGestureEnd();
 
       //Pour simplifier pour l'instant on ne peut pas enchainer
       status = NO_GESTURE;

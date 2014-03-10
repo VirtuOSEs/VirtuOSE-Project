@@ -2903,6 +2903,9 @@
     <ClCompile Include="..\..\..\source\AudioTools.cpp">
       <Filter>Source Files\source\sequencer</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\source\TSCallback.cpp">
+      <Filter>Source Files\source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\..\Engine\source\T3D\aiClient.h">
