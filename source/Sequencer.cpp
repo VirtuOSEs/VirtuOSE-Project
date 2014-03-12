@@ -30,6 +30,7 @@ Sequencer::Sequencer(std::vector<JuceModule::Track::Ptr > tracks, short timeForm
   midiData.append(trackName, sizeof(trackName));
   juce::MidiMessage trackNameEvent(midiData.getData(), midiData.getSize());
   newTempoTrack.addEvent(trackNameEvent);
+  updateTracksMsPerTick(msPerTick);
 }
 
 Sequencer::~Sequencer()

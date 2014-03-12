@@ -3,13 +3,8 @@
 #include "console/simEvents.h"
 #include "console/simBase.h"
 #include "platform/threads/threadPool.h"
-#pragma warning(disable:4996) 
 
-//
-//InstrumentStartPlayingCallback CallbackManager::instrumentStartPlayingCallback;
-//VelocityChangedCallback CallbackManager::velocityChangedCallback;
-//TempoGestureStartCallback CallbackManager::tempoGestureStartCallback;
-//TempoGestureEndCallback CallbackManager::tempoGestureEndCallback;
+#pragma warning(disable:4996) 
 
 void CallbackManager::instrumentWillPlay(const juce::String& instrumentName, double delayInMillis)
 {
@@ -41,13 +36,6 @@ void CallbackManager::instrumentStartPlaying(const juce::String& instrumentName)
   const char* argv[2] = {"onInstrumentStartPlaying",arg1};
   SimConsoleEvent* evt = new SimConsoleEvent(argc, argv, false);
   Sim::postEvent(Sim::getRootGroup(), evt, Sim::getCurrentTime());
-
-  //Old implementation
-  //instrumentStartPlayingCallback.pushNewCall(instrumentName);
-  //if (!instrumentStartPlayingCallback.isThreadRunning())
-  //{
-  //  instrumentStartPlayingCallback.startThread();
-  //}
 }
 
 void CallbackManager::instrumentStoppedPlay(const juce::String& instrumentName)
@@ -76,13 +64,6 @@ void CallbackManager::velocityChanged(float newVelocity)
 
   SimConsoleEvent* evt = new SimConsoleEvent(argc, argv, false);
   Sim::postEvent(Sim::getRootGroup(), evt, Sim::getCurrentTime());
-
-  //Old implementation
-  //velocityChangedCallback.pushNewCall(newVelocity);
-  //if (!velocityChangedCallback.isThreadRunning())
-  //{
-  //  velocityChangedCallback.startThread();
-  //}
 }
 
 void CallbackManager::tempoJustChanged(int newTempo)
@@ -107,13 +88,6 @@ void CallbackManager::tempoGestureStart()
 
   SimConsoleEvent* evt = new SimConsoleEvent(argc, argv, false);
   Sim::postEvent(Sim::getRootGroup(), evt, Sim::getCurrentTime());
-
-
-  //tempoGestureStartCallback.pushNewCall();
-  //if (!tempoGestureStartCallback.isThreadRunning())
-  //{
-  //  tempoGestureStartCallback.startThread();
-  //}
 }
 
 void CallbackManager::tempoGestureEnd()
@@ -123,116 +97,5 @@ void CallbackManager::tempoGestureEnd()
 
   SimConsoleEvent* evt = new SimConsoleEvent(argc, argv, false);
   Sim::postEvent(Sim::getRootGroup(), evt, Sim::getCurrentTime());
-
-  //tempoGestureEndCallback.pushNewCall();
-  //if (!tempoGestureEndCallback.isThreadRunning())
-  //{
-  //  tempoGestureEndCallback.startThread();
-  //}
 }
-
-//void InstrumentStartPlayingCallback::run()
-//{
-//  while (!instrumentsNames.empty())
-//  {
-//    const char* argv[2] = {"onInstrumentStartPlaying", instrumentsNames.front().toStdString().c_str()};
-//
-//    SimConsoleEvent* evt = new SimConsoleEvent(2, argv, false);
-//    Sim::postEvent(Sim::getRootGroup(), evt, Sim::getCurrentTime());
-//    //onInstrumentStartPlaying_callback(instrumentsNames.front().toStdString().c_str());
-//    //Concurrent access
-//    {
-//      const juce::ScopedLock sL(modifyQueue);
-//      instrumentsNames.pop();
-//    }
-//  }
-//}
-//
-//void InstrumentWillPlayCallback::run()
-//{
-//  onInstrumentWillPlay_callback(instrumentName.toStdString().c_str(), static_cast<float>(delay));
-//}
-//
-//void InstrumentStoppedPlayingCallback::run()
-//{
-//  onInstrumentStoppedPlaying_callback(instrumentName.toStdString().c_str());
-//}
-//
-//void VelocityChangedCallback::run()
-//{
-//  while (!callQueue.empty())
-//  {
-//
-//    juce::String arg(callQueue.front());
-//    char * parg = new char[arg.length() + 1];
-//    arg.toStdString().copy(parg, arg.length());
-//    parg[arg.length()] = 0;
-//
-//    const char* argv[2] = {"onVelocityChanged", parg};
-//
-//    SimConsoleEvent* evt = new SimConsoleEvent(2, argv, false);
-//    Sim::postEvent(Sim::getRootGroup(), evt, Sim::getCurrentTime());
-//    //onVelocityChanged_callback(callQueue.front());
-//
-//    //Concurrent access
-//    {
-//      const juce::ScopedLock sL(modifyQueue);
-//      callQueue.pop();
-//    }
-//  }
-//}
-//
-//void TempoGestureStartCallback::run()
-//{
-//  while (callCount > 0)
-//  {
-//    onTempoGestureStart_callback();
-//    const juce::ScopedLock sL(countAccess);
-//    --callCount;
-//  }
-//}
-//
-//void TempoGestureEndCallback::run()
-//{
-//  while (callCount > 0)
-//  {
-//    onTempoGestureEnd_callback();
-//    const juce::ScopedLock sL(countAccess);
-//    --callCount;
-//  }
-//}
-
-// --- TorqueScript Callbacks implementation
-
-//IMPLEMENT_GLOBAL_CALLBACK( onInstrumentStartPlaying, void, (const char* instrumentName), (instrumentName),
-//   "A callback called by the engine when a track begins to play actual notes.\n"
-//   "@param instrumentName The name of the instrument which will be played.\n"
-//  );
-//
-//IMPLEMENT_GLOBAL_CALLBACK( onInstrumentWillPlay, void, (const char* instrumentName, float delayInMillis), (instrumentName, delayInMillis),
-//   "A callback called by the engine when a track will soon begin to play.\n"
-//   "@param instrumentName The name of the instrument which will be played.\n"
-//   "@param delayInMillis The time in milliseconds before the track begins to play\n"
-//  );
-//
-//IMPLEMENT_GLOBAL_CALLBACK( onInstrumentStoppedPlaying, void, (const char* instrumentName), (instrumentName),
-//   "A callback called by the engine when a track stops to play.\n"
-//   "@param instrumentName The name of the instrument which will be played.\n"
-//  );
-//
-//IMPLEMENT_GLOBAL_CALLBACK(onVelocityChanged, void, (float newVelocity), (newVelocity),
-//	"Called when the user changes the velocity.\n"
-//);
-//IMPLEMENT_GLOBAL_CALLBACK(onTempoJustChanged, void, (int newTempo), (newTempo),
-//	"Called when the the midi sequence tempo is actually changed.\n"
-//);
-//
-//IMPLEMENT_GLOBAL_CALLBACK(onTempoGestureStart, void, (), (),
-//	"Called when the user starts a tempo gesture.\n"
-//);
-//
-//IMPLEMENT_GLOBAL_CALLBACK(onTempoGestureEnd, void, (), (),
-//	"Called when the user ends a tempo gesture.\n"
-//
-//);
 

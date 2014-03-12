@@ -9,6 +9,10 @@ namespace JuceModule
 
 /**
   A Track goal is to play a juce::MidiMessageSequence.
+  A Track triggers three types of events (TS callbacks) :
+  * onInstrumentWillPlay(%instrumentName, %delayInMillis)
+  * onInstrumentStartPlaying(%instrumentName)
+  * onInstrumentStoppedPlaying(%instrumentName)
 **/
 class Track : public juce::ReferenceCountedObject
 {
@@ -24,6 +28,7 @@ public:
   void playAtTick(double tick);
   void restart();
   juce::MidiMessageSequence getSequence() const;
+  bool isFinished() const;
 
   void increaseVelocityFactor(short percentage)
     {velocityFactor +=  velocityFactor / 100.f * percentage;}
@@ -52,7 +57,7 @@ protected:
   };
 
   juce::String extractInstrumentNameFromTrackName(const juce::String& trackName);
-  void checkPlayingStatus(double tick, double timeStamp);
+  void checkPlayingStatus(double tick, double timeStamp, bool isNoteOn);
 
   juce::MidiMessageSequence sequence;
   int eventIndex;

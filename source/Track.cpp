@@ -3,17 +3,11 @@
 #include "AudioTools.h"
 #include "TSCallback.h"
 
-//La fonction TorqueScript pour changer l'opacité d'un objet
-//IMPLEMENT_GLOBAL_CALLBACK( changeOpacity, void, ( const char* instrumentName, float opacity ), ( instrumentName, opacity ),
-//   "A callback called by the engine when a a track will be played soon.\n"
-//   "@param name The name of the instrument which will be played.\n"
-//  );
-
 namespace JuceModule
 {
 
 const double Track::WILL_PLAY_DELAY_MS = 2000.0;
-const double Track::DO_NOT_PLAY_DELAY_MS = 5000.0;
+const double Track::DO_NOT_PLAY_DELAY_MS = 3000.0;
 
 Track::Track(juce::MidiMessageSequence sequence)
   : sequence(sequence),
@@ -62,6 +56,11 @@ void Track::restart()
   eventIndex = 0;
 }
 
+bool Track::isFinished() const
+{
+  return eventIndex >= sequence.getNumEvents();
+}
+
 void Track::setVelocity(float value)
 {
   jassert(velocity >= 0.f && velocity <= 1.f);
@@ -71,8 +70,9 @@ void Track::setVelocity(float value)
 
 void Track::playAtTick(double tick)
 {
-  if (eventIndex >= sequence.getNumEvents())
+  if (isFinished())
     return;
+
 
   juce::MidiMessageSequence::MidiEventHolder* midiEvent = nullptr;
   {
@@ -84,10 +84,10 @@ void Track::playAtTick(double tick)
 
   if (timeStamp == 0) 
   { 
-    eventIndex++;
+    ++eventIndex;
     return;
   }
-
+  bool isNoteOn = midiEvent->message.isNoteOn();
   //If it's time, play the event
   if ( timeStamp <= tick)
   {
@@ -95,14 +95,18 @@ void Track::playAtTick(double tick)
       midiEvent->message.setVelocity(velocity);
     AudioTools::getInstance().makePluginPlay(trackName, midiEvent->message);
     //Used to track the playing status of the track
-    if (midiEvent->message.isNoteOn())
+    if (isNoteOn)
     {
+      int indexKeyUp = 0;
       {
         juce::ScopedLock sl(sequenceAccess);
-        incomingKeyUp.push_back(sequence.getIndexOfMatchingKeyUp(eventIndex));
+        indexKeyUp = sequence.getIndexOfMatchingKeyUp(eventIndex);
       }
+      //Security
+      if (indexKeyUp != -1)
+        incomingKeyUp.push_back(indexKeyUp);
     }
-    eventIndex++;
+    ++eventIndex;
   }
 
   //Remove the incomingKeyUp which already came
@@ -111,7 +115,7 @@ void Track::playAtTick(double tick)
   eq.value2 = eventIndex;
   incomingKeyUp.remove_if(eq);
 
-  checkPlayingStatus(tick, timeStamp);
+  checkPlayingStatus(tick, timeStamp, isNoteOn);
 }
 
 juce::MidiMessageSequence Track::getSequence() const
@@ -136,10 +140,10 @@ juce::String Track::extractInstrumentNameFromTrackName(const juce::String& track
   return juce::String::empty;
 }
 
-void Track::checkPlayingStatus(double tick, double timeStamp)
+void Track::checkPlayingStatus(double tick, double timeStamp, bool isNoteOn)
 {
   double delay = 0.0;
-  if (playingStatus == DO_NOT_PLAY)
+  if (playingStatus == DO_NOT_PLAY && isNoteOn)
   {
     //Special case : begining of a sequence
     if (timeStamp <= tick)
@@ -153,7 +157,7 @@ void Track::checkPlayingStatus(double tick, double timeStamp)
       CallbackManager::instrumentWillPlay(instrumentName, delay);
     }
   }
-  else if (playingStatus == WILL_PLAY_SOON)
+  else if (playingStatus == WILL_PLAY_SOON && isNoteOn)
   {
     if (timeStamp <= tick)
     {
@@ -163,7 +167,7 @@ void Track::checkPlayingStatus(double tick, double timeStamp)
   }
   else if (playingStatus == PLAY)
   {
-    if (incomingKeyUp.empty() && (timeStamp - tick) * msPerTick > DO_NOT_PLAY_DELAY_MS)
+    if (isFinished() || (incomingKeyUp.empty() && (timeStamp - tick) * msPerTick > DO_NOT_PLAY_DELAY_MS) )
     {
       playingStatus = DO_NOT_PLAY;
       CallbackManager::instrumentStoppedPlay(instrumentName);
