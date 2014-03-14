@@ -4,32 +4,7 @@
 #include "JuceLibraryCode/JuceHeader.h"
 #include "console/engineAPI.h"
 #include "NiTE.h"
-
-struct Zone2D
-{
-  float bottom;
-  float top;
-  float left;
-  float right;
-
-  //From the perspective of the user, x increase from left to right
-  bool isCoordinateInZone(float xPosition, float yPosition) const
-  {
-    bool verticallyIn = yPosition > bottom && yPosition < top;
-    bool horizontallyIn = xPosition > left && xPosition < right;
-    return verticallyIn && horizontallyIn;
-  }
-
-  float length() const
-  {
-    return fabs(top - bottom);
-  }
-
-  float width() const
-  {
-    return fabs(left - right);
-  }
-};
+#include "Zone2D.h"
 
 class VelocityGesture
 {

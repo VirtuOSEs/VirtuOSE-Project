@@ -2906,6 +2906,9 @@
     <ClCompile Include="..\..\..\source\TSCallback.cpp">
       <Filter>Source Files\source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\source\TransportGesture.cpp">
+      <Filter>Source Files\source\kinect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\..\Engine\source\T3D\aiClient.h">
@@ -5430,6 +5433,12 @@
     </ClInclude>
     <ClInclude Include="..\..\..\source\AudioTools.h">
       <Filter>Source Files\source\sequencer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\TransportGesture.h">
+      <Filter>Source Files\source\kinect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\Zone2D.h">
+      <Filter>Source Files\source\kinect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -46,6 +46,7 @@ PlayerTracker::PlayerTracker(JuceModule::Sequencer::Ptr sequencer)
 
 PlayerTracker::~PlayerTracker()
 {
+  const juce::ScopedLock sL(trackerAccess);
   if (KINECT_DETECTED) 
     userTracker.removeNewFrameListener(this);
 }
@@ -100,12 +101,15 @@ void PlayerTracker::deactivateMusicalGestureDetection()
 
 void PlayerTracker::onNewFrame(nite::UserTracker& userTracker)
 {
-  userTracker.readFrame(&userTrackerFrame);
+  {
+    const juce::ScopedLock sL(trackerAccess);
+    userTracker.readFrame(&userTrackerFrame);
+  }
   if (niteRc != nite::STATUS_OK)
   {
-    Con::printf("Get next frame failed\n");
     return;
   }
+
   const nite::Array<nite::UserData>& users = userTrackerFrame.getUsers();
   for (int i = 0; i < users.getSize(); ++i) {
 
@@ -120,6 +124,20 @@ void PlayerTracker::onNewFrame(nite::UserTracker& userTracker)
     {        
       const nite::SkeletonJoint& lh = user.getSkeleton().getJoint(nite::JOINT_LEFT_HAND);
       const nite::SkeletonJoint& rh = user.getSkeleton().getJoint(nite::JOINT_RIGHT_HAND);
+
+      if (transportGesture.checkTransportGesture(user.getSkeleton()))
+      {
+        if (transportGesture.getTransportStatus() == TransportGesture::PLAY)
+        {
+          activateMusicalGestureDetection();
+          sequencer->play();
+        }
+        else if (transportGesture.getTransportStatus() == TransportGesture::PAUSE)
+        {
+          deactivateMusicalGestureDetection();
+          sequencer->pause();
+        }
+      }
 
       //Detect velocity changes
       if (musicalGestureDetectionActivated && velocityGesture.checkVelocityGesture(user.getSkeleton()))

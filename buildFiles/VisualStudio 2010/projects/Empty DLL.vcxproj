@@ -249,6 +249,7 @@
     <ClCompile Include="..\..\..\source\Sequencer.cpp" />
     <ClCompile Include="..\..\..\source\TempoGesture.cpp" />
     <ClCompile Include="..\..\..\source\Track.cpp" />
+    <ClCompile Include="..\..\..\source\TransportGesture.cpp" />
     <ClCompile Include="..\..\..\source\TSCallback.cpp" />
     <ClCompile Include="..\..\..\source\VelocityGesture.cpp" />
     <ClInclude Include="..\..\..\..\..\Engine\source\platform\input\oculusVR\barrelDistortionPostEffect.h" />
@@ -1332,8 +1333,10 @@
     <ClCompile Include="..\..\..\..\..\Engine\source\math\mMathAMD.cpp" />
     <ClInclude Include="..\..\..\source\AudioTools.h" />
     <ClInclude Include="..\..\..\source\Track.h" />
+    <ClInclude Include="..\..\..\source\TransportGesture.h" />
     <ClInclude Include="..\..\..\source\TSCallback.h" />
     <ClInclude Include="..\..\..\source\VelocityGesture.h" />
+    <ClInclude Include="..\..\..\source\Zone2D.h" />
     <CustomBuild Include="..\..\..\..\..\Engine\source\math\mMathAMD_ASM.asm">
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"..\..\..\..\..\Engine\bin\nasm\nasm.exe" -f win32 "%(FullPath)" -o "$(IntDir)%(Filename).obj"</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename).obj;%(Outputs)</Outputs>

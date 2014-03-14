@@ -101,5 +101,4 @@ void TempoGesture::calibrateGesture(const nite::SkeletonJoint& rightHip)
   yBottom = rightHip.getPosition().y;
   yTop = yBottom + 200.f;
   gestureCalibrated = true;
-  Con::printf("Tempo gesture : yBottom : %f, yTop : %f", yBottom, yTop);
 }
