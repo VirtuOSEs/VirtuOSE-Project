@@ -1,15 +1,15 @@
 // Le script du projet Virtuose
 
 function changeOpacity(%obj,%a){
-	return;
+	// return;
 	%mapTo=%obj.getTargetName(0);
 	%mapTo.diffuseColor.a=%a;
 	%mapTo.reload();
 	
-	if(%a>=1)
-		%mapTo.translucent=0;
-	else
-		%mapTo.translucent=1;
+	// if(%a>=1)
+		// %mapTo.translucent=0;
+	// else
+		// %mapTo.translucent=1;
 }
 
 function decrementOpacity(%obj){
@@ -18,6 +18,17 @@ function decrementOpacity(%obj){
 	while(%mapTo.diffuseColor.a>0){
 		changeOpacity(%obj,%mapTo.diffuseColor.a-0.01);
 	}
+	
+}
+
+function changeColor(%obj,%var){
+	%mapTo=%obj.getTargetName(0);
+	
+	%mapTo.diffuseColor.r=%var;
+	%mapTo.diffuseColor.g=0.25+0.25*%var;
+	%mapTo.diffuseColor.b=1-%var;
+	
+	%mapTo.reload();
 	
 }
 

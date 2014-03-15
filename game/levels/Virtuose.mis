@@ -1259,22 +1259,6 @@ new SimGroup(MissionGroup) {
       canSave = "1";
       canSaveDynamicFields = "1";
 
-      new TSStatic(rightHand) {
-         shapeName = "art/shapes/virtuose/sphere.dae";
-         playAmbient = "1";
-         meshCulling = "0";
-         originSort = "0";
-         collisionType = "Collision Mesh";
-         decalType = "Collision Mesh";
-         allowPlayerStep = "1";
-         renderNormals = "0";
-         forceDetail = "-1";
-         position = "0.98659 24.9451 6.40856";
-         rotation = "1 0 0 0";
-         scale = "0.275127 0.275127 0.275127";
-         canSave = "1";
-         canSaveDynamicFields = "1";
-      };
       new TSStatic(leftHand) {
          shapeName = "art/shapes/virtuose/sphere.dae";
          playAmbient = "1";
@@ -1288,6 +1272,23 @@ new SimGroup(MissionGroup) {
          position = "-3.01341 24.9451 6.40856";
          rotation = "1 0 0 0";
          scale = "0.275127 0.275127 0.275127";
+         canSave = "1";
+         canSaveDynamicFields = "1";
+      };
+      new TSStatic(rightHand) {
+         shapeName = "art/shapes/virtuose/sphere2.dae";
+         playAmbient = "1";
+         meshCulling = "0";
+         originSort = "0";
+         collisionType = "Collision Mesh";
+         decalType = "Collision Mesh";
+         allowPlayerStep = "1";
+         renderNormals = "0";
+         forceDetail = "-1";
+         position = "0.98659 24.9451 6.40856";
+         rotation = "1 0 0 0";
+         scale = "0.275127 0.275127 0.275127";
+         internalName = "f";
          canSave = "1";
          canSaveDynamicFields = "1";
       };
