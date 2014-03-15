@@ -1,17 +1,7 @@
 #include "TempoGesture.h"
-#include "console/engineAPI.h"
-
-// --- TorqueScript Callbacks implementation
-IMPLEMENT_GLOBAL_CALLBACK(onTempoGestureStart, void, (), (),
-	"Called when the user starts a tempo gesture.\n"
-);
-
-IMPLEMENT_GLOBAL_CALLBACK(onTempoGestureEnd, void, (), (),
-	"Called when the user ends a tempo gesture.\n"
-);
+#include "TSCallback.h"
 
 // TempoGesture implem
-
 TempoGesture::TempoGesture()
   : status(NO_GESTURE),
     gestureCalibrated(false),
@@ -44,7 +34,7 @@ bool TempoGesture::checkTempoGesture(const nite::Skeleton& skeleton)
       // Con::printf("DANS ZONE : DEBUT MOUVEMENT %f", handY);
       status = IN_ZONE;
       startTime = juce::Time::getMillisecondCounterHiRes();
-      onTempoGestureStart_callback();//Call out to TorqueScript
+      CallbackManager::tempoGestureStart();
     }
   }
   //Si au dernier check on était dans la zone, on regarde si on en est sorti...
@@ -61,13 +51,13 @@ bool TempoGesture::checkTempoGesture(const nite::Skeleton& skeleton)
     {
       // Con::printf("SORTIE PAR LE BAS : NO GESTURE %f", handY);
       status = NO_GESTURE;
-      onTempoGestureEnd_callback();//TorqueScript callout
+      CallbackManager::tempoGestureEnd();
     }
     else if (juce::Time::getMillisecondCounterHiRes() - startTime >= timeOut)
     {
       // Con::printf("TIMEOUT %f", handY);
       status = NO_GESTURE;
-      onTempoGestureEnd_callback();//TorqueScript callout
+      CallbackManager::tempoGestureEnd();
     }
   }
   //Si au dernier check on était hors de la zone et qu'on rentre à nouveau dedans : nouveau tempo
@@ -89,7 +79,7 @@ bool TempoGesture::checkTempoGesture(const nite::Skeleton& skeleton)
       tempo = static_cast<juce::int32>(120000 / elapsedTime);//On bat à la blanche
       startTime = currentTime;
 
-      onTempoGestureEnd_callback();//TorqueScript callout
+      CallbackManager::tempoGestureEnd();
 
       //Pour simplifier pour l'instant on ne peut pas enchainer
       status = NO_GESTURE;
@@ -111,5 +101,4 @@ void TempoGesture::calibrateGesture(const nite::SkeletonJoint& rightHip)
   yBottom = rightHip.getPosition().y;
   yTop = yBottom + 200.f;
   gestureCalibrated = true;
-  Con::printf("Tempo gesture : yBottom : %f, yTop : %f", yBottom, yTop);
 }

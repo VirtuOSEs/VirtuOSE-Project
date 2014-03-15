@@ -1,19 +1,9 @@
-
 #include "console/console.h"
 #include <stdio.h>
 #include <string.h>
 #include <NiteSampleUtilities.h>
 #include "PlayerTracker.h"
-
-// --- TorqueScript Callbacks implementation
-IMPLEMENT_GLOBAL_CALLBACK(onTempoJustChanged, void, (int newTempo), (newTempo),
-	"Called when the the midi sequence tempo is actually changed.\n"
-);
-
-// --- TorqueScript Callbacks implementation
-IMPLEMENT_GLOBAL_CALLBACK(onVelocityChanged, void, (float newVelocity), (newVelocity),
-	"Called when the user changes the velocity.\n"
-);
+#include "TSCallback.h"
 
 #define USER_MESSAGE(msg) \
 	{Con::printf("[%08llu] User #%d:\t%s\n",ts, user.getId(),msg);}
@@ -21,7 +11,6 @@ IMPLEMENT_GLOBAL_CALLBACK(onVelocityChanged, void, (float newVelocity), (newVelo
 #define MAX_USERS 10
 bool g_visibleUsers[MAX_USERS] = {false};
 nite::SkeletonState g_skeletonStates[MAX_USERS] = {nite::SKELETON_NONE};
-
 
 
 // HandsMove static constants definition
@@ -38,7 +27,7 @@ PlayerTracker::PlayerTracker()
 }
 
 PlayerTracker::PlayerTracker(JuceModule::Sequencer::Ptr sequencer)
-  : sequencer(sequencer)
+  : sequencer(sequencer), musicalGestureDetectionActivated(false)
 {
   if (!KINECT_DETECTED)
   {
@@ -57,6 +46,7 @@ PlayerTracker::PlayerTracker(JuceModule::Sequencer::Ptr sequencer)
 
 PlayerTracker::~PlayerTracker()
 {
+  const juce::ScopedLock sL(trackerAccess);
   if (KINECT_DETECTED) 
     userTracker.removeNewFrameListener(this);
 }
@@ -99,18 +89,27 @@ void PlayerTracker::updateUserState(const nite::UserData& user, unsigned long lo
 	}
 }
 
+void PlayerTracker::activateMusicalGestureDetection()
+{
+  musicalGestureDetectionActivated = true;
+}
+
+void PlayerTracker::deactivateMusicalGestureDetection()
+{
+  musicalGestureDetectionActivated = false;
+}
+
 void PlayerTracker::onNewFrame(nite::UserTracker& userTracker)
 {
-    //ONLY FOR Y COORDINATES
-  float t_p; // Torso Position
-  float lh_p; // Left Hand Position
-  float rh_p; // Right Hand Position
-  userTracker.readFrame(&userTrackerFrame);
+  {
+    const juce::ScopedLock sL(trackerAccess);
+    userTracker.readFrame(&userTrackerFrame);
+  }
   if (niteRc != nite::STATUS_OK)
   {
-    Con::printf("Get next frame failed\n");
     return;
   }
+
   const nite::Array<nite::UserData>& users = userTrackerFrame.getUsers();
   for (int i = 0; i < users.getSize(); ++i) {
 
@@ -124,30 +123,35 @@ void PlayerTracker::onNewFrame(nite::UserTracker& userTracker)
     else if (user.getSkeleton().getState() == nite::SKELETON_TRACKED)
     {        
       const nite::SkeletonJoint& lh = user.getSkeleton().getJoint(nite::JOINT_LEFT_HAND);
-      if (lh.getPositionConfidence() > .5)
-        lh_p=lh.getPosition().y;
-
-
-      const nite::SkeletonJoint& torso = user.getSkeleton().getJoint(nite::JOINT_TORSO);
-      if (torso.getPositionConfidence() > .5)
-        t_p=torso.getPosition().y;
-
       const nite::SkeletonJoint& rh = user.getSkeleton().getJoint(nite::JOINT_RIGHT_HAND);
-      if (rh.getPositionConfidence() > .5)
-        rh_p=rh.getPosition().y;
+
+      if (transportGesture.checkTransportGesture(user.getSkeleton()))
+      {
+        if (transportGesture.getTransportStatus() == TransportGesture::PLAY)
+        {
+          activateMusicalGestureDetection();
+          sequencer->play();
+        }
+        else if (transportGesture.getTransportStatus() == TransportGesture::PAUSE)
+        {
+          deactivateMusicalGestureDetection();
+          sequencer->pause();
+        }
+      }
 
       //Detect velocity changes
-      if (velocityGesture.checkVelocityGesture(user.getSkeleton()))
+      if (musicalGestureDetectionActivated && velocityGesture.checkVelocityGesture(user.getSkeleton()))
       {
         sequencer->setVelocityAbsolute(velocityGesture.getVelocityDetected());
-        onVelocityChanged_callback(velocityGesture.getVelocityDetected());//TorqueScript callout
+        CallbackManager::velocityChanged(velocityGesture.getVelocityDetected());
+        
       }
 
       //Detect tempo changes
-      if (tempoGesture.checkTempoGesture(user.getSkeleton()))
+      if (musicalGestureDetectionActivated && tempoGesture.checkTempoGesture(user.getSkeleton()))
       {
         sequencer->setTempo(tempoGesture.getTempo());
-        onTempoJustChanged_callback(tempoGesture.getTempo());//TorqueScript callout
+        CallbackManager::tempoJustChanged(tempoGesture.getTempo());
       }
 
       //Send hands position to game (display hands as spheres)

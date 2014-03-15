@@ -2,7 +2,6 @@
 #define KINECT_TEMPO_GESTURE_H
 
 #include "JuceLibraryCode/JuceHeader.h"
-#include "console/engineAPI.h"
 #include "NiTE.h"
 
 class TempoGesture

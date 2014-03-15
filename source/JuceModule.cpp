@@ -5,7 +5,7 @@
 //********INCLUDE JUCE************
 #include "JuceLibraryCode/JuceHeader.h"
 
-#include "Sequencer.h"
+#include "AudioTools.h"
 
 MODULE_BEGIN( JuceModule )
 

@@ -358,6 +358,12 @@
     <Filter Include="Source Files\Engine\T3D\gameBase\extended">
       <UniqueIdentifier>{68895278-a9ec-42f3-81b0-8c85d2efbd44}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\source\sequencer">
+      <UniqueIdentifier>{609242e3-8a69-4bee-a656-c6cd1e884f67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\source\kinect">
+      <UniqueIdentifier>{7afd2760-e16a-4b50-9693-78680f5d803c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Torque.rc">
@@ -2849,9 +2855,6 @@
     <ClCompile Include="..\..\..\source\JuceModule.cpp">
       <Filter>Source Files\source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\source\Sequencer.cpp">
-      <Filter>Source Files\source</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Engine\source\platform\input\oculusVR\barrelDistortionPostEffect.cpp">
       <Filter>Source Files\Engine\platform\input\oculusVR</Filter>
     </ClCompile>
@@ -2870,9 +2873,6 @@
     <ClCompile Include="..\..\..\..\..\Engine\source\platform\input\oculusVR\oculusVRUtil.cpp">
       <Filter>Source Files\Engine\platform\input\oculusVR</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\source\KinectModule.cpp">
-      <Filter>Source Files\source</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Engine\source\T3D\gameBase\extended\extendedGameProcess.cpp">
       <Filter>Source Files\Engine\T3D\gameBase\extended</Filter>
     </ClCompile>
@@ -2882,14 +2882,32 @@
     <ClCompile Include="..\..\..\..\..\Engine\source\T3D\gameBase\extended\extendedMoveList.cpp">
       <Filter>Source Files\Engine\T3D\gameBase\extended</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\source\PlayerTracker.cpp">
-      <Filter>Source Files\source</Filter>
+    <ClCompile Include="..\..\..\source\Track.cpp">
+      <Filter>Source Files\source\sequencer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\source\VelocityGesture.cpp">
-      <Filter>Source Files\source</Filter>
+    <ClCompile Include="..\..\..\source\Sequencer.cpp">
+      <Filter>Source Files\source\sequencer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\KinectModule.cpp">
+      <Filter>Source Files\source\kinect</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\TempoGesture.cpp">
+      <Filter>Source Files\source\kinect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\PlayerTracker.cpp">
+      <Filter>Source Files\source\kinect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\VelocityGesture.cpp">
+      <Filter>Source Files\source\kinect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\AudioTools.cpp">
+      <Filter>Source Files\source\sequencer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\TSCallback.cpp">
       <Filter>Source Files\source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\TransportGesture.cpp">
+      <Filter>Source Files\source\kinect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5365,9 +5383,6 @@
     <ClInclude Include="..\..\..\source\JuceScript.h">
       <Filter>Source Files\source</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\source\Sequencer.h">
-      <Filter>Source Files\source</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Engine\source\platform\input\oculusVR\barrelDistortionPostEffect.h">
       <Filter>Source Files\Engine\platform\input\oculusVR</Filter>
     </ClInclude>
@@ -5398,14 +5413,32 @@
     <ClInclude Include="..\..\..\..\..\Engine\source\T3D\gameBase\extended\extendedMoveList.h">
       <Filter>Source Files\Engine\T3D\gameBase\extended</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\source\PlayerTracker.h">
+    <ClInclude Include="..\..\..\source\TSCallback.h">
       <Filter>Source Files\source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\Track.h">
+      <Filter>Source Files\source\sequencer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\Sequencer.h">
+      <Filter>Source Files\source\sequencer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\source\TempoGesture.h">
-      <Filter>Source Files\source</Filter>
+      <Filter>Source Files\source\kinect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\PlayerTracker.h">
+      <Filter>Source Files\source\kinect</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\source\VelocityGesture.h">
-      <Filter>Source Files\source</Filter>
+      <Filter>Source Files\source\kinect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\AudioTools.h">
+      <Filter>Source Files\source\sequencer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\TransportGesture.h">
+      <Filter>Source Files\source\kinect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\Zone2D.h">
+      <Filter>Source Files\source\kinect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

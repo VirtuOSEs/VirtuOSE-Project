@@ -4,33 +4,9 @@
 #include "JuceLibraryCode/JuceHeader.h"
 #include "console/engineAPI.h"
 #include "NiTE.h"
+#include "Zone2D.h"
 
-struct Zone2D
-{
-  float bottom;
-  float top;
-  float left;
-  float right;
-
-  bool isCoordinateInZone(float xPosition, float yPosition) const
-  {
-    bool verticallyIn = yPosition > bottom && yPosition < top;
-    bool horizontallyIn = xPosition > left && xPosition < right;
-    return verticallyIn && horizontallyIn;
-  }
-
-  float length() const
-  {
-    return fabs(top - bottom);
-  }
-
-  float width() const
-  {
-    return fabs(right - left);
-  }
-};
-
-class VelocityGesture : public SimObject
+class VelocityGesture
 {
 public:
   //Width of the gesture zone in percentage of the arm lenght

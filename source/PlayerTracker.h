@@ -16,6 +16,7 @@
 #include "Sequencer.h"
 #include "TempoGesture.h"
 #include "VelocityGesture.h"
+#include "TransportGesture.h"
 
 class PlayerTracker : public nite::UserTracker::NewFrameListener
 {
@@ -31,6 +32,8 @@ public:
 
   //from nite::UserTracker::NewFrameListener
   virtual void onNewFrame(nite::UserTracker& userTracker);
+  void activateMusicalGestureDetection();
+  void deactivateMusicalGestureDetection();
 
  	void updateUserState(const nite::UserData& user, unsigned long long ts);
  	void readNextFrame();
@@ -42,13 +45,18 @@ private:
 	nite::Status niteRc;
 	nite::UserTrackerFrameRef userTrackerFrame;
 	int velocityTest;
+
   TempoGesture tempoGesture;
   VelocityGesture velocityGesture;
+  TransportGesture transportGesture;
+
   float velocity;
+  bool musicalGestureDetectionActivated;
+  juce::CriticalSection trackerAccess;
 };
 
-/** WorkItem qui modifie la position des mains.
-    Envoyée au main thread par PlayerTracker
+/** WorkItem modifying hands representation position.
+    Sended to main thread by PlayerTracker
     **/
 class HandsMove : public ThreadPool::WorkItem
 {
