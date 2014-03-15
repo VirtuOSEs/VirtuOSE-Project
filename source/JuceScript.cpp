@@ -26,7 +26,7 @@ void Orchestrator::loadMidiFile(const char* filePath)
 
   if (stream.failedToOpen())
   {
-    Con::printf("Impossible d'ouvrir le fichier midi");
+    Platform::outputDebugString("Impossible d'ouvrir le fichier midi");
     // DEBUG CHECK : the file must be correctly loaded in order to continue
     jassert(false);
   }

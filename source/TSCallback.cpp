@@ -22,7 +22,7 @@ void CallbackManager::instrumentWillPlay(const juce::String& instrumentName, dou
 
   const char* argv[3] = {"onInstrumentWillPlay",arg1, arg2};
   SimConsoleEvent* evt = new SimConsoleEvent(argc, argv, false);
-  Sim::postEvent(Sim::getRootGroup(), evt, Sim::getCurrentTime());
+  Sim::postEvent(Sim::getRootGroup(), evt, -1);
 }
 
 void CallbackManager::instrumentStartPlaying(const juce::String& instrumentName)
@@ -35,7 +35,7 @@ void CallbackManager::instrumentStartPlaying(const juce::String& instrumentName)
 
   const char* argv[2] = {"onInstrumentStartPlaying",arg1};
   SimConsoleEvent* evt = new SimConsoleEvent(argc, argv, false);
-  Sim::postEvent(Sim::getRootGroup(), evt, Sim::getCurrentTime());
+  Sim::postEvent(Sim::getRootGroup(), evt, -1);
 }
 
 void CallbackManager::instrumentStoppedPlay(const juce::String& instrumentName)
@@ -48,7 +48,7 @@ void CallbackManager::instrumentStoppedPlay(const juce::String& instrumentName)
 
   const char* argv[2] = {"onInstrumentStoppedPlaying",arg1};
   SimConsoleEvent* evt = new SimConsoleEvent(argc, argv, false);
-  Sim::postEvent(Sim::getRootGroup(), evt, Sim::getCurrentTime());
+  Sim::postEvent(Sim::getRootGroup(), evt, -1);
 }
 
 void CallbackManager::velocityChanged(float newVelocity)
@@ -63,7 +63,7 @@ void CallbackManager::velocityChanged(float newVelocity)
   const char* argv[2] = {"onVelocityChanged", parg};
 
   SimConsoleEvent* evt = new SimConsoleEvent(argc, argv, false);
-  Sim::postEvent(Sim::getRootGroup(), evt, Sim::getCurrentTime());
+  Sim::postEvent(Sim::getRootGroup(), evt, -1);
 }
 
 void CallbackManager::tempoJustChanged(int newTempo)
@@ -78,7 +78,7 @@ void CallbackManager::tempoJustChanged(int newTempo)
   const char* argv[2] = {"onTempoJustChanged", parg};
 
   SimConsoleEvent* evt = new SimConsoleEvent(argc, argv, false);
-  Sim::postEvent(Sim::getRootGroup(), evt, Sim::getCurrentTime());
+  Sim::postEvent(Sim::getRootGroup(), evt, -1);
 }
 
 void CallbackManager::tempoGestureStart()
@@ -87,7 +87,7 @@ void CallbackManager::tempoGestureStart()
   const char* argv[1] = {"onTempoGestureStart"};
 
   SimConsoleEvent* evt = new SimConsoleEvent(argc, argv, false);
-  Sim::postEvent(Sim::getRootGroup(), evt, Sim::getCurrentTime());
+  Sim::postEvent(Sim::getRootGroup(), evt, -1);
 }
 
 void CallbackManager::tempoGestureEnd()
@@ -96,6 +96,6 @@ void CallbackManager::tempoGestureEnd()
   const char* argv[1] = {"onTempoGestureEnd"};
 
   SimConsoleEvent* evt = new SimConsoleEvent(argc, argv, false);
-  Sim::postEvent(Sim::getRootGroup(), evt, Sim::getCurrentTime());
+  Sim::postEvent(Sim::getRootGroup(), evt, -1);
 }
 

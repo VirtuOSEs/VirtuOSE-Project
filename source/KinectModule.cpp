@@ -14,7 +14,7 @@ MODULE_BEGIN( KinectModule )
 
   MODULE_INIT
   {
-    Con::printf("START NITE INITIALIZE\n");
+    Platform::outputDebugString("START NITE INITIALIZE\n");
     //NITE seems to not detect that there is no device present.
     //So we talk directly to OpenNI and initialize NITE only if a device has been found
     openni::Array< openni::DeviceInfo >  deviceInfoList;
@@ -24,19 +24,19 @@ MODULE_BEGIN( KinectModule )
     if (deviceInfoList.getSize() > 0)
     {
       nite::NiTE::initialize();
-      Con::printf("OpenNI Device found");
+      Platform::outputDebugString("OpenNI Device found");
       PlayerTracker::KINECT_DETECTED = true;
     }
     else
     {
-      Con::errorf("Unable to find an OpenNI Device (Kinect)");
+      Platform::outputDebugString("Unable to find an OpenNI Device (Kinect)");
       PlayerTracker::KINECT_DETECTED = false;
     }
   }
 
   MODULE_SHUTDOWN
   {
-    Con::printf("NITE SHUTDOWN");
+    Platform::outputDebugString("NITE SHUTDOWN");
     nite::NiTE::shutdown();// On ferme NiTE
   }
 

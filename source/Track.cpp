@@ -35,25 +35,24 @@ Track::Track(juce::MidiMessageSequence sequence)
 
   //We instanciate a plugin for this track with the right instrument, based on the instrumentName
   AudioTools::getInstance().generatePlugin(trackName, instrumentName);
+
+  this->sequence.updateMatchedPairs();
 }
 
 void Track::restart()
 {
-  if (eventIndex == 0)
+  if (eventIndex == 0 || incomingKeyUp.empty())
     return;
 
-  //Tentative d'annuler le bug de la note tenue lors d'un stop() play()
-  //Ca marche mais c'est bourrin
-  int i = eventIndex;
-  while (i < sequence.getNumEvents())
+  AudioTools::getInstance().enableAudioProcessing();
+  for (auto it = incomingKeyUp.begin(); it != incomingKeyUp.end(); ++it)
   {
-    juce::MidiMessageSequence::MidiEventHolder* midiEvent = sequence.getEventPointer(i);
-    if (midiEvent->message.isNoteOff())
-      AudioTools::getInstance().makePluginPlay(trackName, midiEvent->message);
-    ++i;
+    juce::MidiMessageSequence::MidiEventHolder* midiEvent = sequence.getEventPointer(*it);
+    AudioTools::getInstance().makePluginPlay(trackName, midiEvent->message);
   }
-
   eventIndex = 0;
+  velocityChanged = false;
+  incomingKeyUp.clear();
 }
 
 bool Track::isFinished() const
@@ -112,7 +111,7 @@ void Track::playAtTick(double tick)
   //Remove the incomingKeyUp which already came
   //it's not clean, but it works. See std::list::remove_if
   equals eq;
-  eq.value2 = eventIndex;
+  eq.value2 = eventIndex-1;
   incomingKeyUp.remove_if(eq);
 
   checkPlayingStatus(tick, timeStamp, isNoteOn);
