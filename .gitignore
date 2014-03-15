@@ -15,6 +15,7 @@
 commitmsg.txt
 *.cs~
 *.*~
+*.mid
 game/main_patched.cs
 game/main_prePatch.cs
 #Torque files
