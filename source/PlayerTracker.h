@@ -3,6 +3,7 @@
 
 //***********INCLUDE TORQUE ENGINE***************
 #include "console/engineAPI.h"
+#include "console/simEvents.h"
 
 #include "T3D/tsStatic.h"
 #include "T3D/missionMarker.h"
@@ -58,14 +59,14 @@ private:
 /** WorkItem modifying hands representation position.
     Sended to main thread by PlayerTracker
     **/
-class HandsMove : public ThreadPool::WorkItem
+class HandsMove : public SimEvent
 {
 public:
   HandsMove(Point3F leftHand, Point3F rightHand)
     : leftHand(leftHand), rightHand(rightHand)
   {}
 
-  virtual void execute()
+  virtual void process(SimObject *object)
   {
     //Mini optim pour ne faire le test qu'une fois
     if (rightHandSphere == nullptr)

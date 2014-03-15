@@ -5,6 +5,13 @@
 #include "NiTE.h"
 #include "math/mPoint3.h"
 
+/**
+  * Description of the gesture :
+  * Hands together in the same small area near torso : it's PLAY or PAUSE
+  * Hands together in the small area near torso more than STOP_GESTURE_TIME millis : it's a STOP
+  * @see GESTURE_ZONE_RADIUS_MM
+  * @see STOP_GESTURE_TIME
+*/
 class TransportGesture
 {
 public:
@@ -12,7 +19,7 @@ public:
    * Zone radius in millimeters
   */
   static const float GESTURE_ZONE_RADIUS_MM;
-  static const juce::int64 TIME_TRESHOLD_BETWEEN_TWO_GESTURES_MS;
+  static const juce::int64 STOP_GESTURE_TIME_MS;
   
   enum TransportStatus {PLAY, PAUSE, STOP};
 
@@ -24,12 +31,15 @@ public:
     {return status;}
 
 private:
+  enum ZoneStatus {IN_ZONE, OUT_ZONE};
+
   void tryToCalibrateGesture(const nite::Skeleton& skeleton);
 
   TransportStatus status;
   VectorF zoneCenter;
   bool gestureCalibrated;
-  juce::int64 timer;
+  juce::int64 firstTimeZoneEntered;
+  ZoneStatus zoneStatus;
 
 };
 

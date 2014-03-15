@@ -66,8 +66,8 @@ void VelocityGesture::tryToCalibrateGesture(const nite::Skeleton& skeleton)
   const float distanceHandToShoulder = handToElbow.len() + elbowToShoulder.len();
   gestureZone.right = shoulder.x;
   gestureZone.left = shoulder.x - distanceHandToShoulder * GESTURE_WIDTH_PERCENTAGE;
-  Con::printf("Head x : %f", head.getPosition().x);
-  Con::printf("Zone left : %f, Zone Right : %f, Distance hand to shoulder : %f", gestureZone.left, gestureZone.right, distanceHandToShoulder);
+  Platform::outputDebugString("Head x : %f", head.getPosition().x);
+  Platform::outputDebugString("Zone left : %f, Zone Right : %f, Distance hand to shoulder : %f", gestureZone.left, gestureZone.right, distanceHandToShoulder);
   gestureCalibrated = true;
 }
 

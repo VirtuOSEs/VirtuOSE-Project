@@ -4,9 +4,10 @@
 #include <NiteSampleUtilities.h>
 #include "PlayerTracker.h"
 #include "TSCallback.h"
+#include "platform/platform.h"
 
 #define USER_MESSAGE(msg) \
-	{Con::printf("[%08llu] User #%d:\t%s\n",ts, user.getId(),msg);}
+  {Platform::outputDebugString("[%08llu] User #%d:\t%s\n",ts, user.getId(),msg);}
 
 #define MAX_USERS 10
 bool g_visibleUsers[MAX_USERS] = {false};
@@ -38,7 +39,7 @@ PlayerTracker::PlayerTracker(JuceModule::Sequencer::Ptr sequencer)
 	
   if (niteRc != nite::STATUS_OK)
   {
-  Con::printf("Couldn't create user tracker\n");
+  Platform::outputDebugString("Couldn't create user tracker\n");
   exit(1);
   }
   userTracker.addNewFrameListener(this);
@@ -131,11 +132,19 @@ void PlayerTracker::onNewFrame(nite::UserTracker& userTracker)
         {
           activateMusicalGestureDetection();
           sequencer->play();
+          Platform::outputDebugString("PLAY");
         }
         else if (transportGesture.getTransportStatus() == TransportGesture::PAUSE)
         {
           deactivateMusicalGestureDetection();
           sequencer->pause();
+          Platform::outputDebugString("PAUSE");
+        }
+        else if (transportGesture.getTransportStatus() == TransportGesture::STOP)
+        {
+          deactivateMusicalGestureDetection();
+          sequencer->stop();
+          Platform::outputDebugString("STOP");
         }
       }
 
@@ -166,7 +175,7 @@ void PlayerTracker::onNewFrame(nite::UserTracker& userTracker)
         float lhandY = (lh.getPosition().y - head.getPosition().y) / 150.f;
         float lhandZ = (lh.getPosition().z - head.getPosition().z) / 150.f;
 
-        ThreadPool::queueWorkItemOnMainThread(new HandsMove(Point3F(lhandX, lhandY, lhandZ), Point3F(rhandX, rhandY, rhandZ)));
+        Sim::postEvent(Sim::getRootGroup(), new HandsMove(Point3F(lhandX, lhandY, lhandZ), Point3F(rhandX, rhandY, rhandZ)), -1);
       }
     }
   } 

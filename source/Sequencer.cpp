@@ -131,14 +131,16 @@ void Sequencer::stop()
   {
     const juce::ScopedLock sL(stoppedAccess);
     stopped = true;
-  }
-  {
-    const juce::ScopedLock sL(ticksAccess);
-    ticks = 0;
+    paused = false;
   }
   
   for (int i = 0; i < tracks.size(); ++i)
     tracks[i]->restart();
+  
+  {
+    const juce::ScopedLock sL(ticksAccess);
+    ticks = 0;
+  }
 
   tempoTrackIndex = 0;
 
@@ -204,18 +206,19 @@ void Sequencer::run()
 
     while (lag >= localMsPerTick)
     {
+      { //stoppedAccess scope
+        const juce::ScopedLock sL(stoppedAccess);
+        localStopped = stopped;
+      }
+
       //Gestion de la pause
-      while (paused && !threadShouldExit())
+      while (paused && !threadShouldExit() && !localStopped)
         wait(100);
 
       //Interrompt la lecture si le thread doit être fermé
       if (threadShouldExit())
         return;
 
-      { //stoppedAccess scope
-        const juce::ScopedLock sL(stoppedAccess);
-        localStopped = stopped;
-      }
       if (!localStopped)
       {
         {
