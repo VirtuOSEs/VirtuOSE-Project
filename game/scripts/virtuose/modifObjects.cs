@@ -1,7 +1,7 @@
 // Le script du projet Virtuose
 
 function changeOpacity(%obj,%a){
-	return;
+	// return;
 	%mapTo=%obj.getTargetName(0);
 	%mapTo.diffuseColor.a=%a;
 	%mapTo.reload();
