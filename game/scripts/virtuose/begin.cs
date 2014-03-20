@@ -29,7 +29,10 @@ function virtuoseStart(){
 	HideSun();
     leftHand.position = Spawn.position.x-2 SPC Spawn.position.y+5 SPC Spawn.position.z+1;
     rightHand.position = Spawn.position.x+2 SPC Spawn.position.y+5 SPC Spawn.position.z+1;
+	changeColor(leftHand,0.5);
+	changeColor(rightHand,0.5);
 	placeInstrumentsTrack();
+	
 }
   
 function placeInstruments(%nbInstruments){
