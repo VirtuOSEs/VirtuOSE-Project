@@ -7,8 +7,8 @@
 
 /**
   * Description of the gesture :
-  * Hands together in the same small area near torso : it's PLAY or PAUSE
-  * Hands together in the small area near torso more than STOP_GESTURE_TIME millis : it's a STOP
+  * Hands together: it's PLAY or PAUSE
+  * Hands together more than STOP_GESTURE_TIME millis: it's a STOP
   * @see GESTURE_ZONE_RADIUS_MM
   * @see STOP_GESTURE_TIME
 */
@@ -33,13 +33,16 @@ public:
 private:
   enum ZoneStatus {IN_ZONE, OUT_ZONE};
 
-  void tryToCalibrateGesture(const nite::Skeleton& skeleton);
-
   TransportStatus status;
   VectorF zoneCenter;
   bool gestureCalibrated;
   juce::int64 firstTimeZoneEntered;
   ZoneStatus zoneStatus;
+
+  //Light optimisation
+  Point3F leftHandPosition;
+  Point3F rightHandPosition;
+  VectorF distanceBetweenHands;
 
 };
 
