@@ -54,6 +54,7 @@ function onTempoJustChanged(%newTempo)
 function onVelocityChanged(%newVelocity)
 {
    echo("Velocity just changed " @ %newVelocity); 
+   changeColor("rightHand",%newVelocity);
 }
 
 function onInstrumentWillPlay(%instrumentName, %delayInMillis) 
