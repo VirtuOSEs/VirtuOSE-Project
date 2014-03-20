@@ -25,7 +25,7 @@ function changeColor(%obj,%var){
 	%mapTo=%obj.getTargetName(0);
 	
 	%mapTo.diffuseColor.r=%var;
-	%mapTo.diffuseColor.g=0.25+0.25*%var;
+	%mapTo.diffuseColor.g=1-%var;
 	%mapTo.diffuseColor.b=1-%var;
 	
 	%mapTo.reload();
@@ -33,7 +33,7 @@ function changeColor(%obj,%var){
 }
 
 function particle(){
-	instruParticle.setActive(!instruParticle.active);
+	rightHand.emitter.reload();
 }
 
 function light(){

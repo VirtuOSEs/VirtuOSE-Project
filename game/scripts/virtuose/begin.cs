@@ -23,12 +23,19 @@ function virtuoseStart(){
    options = %options;
   };
   
+	//Choix de la main à faire dans le menu
+    initialTempo=tempo.getText();
+    rythmUnit=battue.getText();
+    rythmUnitDotted(dotted.isStateOn());
+	
   $orchestrator.loadMidiFile("../" @ $vfileName);
 
 	HideSun();
 	HideSun();
     leftHand.position = Spawn.position.x-2 SPC Spawn.position.y+5 SPC Spawn.position.z+1;
     rightHand.position = Spawn.position.x+2 SPC Spawn.position.y+5 SPC Spawn.position.z+1;
+	rightHandParticle.position=rightHand.position;
+	leftHandParticle.position=leftHand.position;
 	changeColor(leftHand,0.5);
 	changeColor(rightHand,0.5);
 	placeInstrumentsTrack();

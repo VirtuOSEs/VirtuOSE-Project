@@ -1259,6 +1259,28 @@ new SimGroup(MissionGroup) {
       canSave = "1";
       canSaveDynamicFields = "1";
 
+      new ParticleEmitterNode(leftHandParticle) {
+         active = "1";
+         emitter = "fire2";
+         velocity = "1";
+         dataBlock = "TestEmitterNodeData";
+         position = "-0.983365 20.6047 6.20304";
+         rotation = "1 0 0 0";
+         scale = "0.597011 0.597011 0.597011";
+         canSave = "1";
+         canSaveDynamicFields = "1";
+      };
+      new ParticleEmitterNode(rightHandParticle) {
+         active = "1";
+         emitter = "fire2";
+         velocity = "1";
+         dataBlock = "TestEmitterNodeData";
+         position = "0.98659 24.9451 6.40856";
+         rotation = "1 0 0 0";
+         scale = "0.597011 0.597011 0.597011";
+         canSave = "1";
+         canSaveDynamicFields = "1";
+      };
       new TSStatic(leftHand) {
          shapeName = "art/shapes/virtuose/sphere.dae";
          playAmbient = "1";
@@ -1389,16 +1411,6 @@ new SimGroup(MissionGroup) {
       canSave = "1";
       canSaveDynamicFields = "1";
    };
-   new ParticleEmitterNode(instruParticle) {
-      active = "1";
-      emitter = "fire2";
-      velocity = "1";
-      position = "-4.55283 7.01225 7.25599";
-      rotation = "1 0 0 0";
-      scale = "0.597011 0.597011 0.597011";
-      canSave = "1";
-      canSaveDynamicFields = "1";
-   };
    new SpotLight(instruLight) {
       range = "10";
       innerAngle = "40";
@@ -1427,6 +1439,7 @@ new SimGroup(MissionGroup) {
       includeLightmappedGeometryInShadow = "0";
       position = "-5.41384 23.2456 12.1644";
       rotation = "1 0 0 90";
+      hidden = "1";
       canSave = "1";
       canSaveDynamicFields = "1";
    };
