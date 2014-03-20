@@ -18,7 +18,8 @@ function virtuoseStart(){
 	
 	//Exemple d'utilisation des options
 	%options = new Options();
-	%options.rythmUnit = WHOLE_NOTE;
+	%options.rythmUnit = EIGHT_NOTE;
+	%options.handedness = LEFT_HANDEDNESS;
   $orchestrator = new Orchestrator()
   {
     options = %options;

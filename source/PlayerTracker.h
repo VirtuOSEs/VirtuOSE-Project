@@ -26,7 +26,7 @@ public:
   static bool KINECT_DETECTED;
   
   //Should not be called by a programmer. 
-  //Exists only because Torque ConObject have to have a default constructor
+  //Exists only because Torque ConObject must have a default constructor
   PlayerTracker();
 
  	PlayerTracker(JuceModule::Sequencer::Ptr sequencer, const Options& options);

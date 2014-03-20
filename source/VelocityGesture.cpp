@@ -3,10 +3,22 @@
 
 const float VelocityGesture::GESTURE_WIDTH_PERCENTAGE = 50.f/100.f;
 
-VelocityGesture::VelocityGesture()
+VelocityGesture::VelocityGesture(const Options& options)
   : gestureCalibrated(false),
       velocityDetected(0.5f)
 {
+  if (options.handedness == LEFT_HANDEDNESS)
+  {
+    gestureHand = nite::JOINT_RIGHT_HAND;
+    gestureElbow = nite::JOINT_RIGHT_ELBOW;
+    gestureShoulder = nite::JOINT_RIGHT_SHOULDER;
+  }
+  else if (options.handedness == RIGHT_HANDEDNESS)
+  {
+    gestureHand = nite::JOINT_LEFT_HAND;
+    gestureElbow = nite::JOINT_LEFT_ELBOW;
+    gestureShoulder = nite::JOINT_LEFT_SHOULDER;
+  }
 }
 
 bool VelocityGesture::checkVelocityGesture(const nite::Skeleton& skeleton)
@@ -19,7 +31,7 @@ bool VelocityGesture::checkVelocityGesture(const nite::Skeleton& skeleton)
   if (!gestureCalibrated)
     return false;
 
-  const nite::SkeletonJoint& hand = skeleton.getJoint(nite::JOINT_LEFT_HAND);
+  const nite::SkeletonJoint& hand = skeleton.getJoint(gestureHand);
   if (hand.getPositionConfidence() < 0.5f)
     return false;
 
@@ -39,13 +51,13 @@ void VelocityGesture::tryToCalibrateGesture(const nite::Skeleton& skeleton)
 {
   const nite::SkeletonJoint& head = skeleton.getJoint(nite::JOINT_HEAD);
   const nite::SkeletonJoint& leftHip = skeleton.getJoint(nite::JOINT_LEFT_HIP);
-  const nite::SkeletonJoint& leftHand = skeleton.getJoint(nite::JOINT_LEFT_HAND);
-  const nite::SkeletonJoint& leftElbow = skeleton.getJoint(nite::JOINT_LEFT_ELBOW);
-  const nite::SkeletonJoint& leftShoulder = skeleton.getJoint(nite::JOINT_LEFT_SHOULDER);
+  const nite::SkeletonJoint& hand = skeleton.getJoint(gestureHand);
+  const nite::SkeletonJoint& elbow = skeleton.getJoint(gestureElbow);
+  const nite::SkeletonJoint& shoulder = skeleton.getJoint(gestureShoulder);
   
   if (leftHip.getPositionConfidence() < 0.5f || head.getPositionConfidence() < 0.5f
-      || leftHand.getPositionConfidence() < 0.5f || leftElbow.getPositionConfidence() < 0.5f
-      || leftShoulder.getPositionConfidence() < 0.5f)
+      || hand.getPositionConfidence() < 0.5f || elbow.getPositionConfidence() < 0.5f
+      || shoulder.getPositionConfidence() < 0.5f)
     return;
 
   const float hipPosition = leftHip.getPosition().y;
@@ -56,16 +68,27 @@ void VelocityGesture::tryToCalibrateGesture(const nite::Skeleton& skeleton)
   gestureZone.bottom = hipPosition + distanceHipToHead / 10.f;
   gestureZone.top = headPosition + distanceHipToHead /10.f;
 
-  const Point3F hand(leftHand.getPosition().x, leftHand.getPosition().y, leftHand.getPosition().z);
-  const Point3F elbow(leftElbow.getPosition().x, leftElbow.getPosition().y, leftElbow.getPosition().z);
-  const Point3F shoulder(leftShoulder.getPosition().x, leftShoulder.getPosition().y, leftShoulder.getPosition().z);
+  const Point3F phand(hand.getPosition().x, hand.getPosition().y, hand.getPosition().z);
+  const Point3F pelbow(elbow.getPosition().x, elbow.getPosition().y, elbow.getPosition().z);
+  const Point3F pshoulder(shoulder.getPosition().x, shoulder.getPosition().y, shoulder.getPosition().z);
 
-  const VectorF handToElbow = hand - elbow;
-  const VectorF elbowToShoulder = elbow - shoulder;
+  const VectorF handToElbow = phand - pelbow;
+  const VectorF elbowToShoulder = pelbow - pshoulder;
 
   const float distanceHandToShoulder = handToElbow.len() + elbowToShoulder.len();
-  gestureZone.right = shoulder.x;
-  gestureZone.left = shoulder.x - distanceHandToShoulder * GESTURE_WIDTH_PERCENTAGE;
+
+  //Zone horizontal limit change function of handedness
+  if (gestureHand == nite::JOINT_RIGHT_HAND)
+  {
+    gestureZone.right = pshoulder.x + distanceHandToShoulder * GESTURE_WIDTH_PERCENTAGE;
+    gestureZone.left = pshoulder.x;
+  }
+  else
+  {
+    gestureZone.right = pshoulder.x;
+    gestureZone.left = pshoulder.x - distanceHandToShoulder * GESTURE_WIDTH_PERCENTAGE;
+  }
+
   Platform::outputDebugString("Head x : %f", head.getPosition().x);
   Platform::outputDebugString("Zone left : %f, Zone Right : %f, Distance hand to shoulder : %f", gestureZone.left, gestureZone.right, distanceHandToShoulder);
   gestureCalibrated = true;

@@ -24,11 +24,16 @@ const float HandsMove::EYE_OFFSET = 2.5f;
 bool PlayerTracker::KINECT_DETECTED = false;
 
 PlayerTracker::PlayerTracker()
+  : tempoGesture(Options()),
+    velocityGesture(Options())
 {
 }
 
 PlayerTracker::PlayerTracker(JuceModule::Sequencer::Ptr sequencer, const Options& options)
-  : sequencer(sequencer), musicalGestureDetectionActivated(false)
+  : sequencer(sequencer),
+    tempoGesture(options),
+    velocityGesture(options),
+    musicalGestureDetectionActivated(false)
 {
   if (!KINECT_DETECTED)
   {

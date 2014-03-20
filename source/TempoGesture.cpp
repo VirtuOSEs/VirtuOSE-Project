@@ -2,28 +2,32 @@
 #include "TSCallback.h"
 
 // TempoGesture implem
-TempoGesture::TempoGesture()
+TempoGesture::TempoGesture(const Options& options)
   : status(NO_GESTURE),
-    gestureCalibrated(false),
     startTime(0.),
-    tempo(92),
+    tempo(options.initialTempo),
     yBottom(0.f),
     yTop(150.f),
     timeOut(3500)
-{}
+{
+  if (options.handedness == LEFT_HANDEDNESS)
+    gestureHand = nite::JOINT_LEFT_HAND;
+  else if (options.handedness == RIGHT_HANDEDNESS)
+    gestureHand = nite::JOINT_RIGHT_HAND;
+
+}
 
 bool TempoGesture::checkTempoGesture(const nite::Skeleton& skeleton)
 {
-  const nite::SkeletonJoint& rightHand = skeleton.getJoint(nite::JOINT_RIGHT_HAND);
+  const nite::SkeletonJoint& hand = skeleton.getJoint(gestureHand);
   const nite::SkeletonJoint& rightHip = skeleton.getJoint(nite::JOINT_RIGHT_HIP);
+  
+  calibrateGesture(rightHip);
 
-  if (!gestureCalibrated)
-    calibrateGesture(rightHip);
-
-  if (rightHand.getPositionConfidence() < 0.5)
+  if (hand.getPositionConfidence() < 0.5)
     return false;
 
-  float handY = rightHand.getPosition().y;
+  float handY = hand.getPosition().y;
 
   //Si on était pas rentré dans la zone une première fois...
   if (status == NO_GESTURE)
@@ -102,5 +106,4 @@ void TempoGesture::calibrateGesture(const nite::SkeletonJoint& rightHip)
     return;
   yBottom = rightHip.getPosition().y;
   yTop = yBottom + 200.f;
-  gestureCalibrated = true;
 }

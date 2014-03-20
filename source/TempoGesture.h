@@ -3,13 +3,14 @@
 
 #include "JuceLibraryCode/JuceHeader.h"
 #include "NiTE.h"
+#include "Options.h"
 
 class TempoGesture
 {
 public:
   enum GestureStatus{NO_GESTURE, IN_ZONE, OUT_ZONE};
 
-  TempoGesture();
+  TempoGesture(const Options& options);
 
   juce::int32 getTempo() const
     {return tempo;}
@@ -18,8 +19,9 @@ public:
 
 private:
   void calibrateGesture(const nite::SkeletonJoint& rightHip);
+  nite::JointType gestureHand; 
   GestureStatus status;
-  bool gestureCalibrated;
+
   double startTime;
   juce::int32 tempo;
   //---ZONE DELIMITERS
