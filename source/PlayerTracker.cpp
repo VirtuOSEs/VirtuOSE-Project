@@ -27,7 +27,7 @@ PlayerTracker::PlayerTracker()
 {
 }
 
-PlayerTracker::PlayerTracker(JuceModule::Sequencer::Ptr sequencer)
+PlayerTracker::PlayerTracker(JuceModule::Sequencer::Ptr sequencer, const Options& options)
   : sequencer(sequencer), musicalGestureDetectionActivated(false)
 {
   if (!KINECT_DETECTED)

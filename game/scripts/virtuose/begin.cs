@@ -18,12 +18,14 @@ function virtuoseStart(){
 	
 	//Exemple d'utilisation des options
 	%options = new Options();
+	%options.rythmUnit = WHOLE_NOTE;
   $orchestrator = new Orchestrator()
   {
-   options = %options;
+    options = %options;
   };
   
   $orchestrator.loadMidiFile("../" @ $vfileName);
+  $orchestrator.setTempo(90);
 
 	HideSun();
 	HideSun();

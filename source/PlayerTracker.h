@@ -18,6 +18,7 @@
 #include "TempoGesture.h"
 #include "VelocityGesture.h"
 #include "TransportGesture.h"
+#include "Options.h"
 
 class PlayerTracker : public nite::UserTracker::NewFrameListener
 {
@@ -28,7 +29,7 @@ public:
   //Exists only because Torque ConObject have to have a default constructor
   PlayerTracker();
 
- 	PlayerTracker(JuceModule::Sequencer::Ptr sequencer);
+ 	PlayerTracker(JuceModule::Sequencer::Ptr sequencer, const Options& options);
  	~PlayerTracker();
 
   //from nite::UserTracker::NewFrameListener

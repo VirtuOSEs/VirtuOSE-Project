@@ -69,14 +69,16 @@ bool TempoGesture::checkTempoGesture(const nite::Skeleton& skeleton)
       double currentTime = juce::Time::getMillisecondCounterHiRes();
       double elapsedTime = currentTime - startTime;
         
+      juce::int32 tmpTempo = static_cast<juce::int32>(60000 / elapsedTime);
       //Gestion des valeurs aberrantes
-      if (elapsedTime < 288) //Equivaut à peu près à tempo = 208 (on bat à la blanche)
+      if (tmpTempo > 220) 
       {
       //  Con::printf("VALEUR ABERRANTE: PASSAGE EN NO GESTURE %f", handY);
         status = NO_GESTURE;
         return false;
       }
-      tempo = static_cast<juce::int32>(120000 / elapsedTime);//On bat à la blanche
+
+      tempo = tmpTempo;
       startTime = currentTime;
 
       CallbackManager::tempoGestureEnd();
