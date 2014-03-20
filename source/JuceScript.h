@@ -9,6 +9,7 @@
 
 #include "Sequencer.h"
 #include "PlayerTracker.h"
+#include "Options.h"
 
 /**
   Bridge between C++ and TorqueScript to 
@@ -23,6 +24,8 @@ public:
   DECLARE_CONOBJECT( Orchestrator );
   DECLARE_CATEGORY( "Juce Module" );
   DECLARE_DESCRIPTION( "A midi file player." );
+
+  static void initPersistFields();
 
   Orchestrator();
   ~Orchestrator();
@@ -45,10 +48,10 @@ public:
 
 private:
   JuceModule::Sequencer::Ptr sequencer;
-  //juce::ScopedPointer<KinectModule::KinectTracker> kinectTracker;
   juce::ScopedPointer<PlayerTracker> playerTracker;
 
   std::vector<JuceModule::Track::Ptr > tracks;
+  Options options;
 };
 
 

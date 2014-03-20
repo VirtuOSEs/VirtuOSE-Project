@@ -2909,6 +2909,9 @@
     <ClCompile Include="..\..\..\source\TransportGesture.cpp">
       <Filter>Source Files\source\kinect</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\source\Options.cpp">
+      <Filter>Source Files\source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\..\Engine\source\T3D\aiClient.h">
@@ -5439,6 +5442,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\source\Zone2D.h">
       <Filter>Source Files\source\kinect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\Options.h">
+      <Filter>Source Files\source</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

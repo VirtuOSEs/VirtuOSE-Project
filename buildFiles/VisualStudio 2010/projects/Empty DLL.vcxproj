@@ -245,6 +245,7 @@
     <ClCompile Include="..\..\..\source\JuceScript.cpp" />
     <ClCompile Include="..\..\..\source\JuceModule.cpp" />
     <ClCompile Include="..\..\..\source\KinectModule.cpp" />
+    <ClCompile Include="..\..\..\source\Options.cpp" />
     <ClCompile Include="..\..\..\source\PlayerTracker.cpp" />
     <ClCompile Include="..\..\..\source\Sequencer.cpp" />
     <ClCompile Include="..\..\..\source\TempoGesture.cpp" />
@@ -1332,6 +1333,7 @@
     <ClCompile Include="..\..\..\..\..\Engine\source\math\mMathAltivec.cpp" />
     <ClCompile Include="..\..\..\..\..\Engine\source\math\mMathAMD.cpp" />
     <ClInclude Include="..\..\..\source\AudioTools.h" />
+    <ClInclude Include="..\..\..\source\Options.h" />
     <ClInclude Include="..\..\..\source\Track.h" />
     <ClInclude Include="..\..\..\source\TransportGesture.h" />
     <ClInclude Include="..\..\..\source\TSCallback.h" />

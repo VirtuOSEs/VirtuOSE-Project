@@ -9,9 +9,18 @@
 
 IMPLEMENT_CONOBJECT(Orchestrator);
 
+void Orchestrator::initPersistFields()
+{   
+   Parent::initPersistFields();
+
+    addField( "options", TYPEID<Options>(), Offset( options, Orchestrator ), 
+        "User preferences." );
+}
+
 Orchestrator::Orchestrator()
 {
 }
+
 
 Orchestrator::~Orchestrator()
 {
@@ -19,7 +28,7 @@ Orchestrator::~Orchestrator()
 
 void Orchestrator::loadMidiFile(const char* filePath)
 {
-  juce::File myFile = juce::File::getCurrentWorkingDirectory().getChildFile ("../Beethoven-Symphony5-1.mid"/*filePath*/);
+  juce::File myFile = juce::File::getCurrentWorkingDirectory().getChildFile (filePath);
     
   juce::FileInputStream stream(myFile);
   Con::printf(stream.getStatus().getErrorMessage().getCharPointer());
@@ -64,51 +73,60 @@ void Orchestrator::loadMidiFile(const char* filePath)
 
 void Orchestrator::increaseVelocityFactor(short percentage)
 {
+  if (!sequencer)
+    return;
   sequencer->increaseVelocityFactorInPercent(percentage);
 }
 
 void Orchestrator::decreaseVelocityFactor(short percentage)
 {
-  sequencer->decreaseVelocityFactorInPercent(percentage);
+  if (!sequencer)
+    return;
+    sequencer->decreaseVelocityFactorInPercent(percentage);
 }
 
 void Orchestrator::saveSequence(const char* filePath)
 {
+  if (!sequencer)
+    return;
   sequencer->stop();
   sequencer->saveSequence(filePath);
 }
 
 void Orchestrator::play()
 {
-  jassert(sequencer);
-  playerTracker->activateMusicalGestureDetection();
-
+  
   if (!sequencer)
     return;
 
+  playerTracker->activateMusicalGestureDetection();
   sequencer->play();
 }
 
 void Orchestrator::pause()
 {
+  if (!sequencer)
+    return;
+
   playerTracker->deactivateMusicalGestureDetection();
 
- if (!sequencer)
-    return;
- sequencer->pause();
+  sequencer->pause();
 }
 
 void Orchestrator::stop()
 {
-  playerTracker->deactivateMusicalGestureDetection();
   if (!sequencer)
     return;
 
+  playerTracker->deactivateMusicalGestureDetection();
   sequencer->stop();
 }
 
 int Orchestrator::getTempo() const
 {
+  if (!sequencer)
+    return 0;
+
   return static_cast<int>(sequencer->getTempo());
 }
 
@@ -120,10 +138,17 @@ void Orchestrator::setTempo(juce::uint32 tempo)
 }
 
 int Orchestrator::getNumTracks()
-  {return tracks.size();}
+{
+  if (!sequencer)
+    return 0;
+  return tracks.size();
+}
 
 String Orchestrator::getInstrumentName(int index)
 {
+  if (!sequencer)
+    return String::EmptyString;
+
   jassert (index < tracks.size());
 
   return tracks[index]->getInstrumentName().toStdString().c_str();
@@ -131,6 +156,9 @@ String Orchestrator::getInstrumentName(int index)
 
 String Orchestrator::getTrackName(int index)
 {
+  if (!sequencer)
+    return String::EmptyString;
+
   jassert (index < tracks.size());
 
   return tracks[index]->getTrackName().toStdString().c_str();
