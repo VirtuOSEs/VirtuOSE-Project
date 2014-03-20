@@ -1,6 +1,6 @@
 #include "Options.h"
 
-IMPLEMENT_CO_DATABLOCK_V1(Options);
+IMPLEMENT_CONOBJECT(Options);
 
 ImplementEnumType( Handedness,
    "User preference for use of a hand.\n"
@@ -29,7 +29,8 @@ EndImplementEnumType;
 Options::Options()
   : handedness(RIGHT_HANDEDNESS),
     initialTempo(90),
-    rythmUnit(QUARTER_NOTE)
+    rythmUnit(QUARTER_NOTE),
+    rythmUnitDotted(false)
 {
 }
 
@@ -41,7 +42,7 @@ Options::~Options()
 void Options::initPersistFields()
 {   
    Parent::initPersistFields();
-      addGroup( "Options" );
+   addGroup( "Options" );
 
       addField( "handedness", TypeHandedness, Offset( handedness, Options ), 
          "The type of handedness (left, right) requested by the user." );
@@ -51,6 +52,9 @@ void Options::initPersistFields()
 
       addField( "rythmUnit",   TypeRythmUnit, Offset( rythmUnit, Options ),
          "The rythm unit (whole note, half note, quarter note...) choosed by the user." );
+
+      addField( "rythmUnitDotted",   TypeBool, Offset( rythmUnitDotted, Options ),
+         "Indicate if the rythm unit is dotted or not." );
 
    endGroup( "Options" );    
 }

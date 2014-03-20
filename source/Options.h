@@ -49,9 +49,10 @@ public:
   ~Options();
 
   Handedness handedness;
-  int initialTempo;
   RythmUnit rythmUnit;
+  bool rythmUnitDotted;
 
+  int initialTempo;
 };
 
 #endif

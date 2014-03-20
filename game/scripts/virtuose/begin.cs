@@ -15,9 +15,16 @@ $posxvent = 0.0;
  //Initialisation
 function virtuoseStart(){
 	echo("Virtuose is beginning");
-   $orchestrator = new Orchestrator();
-   $orchestrator.loadMidiFile("../" @ $vfileName);
-   // $orchestrator.play();
+	
+	//Exemple d'utilisation des options
+	%options = new Options();
+  $orchestrator = new Orchestrator()
+  {
+   options = %options;
+  };
+  
+  $orchestrator.loadMidiFile("../" @ $vfileName);
+
 	HideSun();
 	HideSun();
     leftHand.position = Spawn.position.x-2 SPC Spawn.position.y+5 SPC Spawn.position.z+1;
