@@ -32,6 +32,14 @@ function changeColor(%obj,%var){
 	
 }
 
+function particle(){
+	instruParticle.setActive(!instruParticle.active);
+}
+
+function light(){
+	instruLight.hidden=!instruLight.hidden;
+}
+
 function HideSun(){
 	soleil.setHidden(!soleil.hidden);	
 }
