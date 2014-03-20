@@ -8,9 +8,10 @@ namespace JuceModule
 
 double Sequencer::computeMsPerTicks()
 {
-  //If dotted whole note : 1 + 1/2, dotted quarter note : 4 + 4/2 => 6 etc
-  double rythmUnit = options.rythmUnitDotted ? options.rythmUnit + options.rythmUnit / 2.0 : options.rythmUnit;
-  return  (60000.0 / (double)tempo / ticksPerQuarterNote) / ((double)QUARTER_NOTE / (double)rythmUnit);
+  //If dotted whole note : 1 - 2/4, dotted quarter note : 4 - 4/4 => 3 etc
+  double rythmUnit = options.rythmUnitDotted ? options.rythmUnit - options.rythmUnit / QUARTER_NOTE : options.rythmUnit;
+  int ticksPerMinute = tempo * (double)QUARTER_NOTE / (double)rythmUnit * ticksPerQuarterNote;
+  return  60000.0 / (double)ticksPerMinute;
 }
 
 Sequencer::Sequencer(std::vector<JuceModule::Track::Ptr > tracks, short ticksPerQuarterNote, const Options& options)
@@ -98,7 +99,7 @@ void Sequencer::setTempo(juce::uint32 tempo)
     const juce::ScopedLock lockTempo(tempoAccess);
     this->tempo = tempo;
     msPerTick = computeMsPerTicks();
-    microSecPerQuarterNote = msPerTick * QUARTER_NOTE / (options.rythmUnit + (options.rythmUnit) / 2. * options.rythmUnitDotted) * ticksPerQuarterNote * 1000.0;
+    microSecPerQuarterNote = msPerTick * ticksPerQuarterNote * 1000.0;
     updateTracksMsPerTick(msPerTick);
   }
   juce::MidiMessage tempoMessage = juce::MidiMessage::tempoMetaEvent(microSecPerQuarterNote);

@@ -75,7 +75,7 @@ bool TempoGesture::checkTempoGesture(const nite::Skeleton& skeleton)
         
       juce::int32 tmpTempo = static_cast<juce::int32>(60000 / elapsedTime);
       //Gestion des valeurs aberrantes
-      if (tmpTempo > 220) 
+      if (tmpTempo > 300) 
       {
       //  Con::printf("VALEUR ABERRANTE: PASSAGE EN NO GESTURE %f", handY);
         status = NO_GESTURE;
