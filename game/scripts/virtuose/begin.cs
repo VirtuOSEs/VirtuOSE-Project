@@ -20,7 +20,7 @@ function virtuoseStart(){
 	%options = new Options();
 	%options.rythmUnit = QUARTER_NOTE;
 	%options.rythmUnitDotted = true;
-	%options.handedness = LEFT_HANDEDNESS;
+	%options.handedness = RIGHT_HANDEDNESS;
   $orchestrator = new Orchestrator()
   {
     options = %options;

@@ -3,6 +3,7 @@
 
 #include "math/mTransform.h"
 #include "NiTE.h"
+#include "JuceLibraryCode/JuceHeader.h"
 
 /**
   * Helper struct used to group operations
@@ -12,9 +13,7 @@
 struct HandsTracker
 {
 
-  HandsTracker()
-    : confidenceThreshold(0.65f)
-  {}
+  HandsTracker();
 
   ///Update attribute. Return true if update succeeded,
   ///return false is position confidence was too low and
@@ -23,6 +22,8 @@ struct HandsTracker
 
   VectorF leftHandDirection;
   VectorF rightHandDirection;
+  float leftHandSpeedMMPerMS;
+  float rightHandSpeedMMPerMS;
 
   Point3F lastLeftHand;///Kinect coordinates
   Point3F lastRightHand;///Kinect coordinates
@@ -36,6 +37,7 @@ struct HandsTracker
   Point3F torqueCoordinatesRightHand;
 
   float confidenceThreshold;
+  double lastTimeUpdated;
 };
 
 #endif // VIRTUOSE_HANDS_TRACKER_H

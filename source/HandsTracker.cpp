@@ -1,5 +1,10 @@
 #include "HandsTracker.h"
 
+HandsTracker::HandsTracker()
+  : confidenceThreshold(0.65f),
+  lastTimeUpdated(0.)  
+  {}
+
 bool HandsTracker::update(const nite::Skeleton& skeleton)
 {
   if (skeleton.getJoint(nite::JOINT_RIGHT_HAND).getPositionConfidence() < confidenceThreshold
@@ -22,8 +27,14 @@ bool HandsTracker::update(const nite::Skeleton& skeleton)
   head.y = skeleton.getJoint(nite::JOINT_HEAD).getPosition().y;
   head.z = skeleton.getJoint(nite::JOINT_HEAD).getPosition().z;
 
+  double elapsedTime = juce::Time::getMillisecondCounterHiRes() - lastTimeUpdated;
+  lastTimeUpdated = juce::Time::getMillisecondCounterHiRes();
   leftHandDirection = currentLeftHand - lastLeftHand;
+  leftHandSpeedMMPerMS = leftHandDirection.magnitudeSafe() / elapsedTime;
+  leftHandDirection.normalizeSafe();
   rightHandDirection = currentRightHand - lastRightHand;
+  rightHandSpeedMMPerMS = rightHandDirection.magnitudeSafe() / elapsedTime;
+  rightHandDirection.normalizeSafe();
 
   torqueCoordinatesLeftHand = (currentLeftHand - head) / 150.f;
   torqueCoordinatesRightHand = (currentRightHand - head) / 150.f;

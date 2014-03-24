@@ -41,8 +41,6 @@ Sequencer::Sequencer(std::vector<JuceModule::Track::Ptr > tracks, short ticksPer
   newTempoTrack.addEvent(trackNameEvent);
 
   msPerTick = computeMsPerTicks();
-  Platform::outputDebugString("MsPerTick : %f? Ticks per quarter note: %d", msPerTick, ticksPerQuarterNote);
-
   updateTracksMsPerTick(msPerTick);
 }
 

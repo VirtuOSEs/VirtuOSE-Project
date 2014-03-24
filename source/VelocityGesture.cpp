@@ -2,6 +2,9 @@
 #include "math/mPoint3.h"
 
 const float VelocityGesture::GESTURE_WIDTH_PERCENTAGE = 50.f/100.f;
+const VectorF VelocityGesture::GESTURE_VECTOR = VectorF(0, 1, 0);
+const float VelocityGesture::GESTURE_SIMILARITY_THRESHOLD = 0.95f;
+const double VelocityGesture::GESTURE_MAX_SPEED_MM_PER_MS = 0.5; 
 
 VelocityGesture::VelocityGesture(const Options& options)
   : velocityDetected(0.5f)
@@ -25,6 +28,20 @@ bool VelocityGesture::checkVelocityGesture(const HandsTracker& handsTracker, con
 
   if (! tryToCalibrateGesture(handsTracker, skeleton))
     return false;
+
+  //Detect if current movement is compatible with this gesture
+  if (gestureHand == nite::JOINT_LEFT_HAND)
+  {
+    if (fabs(mDot(handsTracker.leftHandDirection, GESTURE_VECTOR)) < GESTURE_SIMILARITY_THRESHOLD
+      || handsTracker.leftHandSpeedMMPerMS > GESTURE_MAX_SPEED_MM_PER_MS)
+      return false;
+  }
+  else if (gestureHand == nite::JOINT_RIGHT_HAND)
+  {
+    if (fabs(mDot(handsTracker.rightHandDirection, GESTURE_VECTOR)) < GESTURE_SIMILARITY_THRESHOLD
+      || handsTracker.rightHandSpeedMMPerMS > GESTURE_MAX_SPEED_MM_PER_MS)
+      return false;
+  }
 
   const nite::SkeletonJoint& hand = skeleton.getJoint(gestureHand);
 
