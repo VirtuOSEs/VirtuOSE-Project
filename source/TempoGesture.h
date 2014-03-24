@@ -4,6 +4,7 @@
 #include "JuceLibraryCode/JuceHeader.h"
 #include "NiTE.h"
 #include "Options.h"
+#include "HandsTracker.h"
 
 class TempoGesture
 {
@@ -15,10 +16,10 @@ public:
   juce::int32 getTempo() const
     {return tempo;}
 
-  bool checkTempoGesture(const nite::Skeleton& skeleton);
+  bool checkTempoGesture(const HandsTracker& handsTracker, const nite::Skeleton& skeleton);
 
 private:
-  void calibrateGesture(const nite::SkeletonJoint& rightHip);
+  bool calibrateGesture(const nite::SkeletonJoint& rightHip);
   nite::JointType gestureHand; 
   GestureStatus status;
 

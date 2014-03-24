@@ -19,6 +19,8 @@
 #include "VelocityGesture.h"
 #include "TransportGesture.h"
 #include "Options.h"
+#include "HandsTracker.h"
+
 
 class PlayerTracker : public nite::UserTracker::NewFrameListener
 {
@@ -38,15 +40,13 @@ public:
   void deactivateMusicalGestureDetection();
 
  	void updateUserState(const nite::UserData& user, unsigned long long ts);
- 	void readNextFrame();
-
 
 private:
   JuceModule::Sequencer::Ptr sequencer;
 	nite::UserTracker userTracker;
 	nite::Status niteRc;
 	nite::UserTrackerFrameRef userTrackerFrame;
-	int velocityTest;
+  HandsTracker handsTracker;
 
   TempoGesture tempoGesture;
   VelocityGesture velocityGesture;
@@ -57,7 +57,7 @@ private:
   juce::CriticalSection trackerAccess;
 };
 
-/** WorkItem modifying hands representation position.
+/** SimEvent modifying hands representation position.
     Sended to main thread by PlayerTracker
     **/
 class HandsMove : public SimEvent

@@ -2912,6 +2912,9 @@
     <ClCompile Include="..\..\..\source\Options.cpp">
       <Filter>Source Files\source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\source\HandsTracker.cpp">
+      <Filter>Source Files\source\kinect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\..\Engine\source\T3D\aiClient.h">
@@ -5445,6 +5448,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\source\Options.h">
       <Filter>Source Files\source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\HandsTracker.h">
+      <Filter>Source Files\source\kinect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

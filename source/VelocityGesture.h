@@ -6,6 +6,7 @@
 #include "NiTE.h"
 #include "Zone2D.h"
 #include "Options.h"
+#include "HandsTracker.h"
   
 class VelocityGesture
 {
@@ -15,19 +16,18 @@ public:
 
   VelocityGesture(const Options& options);
 
-  bool checkVelocityGesture(const nite::Skeleton& skeleton);
+  bool checkVelocityGesture(const HandsTracker& handsTracker, const nite::Skeleton& skeleton);
 
   float getVelocityDetected() const
     {return velocityDetected;}
 
 private:
-  void tryToCalibrateGesture(const nite::Skeleton& skeleton);
+  bool tryToCalibrateGesture(const HandsTracker& handsTracker, const nite::Skeleton& skeleton);
   
   nite::JointType gestureHand;
   nite::JointType gestureElbow;
   nite::JointType gestureShoulder;
 
-  bool gestureCalibrated;
   Zone2D gestureZone;
   float velocityDetected;
 };

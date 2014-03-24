@@ -17,14 +17,12 @@ TempoGesture::TempoGesture(const Options& options)
 
 }
 
-bool TempoGesture::checkTempoGesture(const nite::Skeleton& skeleton)
+bool TempoGesture::checkTempoGesture(const HandsTracker& handsTracker, const nite::Skeleton& skeleton)
 {
   const nite::SkeletonJoint& hand = skeleton.getJoint(gestureHand);
   const nite::SkeletonJoint& rightHip = skeleton.getJoint(nite::JOINT_RIGHT_HIP);
   
-  calibrateGesture(rightHip);
-
-  if (hand.getPositionConfidence() < 0.5)
+  if (!calibrateGesture(rightHip))
     return false;
 
   float handY = hand.getPosition().y;
@@ -100,10 +98,10 @@ bool TempoGesture::checkTempoGesture(const nite::Skeleton& skeleton)
   return false;
 }
 
-void TempoGesture::calibrateGesture(const nite::SkeletonJoint& rightHip)
+bool TempoGesture::calibrateGesture(const nite::SkeletonJoint& rightHip)
 {
   if (rightHip.getPositionConfidence() < 0.5f)
-    return;
+    return false;
   yBottom = rightHip.getPosition().y;
   yTop = yBottom + 200.f;
 }

@@ -2,8 +2,8 @@
 #define KINECT_TRANSPORT_GESTURE
 
 #include "JuceLibraryCode/JuceHeader.h"
-#include "NiTE.h"
 #include "math/mPoint3.h"
+#include "HandsTracker.h"
 
 /**
   * Description of the gesture :
@@ -25,7 +25,7 @@ public:
 
   TransportGesture();
 
-  bool checkTransportGesture(const nite::Skeleton& skeleton);
+  bool checkTransportGesture(const HandsTracker& handsTracker);
 
   const TransportStatus& getTransportStatus() const
     {return status;}
@@ -40,8 +40,6 @@ private:
   ZoneStatus zoneStatus;
 
   //Light optimisation
-  Point3F leftHandPosition;
-  Point3F rightHandPosition;
   VectorF distanceBetweenHands;
 
 };

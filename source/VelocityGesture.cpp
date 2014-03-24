@@ -4,8 +4,7 @@
 const float VelocityGesture::GESTURE_WIDTH_PERCENTAGE = 50.f/100.f;
 
 VelocityGesture::VelocityGesture(const Options& options)
-  : gestureCalibrated(false),
-      velocityDetected(0.5f)
+  : velocityDetected(0.5f)
 {
   if (options.handedness == LEFT_HANDEDNESS)
   {
@@ -21,19 +20,13 @@ VelocityGesture::VelocityGesture(const Options& options)
   }
 }
 
-bool VelocityGesture::checkVelocityGesture(const nite::Skeleton& skeleton)
+bool VelocityGesture::checkVelocityGesture(const HandsTracker& handsTracker, const nite::Skeleton& skeleton)
 {
-  if (!gestureCalibrated)
-  {
-    tryToCalibrateGesture(skeleton);
-  }
-  //Still not calibrated ?
-  if (!gestureCalibrated)
+
+  if (! tryToCalibrateGesture(handsTracker, skeleton))
     return false;
 
   const nite::SkeletonJoint& hand = skeleton.getJoint(gestureHand);
-  if (hand.getPositionConfidence() < 0.5f)
-    return false;
 
   float handY = hand.getPosition().y;
   float handX = hand.getPosition().x;
@@ -47,21 +40,20 @@ bool VelocityGesture::checkVelocityGesture(const nite::Skeleton& skeleton)
   return false;
 }
 
-void VelocityGesture::tryToCalibrateGesture(const nite::Skeleton& skeleton)
+bool VelocityGesture::tryToCalibrateGesture(const HandsTracker& handsTracker, const nite::Skeleton& skeleton)
 {
-  const nite::SkeletonJoint& head = skeleton.getJoint(nite::JOINT_HEAD);
   const nite::SkeletonJoint& leftHip = skeleton.getJoint(nite::JOINT_LEFT_HIP);
   const nite::SkeletonJoint& hand = skeleton.getJoint(gestureHand);
   const nite::SkeletonJoint& elbow = skeleton.getJoint(gestureElbow);
   const nite::SkeletonJoint& shoulder = skeleton.getJoint(gestureShoulder);
   
-  if (leftHip.getPositionConfidence() < 0.5f || head.getPositionConfidence() < 0.5f
-      || hand.getPositionConfidence() < 0.5f || elbow.getPositionConfidence() < 0.5f
+  if (leftHip.getPositionConfidence() < 0.5f 
+      || elbow.getPositionConfidence() < 0.5f
       || shoulder.getPositionConfidence() < 0.5f)
-    return;
+    return false;
 
   const float hipPosition = leftHip.getPosition().y;
-  const float headPosition = head.getPosition().y;
+  const float headPosition = handsTracker.head.y;
   const float distanceHipToHead = headPosition - hipPosition;
 
   //Zone starts vertically 10% above the hip and ends 10% above the head
@@ -88,9 +80,6 @@ void VelocityGesture::tryToCalibrateGesture(const nite::Skeleton& skeleton)
     gestureZone.right = pshoulder.x;
     gestureZone.left = pshoulder.x - distanceHandToShoulder * GESTURE_WIDTH_PERCENTAGE;
   }
-
-  Platform::outputDebugString("Head x : %f", head.getPosition().x);
-  Platform::outputDebugString("Zone left : %f, Zone Right : %f, Distance hand to shoulder : %f", gestureZone.left, gestureZone.right, distanceHandToShoulder);
-  gestureCalibrated = true;
+  return true;
 }
 
