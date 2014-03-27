@@ -22,11 +22,17 @@ function virtuoseStart(){
   {
    options = %options;
   };
-  
+
+//DataBlock Particle
+   datablock ParticleEmitterNodeData(SimpleEmitterNodeData)
+	{
+    timeMultiple = 1.0;
+	};
+
 	//Choix de la main à faire dans le menu
-    initialTempo=tempo.getText();
-    rythmUnit=battue.getText();
-    rythmUnitDotted(dotted.isStateOn());
+    %options.initialTempo=2;//tempo.getText();
+    %options.rythmUnit=battue.getText();
+    %options.rythmUnitDotted=dotted.isStateOn();
 	
   $orchestrator.loadMidiFile("../" @ $vfileName);
 
@@ -34,8 +40,12 @@ function virtuoseStart(){
 	HideSun();
     leftHand.position = Spawn.position.x-2 SPC Spawn.position.y+5 SPC Spawn.position.z+1;
     rightHand.position = Spawn.position.x+2 SPC Spawn.position.y+5 SPC Spawn.position.z+1;
-	rightHandParticle.position=rightHand.position;
-	leftHandParticle.position=leftHand.position;
+	rightHandParticleNode.active=false;
+	leftHandParticleNode.active=false;
+	rightHandParticleNode.setDataBlock(SimpleEmitterNodeData);
+	leftHandParticleNode.setDataBlock(SimpleEmitterNodeData);
+	rightHandParticleNode.position=rightHand.position;
+	leftHandParticleNode.position=leftHand.position;
 	changeColor(leftHand,0.5);
 	changeColor(rightHand,0.5);
 	placeInstrumentsTrack();

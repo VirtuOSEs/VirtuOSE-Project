@@ -24,16 +24,35 @@ function decrementOpacity(%obj){
 function changeColor(%obj,%var){
 	%mapTo=%obj.getTargetName(0);
 	
-	%mapTo.diffuseColor.r=%var;
-	%mapTo.diffuseColor.g=1-%var;
-	%mapTo.diffuseColor.b=1-%var;
+	%r=%var;
+	%g=1-%var;
+	%b=1-%var;
+	
+	%mapTo.diffuseColor.r=%r;
+	%mapTo.diffuseColor.g=%g;
+	%mapTo.diffuseColor.b=%b;
+	
+	// %r=%newVelocity;
+	// %g=1-%newVelocity;
+	// %b=1-%newVelocity;
+	
+    rightHandParticle.colors[0]="1 1 1 1";
+	rightHandParticle.colors[1]=%r/2 SPC %g/2 SPC %b/2 SPC "0.62";
+	rightHandParticle.colors[2]=%r SPC %g SPC %b SPC "0.629";
+	rightHandParticle.colors[3]="0.724 1 0 0";
 	
 	%mapTo.reload();
 	
 }
 
 function particle(){
-	rightHand.emitter.reload();
+	rightHandParticleNode.setActive(!rightHandParticleNode.active);
+	leftHandParticleNode.setActive(!leftHandParticleNode.active);
+	
+	// leftHandParticle.colors[0]="1 1 1 1";
+	// leftHandParticle.colors[1]="0 1 0.627 0.62";
+	// leftHandParticle.colors[2]="0 0.071 1 0.629";
+	// leftHandParticle.colors[3]="0.724 1 0 0";
 }
 
 function light(){
@@ -62,7 +81,8 @@ function onTempoJustChanged(%newTempo)
 function onVelocityChanged(%newVelocity)
 {
    echo("Velocity just changed " @ %newVelocity); 
-   changeColor("rightHand",%newVelocity);
+		
+	changeColor("rightHand",%newVelocity);
 }
 
 function onInstrumentWillPlay(%instrumentName, %delayInMillis) 
