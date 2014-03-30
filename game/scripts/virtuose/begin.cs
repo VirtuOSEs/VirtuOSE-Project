@@ -16,27 +16,27 @@ $posxvent = 0.0;
 function virtuoseStart(){
 	echo("Virtuose is beginning");
 	
-	//Exemple d'utilisation des options
-	%options = new Options();
-	%options.rythmUnit = QUARTER_NOTE;
-	%options.rythmUnitDotted = true;
-	%options.handedness = RIGHT_HANDEDNESS;
-  $orchestrator = new Orchestrator()
-  {
-    options = %options;
-  };
-
-//DataBlock Particle
+	//DataBlock Particle
    datablock ParticleEmitterNodeData(SimpleEmitterNodeData)
 	{
     timeMultiple = 1.0;
 	};
 
-	//Choix de la main à faire dans le menu
-    %options.initialTempo=2;//tempo.getText();
+	%options = new Options();
+	
+    %options.initialTempo=tempo.getText();
     %options.rythmUnit=battue.getText();
     %options.rythmUnitDotted=dotted.isStateOn();
+	if(leftHandCtrl.getValue()==1)
+			%options.handedness = LEFT_HANDEDNESS;
+	else
+			%options.handedness = RIGHT_HANDEDNESS;
 	
+	$orchestrator = new Orchestrator()
+	  {
+		options = %options;
+	  };
+  
   $orchestrator.loadMidiFile("../" @ $vfileName);
   $orchestrator.setTempo(90);
 
