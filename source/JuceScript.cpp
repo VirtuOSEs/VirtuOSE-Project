@@ -18,8 +18,10 @@ void Orchestrator::initPersistFields()
 }
 
 Orchestrator::Orchestrator()
+  :options(&defaultOptions)
 {
 }
+
 
 
 Orchestrator::~Orchestrator()
@@ -65,10 +67,10 @@ void Orchestrator::loadMidiFile(const char* filePath)
     tracks[i] = new JuceModule::Track(sequences[i]);
   }
 
-  sequencer = new JuceModule::Sequencer(tracks, midiFile.getTimeFormat());
+  sequencer = new JuceModule::Sequencer(tracks, midiFile.getTimeFormat(), *options);
   sequencer->setTempoTrack(tempoTrack);
 
-  playerTracker = new PlayerTracker(sequencer);
+  playerTracker = new PlayerTracker(sequencer, *options);   
 }
 
 void Orchestrator::increaseVelocityFactor(short percentage)

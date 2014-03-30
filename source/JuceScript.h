@@ -28,6 +28,7 @@ public:
   static void initPersistFields();
 
   Orchestrator();
+  Orchestrator(const Options*);
   ~Orchestrator();
 
   void loadMidiFile(const char* filePath);
@@ -51,7 +52,8 @@ private:
   juce::ScopedPointer<PlayerTracker> playerTracker;
 
   std::vector<JuceModule::Track::Ptr > tracks;
-  Options options;
+  Options defaultOptions;
+  const Options* options;
 };
 
 

@@ -19,6 +19,7 @@ enum RythmUnit
 };
 
 DefineEnumType(Handedness);
+DefineEnumType(RythmUnit);
 
 /**
   * The Options class is used to store information
@@ -46,7 +47,10 @@ public:
   static void initPersistFields();
 
   Options();
+  Options(const Options& options);
   ~Options();
+
+  const Options& operator=(const Options& options);
 
   Handedness handedness;
   RythmUnit rythmUnit;

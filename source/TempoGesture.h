@@ -3,23 +3,26 @@
 
 #include "JuceLibraryCode/JuceHeader.h"
 #include "NiTE.h"
+#include "Options.h"
+#include "HandsTracker.h"
 
 class TempoGesture
 {
 public:
   enum GestureStatus{NO_GESTURE, IN_ZONE, OUT_ZONE};
 
-  TempoGesture();
+  TempoGesture(const Options& options);
 
   juce::int32 getTempo() const
     {return tempo;}
 
-  bool checkTempoGesture(const nite::Skeleton& skeleton);
+  bool checkTempoGesture(const HandsTracker& handsTracker, const nite::Skeleton& skeleton);
 
 private:
-  void calibrateGesture(const nite::SkeletonJoint& rightHip);
+  bool calibrateGesture(const nite::SkeletonJoint& rightHip);
+  nite::JointType gestureHand; 
   GestureStatus status;
-  bool gestureCalibrated;
+
   double startTime;
   juce::int32 tempo;
   //---ZONE DELIMITERS

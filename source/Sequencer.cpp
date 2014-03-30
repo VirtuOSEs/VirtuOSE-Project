@@ -6,14 +6,23 @@
 namespace JuceModule
 {
 
-Sequencer::Sequencer(std::vector<JuceModule::Track::Ptr > tracks, short timeFormat, double tempo)
+double Sequencer::computeMsPerTicks()
+{
+  //If dotted whole note : 1 - 2/4, dotted quarter note : 4 - 4/4 => 3 etc
+  double rythmUnit = options.rythmUnitDotted ? options.rythmUnit - options.rythmUnit / QUARTER_NOTE : options.rythmUnit;
+  int ticksPerMinute = tempo * (double)QUARTER_NOTE / (double)rythmUnit * ticksPerQuarterNote;
+  return  60000.0 / (double)ticksPerMinute;
+}
+
+Sequencer::Sequencer(std::vector<JuceModule::Track::Ptr > tracks, short ticksPerQuarterNote, const Options& options)
   : juce::Thread("Sequencer"), 
     tracks(tracks), 
-    timeFormat(timeFormat), 
+    ticksPerQuarterNote(ticksPerQuarterNote), 
+    options(options),
     paused(false), 
-    tempo(tempo),
+    tempo(options.initialTempo),
     ticks(0.0), 
-    msPerTick(60000.0 / (double)tempo / timeFormat), stopped(false),
+    stopped(false),
     tempoTrackIndex(0)
 {
   //Create the track name meta event to recognize the special tempo sequence
@@ -30,6 +39,8 @@ Sequencer::Sequencer(std::vector<JuceModule::Track::Ptr > tracks, short timeForm
   midiData.append(trackName, sizeof(trackName));
   juce::MidiMessage trackNameEvent(midiData.getData(), midiData.getSize());
   newTempoTrack.addEvent(trackNameEvent);
+
+  msPerTick = computeMsPerTicks();
   updateTracksMsPerTick(msPerTick);
 }
 
@@ -57,7 +68,7 @@ void Sequencer::saveSequence(const juce::String& filePath)
   {
     result.addTrack(tracks[i]->getSequence());
   }
-  result.setTicksPerQuarterNote(timeFormat);
+  result.setTicksPerQuarterNote(ticksPerQuarterNote);
   juce::File midiFile = juce::File::getCurrentWorkingDirectory().getChildFile(filePath);
   if (midiFile.existsAsFile())
     midiFile.deleteFile();
@@ -85,8 +96,8 @@ void Sequencer::setTempo(juce::uint32 tempo)
   {
     const juce::ScopedLock lockTempo(tempoAccess);
     this->tempo = tempo;
-    msPerTick = 60000.0 / (double)tempo / (double)timeFormat;
-    microSecPerQuarterNote = msPerTick * timeFormat * 1000.0;
+    msPerTick = computeMsPerTicks();
+    microSecPerQuarterNote = msPerTick * ticksPerQuarterNote * 1000.0;
     updateTracksMsPerTick(msPerTick);
   }
   juce::MidiMessage tempoMessage = juce::MidiMessage::tempoMetaEvent(microSecPerQuarterNote);
@@ -247,8 +258,9 @@ void Sequencer::checkTempoChangeTrack()
     if (midiEvent->message.isTempoMetaEvent())
     {
       juce::ScopedLock sL(tempoAccess);
-      msPerTick = midiEvent->message.getTempoMetaEventTickLength(timeFormat) * 1000.0;
-      tempo = 60000.0 / msPerTick / (double)timeFormat;
+      double rythmUnitModificator = (options.rythmUnit + (options.rythmUnit / 2.0 * options.rythmUnitDotted));
+      msPerTick = midiEvent->message.getTempoMetaEventTickLength(ticksPerQuarterNote) * rythmUnitModificator *  1000.0;
+      tempo = 60000.0 / msPerTick / (double)ticksPerQuarterNote / rythmUnitModificator;
       updateTracksMsPerTick(msPerTick);
     }
     ++tempoTrackIndex;

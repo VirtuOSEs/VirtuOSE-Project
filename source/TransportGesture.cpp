@@ -1,7 +1,7 @@
 #include "TransportGesture.h"
 #include "console/console.h"
 
-const float TransportGesture::GESTURE_ZONE_RADIUS_MM = 100.0;
+const float TransportGesture::GESTURE_ZONE_RADIUS_MM = 150.0;
 const juce::int64 TransportGesture::STOP_GESTURE_TIME_MS = 1500;
 
 TransportGesture::TransportGesture()
@@ -12,17 +12,9 @@ TransportGesture::TransportGesture()
 {
 }
 
-bool TransportGesture::checkTransportGesture(const nite::Skeleton& skeleton)
+bool TransportGesture::checkTransportGesture(const HandsTracker& handsTracker)
 {
-  const nite::SkeletonJoint& leftHand = skeleton.getJoint(nite::JOINT_LEFT_HAND);
-  const nite::SkeletonJoint& rightHand = skeleton.getJoint(nite::JOINT_RIGHT_HAND);
-
-  if (leftHand.getPositionConfidence() <= 0.55f || rightHand.getPositionConfidence() <= 0.55f)
-    return false;
-
-  leftHandPosition.x = leftHand.getPosition().x; leftHandPosition.y = leftHand.getPosition().y; leftHandPosition.z = leftHand.getPosition().z;
-  rightHandPosition.x = rightHand.getPosition().x; rightHandPosition.y = rightHand.getPosition().y; rightHandPosition.z = rightHand.getPosition().z;
-  distanceBetweenHands = rightHandPosition - leftHandPosition;
+  distanceBetweenHands = handsTracker.currentRightHand - handsTracker.currentLeftHand;
 
   //Are hands together ?
   if ( fabs(distanceBetweenHands.len()) < GESTURE_ZONE_RADIUS_MM)

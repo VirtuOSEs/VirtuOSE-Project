@@ -6,6 +6,7 @@
 
 #include <vector>
 #include "Track.h"
+#include "Options.h"
 
 namespace JuceModule
 {
@@ -19,8 +20,8 @@ class Sequencer : public juce::Thread, public juce::ReferenceCountedObject
 {
 public:
   typedef juce::ReferenceCountedObjectPtr<Sequencer> Ptr;
-  Sequencer(std::vector<JuceModule::Track::Ptr > tracks, short timeFormat,
-            double tempo = 92.0);
+  Sequencer(std::vector<JuceModule::Track::Ptr > tracks, short ticksPerQuarterNote,
+            const Options& options);
   ~Sequencer();
 
   void saveSequence(const juce::String& filePath);
@@ -45,12 +46,15 @@ protected:
   inline void updateTracksMsPerTick(double msPerTick);
 
 private:
-  short timeFormat;
+  inline double computeMsPerTicks();
+
+  short ticksPerQuarterNote;
   std::vector<JuceModule::Track::Ptr > tracks;
   //On lit les tempo event depuis tempoTrack
   juce::MidiMessageSequence tempoTrack;
   //On écrit les tempos event ajoutés par l'utilisateur dans newTempoTrack
   juce::MidiMessageSequence newTempoTrack;
+  Options options;
 
   bool paused;
   bool stopped;

@@ -2,26 +2,48 @@
 #include "math/mPoint3.h"
 
 const float VelocityGesture::GESTURE_WIDTH_PERCENTAGE = 50.f/100.f;
+const VectorF VelocityGesture::GESTURE_VECTOR = VectorF(0, 1, 0);
+const float VelocityGesture::GESTURE_SIMILARITY_THRESHOLD = 0.95f;
+const double VelocityGesture::GESTURE_MAX_SPEED_MM_PER_MS = 0.5; 
 
-VelocityGesture::VelocityGesture()
-  : gestureCalibrated(false),
-      velocityDetected(0.5f)
+VelocityGesture::VelocityGesture(const Options& options)
+  : velocityDetected(0.5f)
 {
+  if (options.handedness == LEFT_HANDEDNESS)
+  {
+    gestureHand = nite::JOINT_RIGHT_HAND;
+    gestureElbow = nite::JOINT_RIGHT_ELBOW;
+    gestureShoulder = nite::JOINT_RIGHT_SHOULDER;
+  }
+  else if (options.handedness == RIGHT_HANDEDNESS)
+  {
+    gestureHand = nite::JOINT_LEFT_HAND;
+    gestureElbow = nite::JOINT_LEFT_ELBOW;
+    gestureShoulder = nite::JOINT_LEFT_SHOULDER;
+  }
 }
 
-bool VelocityGesture::checkVelocityGesture(const nite::Skeleton& skeleton)
+bool VelocityGesture::checkVelocityGesture(const HandsTracker& handsTracker, const nite::Skeleton& skeleton)
 {
-  if (!gestureCalibrated)
-  {
-    tryToCalibrateGesture(skeleton);
-  }
-  //Still not calibrated ?
-  if (!gestureCalibrated)
+
+  if (! tryToCalibrateGesture(handsTracker, skeleton))
     return false;
 
-  const nite::SkeletonJoint& hand = skeleton.getJoint(nite::JOINT_LEFT_HAND);
-  if (hand.getPositionConfidence() < 0.5f)
-    return false;
+  //Detect if current movement is compatible with this gesture
+  if (gestureHand == nite::JOINT_LEFT_HAND)
+  {
+    if (fabs(mDot(handsTracker.leftHandDirection, GESTURE_VECTOR)) < GESTURE_SIMILARITY_THRESHOLD
+      || handsTracker.leftHandSpeedMMPerMS > GESTURE_MAX_SPEED_MM_PER_MS)
+      return false;
+  }
+  else if (gestureHand == nite::JOINT_RIGHT_HAND)
+  {
+    if (fabs(mDot(handsTracker.rightHandDirection, GESTURE_VECTOR)) < GESTURE_SIMILARITY_THRESHOLD
+      || handsTracker.rightHandSpeedMMPerMS > GESTURE_MAX_SPEED_MM_PER_MS)
+      return false;
+  }
+
+  const nite::SkeletonJoint& hand = skeleton.getJoint(gestureHand);
 
   float handY = hand.getPosition().y;
   float handX = hand.getPosition().x;
@@ -35,39 +57,46 @@ bool VelocityGesture::checkVelocityGesture(const nite::Skeleton& skeleton)
   return false;
 }
 
-void VelocityGesture::tryToCalibrateGesture(const nite::Skeleton& skeleton)
+bool VelocityGesture::tryToCalibrateGesture(const HandsTracker& handsTracker, const nite::Skeleton& skeleton)
 {
-  const nite::SkeletonJoint& head = skeleton.getJoint(nite::JOINT_HEAD);
   const nite::SkeletonJoint& leftHip = skeleton.getJoint(nite::JOINT_LEFT_HIP);
-  const nite::SkeletonJoint& leftHand = skeleton.getJoint(nite::JOINT_LEFT_HAND);
-  const nite::SkeletonJoint& leftElbow = skeleton.getJoint(nite::JOINT_LEFT_ELBOW);
-  const nite::SkeletonJoint& leftShoulder = skeleton.getJoint(nite::JOINT_LEFT_SHOULDER);
+  const nite::SkeletonJoint& hand = skeleton.getJoint(gestureHand);
+  const nite::SkeletonJoint& elbow = skeleton.getJoint(gestureElbow);
+  const nite::SkeletonJoint& shoulder = skeleton.getJoint(gestureShoulder);
   
-  if (leftHip.getPositionConfidence() < 0.5f || head.getPositionConfidence() < 0.5f
-      || leftHand.getPositionConfidence() < 0.5f || leftElbow.getPositionConfidence() < 0.5f
-      || leftShoulder.getPositionConfidence() < 0.5f)
-    return;
+  if (leftHip.getPositionConfidence() < 0.5f 
+      || elbow.getPositionConfidence() < 0.5f
+      || shoulder.getPositionConfidence() < 0.5f)
+    return false;
 
   const float hipPosition = leftHip.getPosition().y;
-  const float headPosition = head.getPosition().y;
+  const float headPosition = handsTracker.head.y;
   const float distanceHipToHead = headPosition - hipPosition;
 
   //Zone starts vertically 10% above the hip and ends 10% above the head
   gestureZone.bottom = hipPosition + distanceHipToHead / 10.f;
   gestureZone.top = headPosition + distanceHipToHead /10.f;
 
-  const Point3F hand(leftHand.getPosition().x, leftHand.getPosition().y, leftHand.getPosition().z);
-  const Point3F elbow(leftElbow.getPosition().x, leftElbow.getPosition().y, leftElbow.getPosition().z);
-  const Point3F shoulder(leftShoulder.getPosition().x, leftShoulder.getPosition().y, leftShoulder.getPosition().z);
+  const Point3F phand(hand.getPosition().x, hand.getPosition().y, hand.getPosition().z);
+  const Point3F pelbow(elbow.getPosition().x, elbow.getPosition().y, elbow.getPosition().z);
+  const Point3F pshoulder(shoulder.getPosition().x, shoulder.getPosition().y, shoulder.getPosition().z);
 
-  const VectorF handToElbow = hand - elbow;
-  const VectorF elbowToShoulder = elbow - shoulder;
+  const VectorF handToElbow = phand - pelbow;
+  const VectorF elbowToShoulder = pelbow - pshoulder;
 
   const float distanceHandToShoulder = handToElbow.len() + elbowToShoulder.len();
-  gestureZone.right = shoulder.x;
-  gestureZone.left = shoulder.x - distanceHandToShoulder * GESTURE_WIDTH_PERCENTAGE;
-  Platform::outputDebugString("Head x : %f", head.getPosition().x);
-  Platform::outputDebugString("Zone left : %f, Zone Right : %f, Distance hand to shoulder : %f", gestureZone.left, gestureZone.right, distanceHandToShoulder);
-  gestureCalibrated = true;
+
+  //Zone horizontal limit change function of handedness
+  if (gestureHand == nite::JOINT_RIGHT_HAND)
+  {
+    gestureZone.right = pshoulder.x + distanceHandToShoulder * GESTURE_WIDTH_PERCENTAGE;
+    gestureZone.left = pshoulder.x;
+  }
+  else
+  {
+    gestureZone.right = pshoulder.x;
+    gestureZone.left = pshoulder.x - distanceHandToShoulder * GESTURE_WIDTH_PERCENTAGE;
+  }
+  return true;
 }
 

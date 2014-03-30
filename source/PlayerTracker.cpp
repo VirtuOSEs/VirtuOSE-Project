@@ -24,11 +24,16 @@ const float HandsMove::EYE_OFFSET = 2.5f;
 bool PlayerTracker::KINECT_DETECTED = false;
 
 PlayerTracker::PlayerTracker()
+  : tempoGesture(Options()),
+    velocityGesture(Options())
 {
 }
 
-PlayerTracker::PlayerTracker(JuceModule::Sequencer::Ptr sequencer)
-  : sequencer(sequencer), musicalGestureDetectionActivated(false)
+PlayerTracker::PlayerTracker(JuceModule::Sequencer::Ptr sequencer, const Options& options)
+  : sequencer(sequencer),
+    tempoGesture(options),
+    velocityGesture(options),
+    musicalGestureDetectionActivated(false)
 {
   if (!KINECT_DETECTED)
   {
@@ -122,11 +127,12 @@ void PlayerTracker::onNewFrame(nite::UserTracker& userTracker)
       userTracker.setSkeletonSmoothingFactor(.85f);
     }
     else if (user.getSkeleton().getState() == nite::SKELETON_TRACKED)
-    {        
-      const nite::SkeletonJoint& lh = user.getSkeleton().getJoint(nite::JOINT_LEFT_HAND);
-      const nite::SkeletonJoint& rh = user.getSkeleton().getJoint(nite::JOINT_RIGHT_HAND);
+    {    
+      //If hands positions have not enough confidence, this frame is skipped
+      if (! handsTracker.update(user.getSkeleton()))
+        return;
 
-      if (transportGesture.checkTransportGesture(user.getSkeleton()))
+      if (transportGesture.checkTransportGesture(handsTracker))
       {
         if (transportGesture.getTransportStatus() == TransportGesture::PLAY)
         {
@@ -149,7 +155,7 @@ void PlayerTracker::onNewFrame(nite::UserTracker& userTracker)
       }
 
       //Detect velocity changes
-      if (musicalGestureDetectionActivated && velocityGesture.checkVelocityGesture(user.getSkeleton()))
+      if (musicalGestureDetectionActivated && velocityGesture.checkVelocityGesture(handsTracker, user.getSkeleton()))
       {
         sequencer->setVelocityAbsolute(velocityGesture.getVelocityDetected());
         CallbackManager::velocityChanged(velocityGesture.getVelocityDetected());
@@ -157,26 +163,16 @@ void PlayerTracker::onNewFrame(nite::UserTracker& userTracker)
       }
 
       //Detect tempo changes
-      if (musicalGestureDetectionActivated && tempoGesture.checkTempoGesture(user.getSkeleton()))
+      if (musicalGestureDetectionActivated && tempoGesture.checkTempoGesture(handsTracker, user.getSkeleton()))
       {
         sequencer->setTempo(tempoGesture.getTempo());
         CallbackManager::tempoJustChanged(tempoGesture.getTempo());
       }
 
       //Send hands position to game (display hands as spheres)
-      const nite::SkeletonJoint& head = user.getSkeleton().getJoint(nite::JOINT_HEAD);
-      if (rh.getPositionConfidence() > 0.65 && head.getPositionConfidence() > 0.65)
-      {
-        float rhandX = (rh.getPosition().x - head.getPosition().x) / 150.f;
-        float rhandY = (rh.getPosition().y - head.getPosition().y) / 150.f;
-        float rhandZ = (rh.getPosition().z - head.getPosition().z) / 150.f;
 
-        float lhandX = (lh.getPosition().x - head.getPosition().x) / 150.f;
-        float lhandY = (lh.getPosition().y - head.getPosition().y) / 150.f;
-        float lhandZ = (lh.getPosition().z - head.getPosition().z) / 150.f;
-
-        Sim::postEvent(Sim::getRootGroup(), new HandsMove(Point3F(lhandX, lhandY, lhandZ), Point3F(rhandX, rhandY, rhandZ)), -1);
-      }
+      Sim::postEvent(Sim::getRootGroup(), new HandsMove(handsTracker.torqueCoordinatesLeftHand, handsTracker.torqueCoordinatesRightHand), -1);
+     
     }
   } 
 }

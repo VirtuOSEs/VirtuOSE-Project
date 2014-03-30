@@ -18,9 +18,12 @@ function virtuoseStart(){
 	
 	//Exemple d'utilisation des options
 	%options = new Options();
+	%options.rythmUnit = QUARTER_NOTE;
+	%options.rythmUnitDotted = true;
+	%options.handedness = RIGHT_HANDEDNESS;
   $orchestrator = new Orchestrator()
   {
-   options = %options;
+    options = %options;
   };
 
 //DataBlock Particle
@@ -35,6 +38,7 @@ function virtuoseStart(){
     %options.rythmUnitDotted=dotted.isStateOn();
 	
   $orchestrator.loadMidiFile("../" @ $vfileName);
+  $orchestrator.setTempo(90);
 
 	HideSun();
 	HideSun();

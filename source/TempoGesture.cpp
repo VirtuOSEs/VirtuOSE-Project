@@ -2,28 +2,30 @@
 #include "TSCallback.h"
 
 // TempoGesture implem
-TempoGesture::TempoGesture()
+TempoGesture::TempoGesture(const Options& options)
   : status(NO_GESTURE),
-    gestureCalibrated(false),
     startTime(0.),
-    tempo(92),
+    tempo(options.initialTempo),
     yBottom(0.f),
     yTop(150.f),
     timeOut(3500)
-{}
-
-bool TempoGesture::checkTempoGesture(const nite::Skeleton& skeleton)
 {
-  const nite::SkeletonJoint& rightHand = skeleton.getJoint(nite::JOINT_RIGHT_HAND);
+  if (options.handedness == LEFT_HANDEDNESS)
+    gestureHand = nite::JOINT_LEFT_HAND;
+  else if (options.handedness == RIGHT_HANDEDNESS)
+    gestureHand = nite::JOINT_RIGHT_HAND;
+
+}
+
+bool TempoGesture::checkTempoGesture(const HandsTracker& handsTracker, const nite::Skeleton& skeleton)
+{
+  const nite::SkeletonJoint& hand = skeleton.getJoint(gestureHand);
   const nite::SkeletonJoint& rightHip = skeleton.getJoint(nite::JOINT_RIGHT_HIP);
-
-  if (!gestureCalibrated)
-    calibrateGesture(rightHip);
-
-  if (rightHand.getPositionConfidence() < 0.5)
+  
+  if (!calibrateGesture(rightHip))
     return false;
 
-  float handY = rightHand.getPosition().y;
+  float handY = hand.getPosition().y;
 
   //Si on était pas rentré dans la zone une première fois...
   if (status == NO_GESTURE)
@@ -69,14 +71,16 @@ bool TempoGesture::checkTempoGesture(const nite::Skeleton& skeleton)
       double currentTime = juce::Time::getMillisecondCounterHiRes();
       double elapsedTime = currentTime - startTime;
         
+      juce::int32 tmpTempo = static_cast<juce::int32>(60000 / elapsedTime);
       //Gestion des valeurs aberrantes
-      if (elapsedTime < 288) //Equivaut à peu près à tempo = 208 (on bat à la blanche)
+      if (tmpTempo > 300) 
       {
       //  Con::printf("VALEUR ABERRANTE: PASSAGE EN NO GESTURE %f", handY);
         status = NO_GESTURE;
         return false;
       }
-      tempo = static_cast<juce::int32>(120000 / elapsedTime);//On bat à la blanche
+
+      tempo = tmpTempo;
       startTime = currentTime;
 
       CallbackManager::tempoGestureEnd();
@@ -94,11 +98,10 @@ bool TempoGesture::checkTempoGesture(const nite::Skeleton& skeleton)
   return false;
 }
 
-void TempoGesture::calibrateGesture(const nite::SkeletonJoint& rightHip)
+bool TempoGesture::calibrateGesture(const nite::SkeletonJoint& rightHip)
 {
   if (rightHip.getPositionConfidence() < 0.5f)
-    return;
+    return false;
   yBottom = rightHip.getPosition().y;
   yTop = yBottom + 200.f;
-  gestureCalibrated = true;
 }
