@@ -22,10 +22,10 @@ Orchestrator::Orchestrator()
 {
 }
 
-
-
 Orchestrator::~Orchestrator()
 {
+  //TODO
+  saveSequence("../tracks/saveFile.mid");
 }
 
 void Orchestrator::loadMidiFile(const char* filePath)

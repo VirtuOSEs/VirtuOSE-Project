@@ -87,7 +87,7 @@ function onVelocityChanged(%newVelocity)
 
 function onExpressionChanged(%newExpression)
 {
-  echo("Velocity just changed " @ %newExpression);
+   changeColor("rightHand",%newExpression);
 }
 
 function onInstrumentWillPlay(%instrumentName, %delayInMillis) 

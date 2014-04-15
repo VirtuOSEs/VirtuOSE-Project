@@ -58,8 +58,8 @@ protected:
   int eventIndex;
   juce::String trackName;
   juce::String instrumentName;
-  juce::MidiMessage expressionMessage;
-  bool expressionChanged;
+  int expressionValue;
+  juce::Atomic<juce::int32> expressionChanged;
   PlayingStatus playingStatus;
   double msPerTick;
   juce::CriticalSection sequenceAccess;
