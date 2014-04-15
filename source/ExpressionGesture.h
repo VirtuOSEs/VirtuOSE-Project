@@ -1,5 +1,5 @@
-#ifndef KINECT_VELOCITY_GESTURE_H
-#define KINECT_VELOCITY_GESTURE_H
+#ifndef KINECT_EXPRESSION_GESTURE_H
+#define KINECT_EXPRESSION_GESTURE_H
 
 #include "JuceLibraryCode/JuceHeader.h"
 #include "NiTE.h"
@@ -8,7 +8,7 @@
 #include "HandsTracker.h"
 #include "math/mPoint3.h"
   
-class VelocityGesture
+class ExpressionGesture
 {
 public:
   ///Width of the gesture zone in percentage of the arm lenght
@@ -22,12 +22,12 @@ public:
   ///Max hand speed before hand movement no more considered as a velocity gesture
   static const double GESTURE_MAX_SPEED_MM_PER_MS;
 
-  VelocityGesture(const Options& options);
+  ExpressionGesture(const Options& options);
 
-  bool checkVelocityGesture(const HandsTracker& handsTracker, const nite::Skeleton& skeleton);
+  bool checkExpressionGesture(const HandsTracker& handsTracker, const nite::Skeleton& skeleton);
 
-  float getVelocityDetected() const
-    {return velocityDetected;}
+  float getExpressionDetected() const
+    {return expressionDetected;}
 
 private:
   bool tryToCalibrateGesture(const HandsTracker& handsTracker, const nite::Skeleton& skeleton);
@@ -37,7 +37,7 @@ private:
   nite::JointType gestureShoulder;
 
   Zone2D gestureZone;
-  float velocityDetected;
+  float expressionDetected;
 };
 
-#endif //KINECT_VELOCITY_GESTURE_H
+#endif //KINECT_EXPRESSION_GESTURE_H

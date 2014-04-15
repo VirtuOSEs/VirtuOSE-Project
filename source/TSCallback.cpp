@@ -66,6 +66,21 @@ void CallbackManager::velocityChanged(float newVelocity)
   Sim::postEvent(Sim::getRootGroup(), evt, -1);
 }
 
+void CallbackManager::expressionChanged(float newExpression)
+{
+  const S32 argc = 2;
+  juce::String arg(newExpression);
+  size_t arg1Lenght = arg.length();
+  char * parg = new char[arg1Lenght];
+  arg.toStdString().copy(parg, arg1Lenght);
+  parg[arg1Lenght] = 0;
+
+  const char* argv[2] = {"onExpressionChanged", parg};
+
+  SimConsoleEvent* evt = new SimConsoleEvent(argc, argv, false);
+  Sim::postEvent(Sim::getRootGroup(), evt, -1);
+}
+
 void CallbackManager::tempoJustChanged(int newTempo)
 {
   const S32 argc = 2;

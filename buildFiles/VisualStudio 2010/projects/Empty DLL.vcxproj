@@ -231,6 +231,7 @@
     <ClCompile Include="..\..\..\..\..\Engine\source\T3D\gameBase\extended\extendedMove.cpp" />
     <ClCompile Include="..\..\..\..\..\Engine\source\T3D\gameBase\extended\extendedMoveList.cpp" />
     <ClCompile Include="..\..\..\source\AudioTools.cpp" />
+    <ClCompile Include="..\..\..\source\ExpressionGesture.cpp" />
     <ClCompile Include="..\..\..\source\HandsTracker.cpp" />
     <ClCompile Include="..\..\..\source\JuceLibraryCode\modules\juce_audio_basics\juce_audio_basics.cpp" />
     <ClCompile Include="..\..\..\source\JuceLibraryCode\modules\juce_audio_devices\juce_audio_devices.cpp" />
@@ -253,7 +254,6 @@
     <ClCompile Include="..\..\..\source\Track.cpp" />
     <ClCompile Include="..\..\..\source\TransportGesture.cpp" />
     <ClCompile Include="..\..\..\source\TSCallback.cpp" />
-    <ClCompile Include="..\..\..\source\VelocityGesture.cpp" />
     <ClInclude Include="..\..\..\..\..\Engine\source\platform\input\oculusVR\barrelDistortionPostEffect.h" />
     <ClInclude Include="..\..\..\..\..\Engine\source\platform\input\oculusVR\oculusVRConstants.h" />
     <ClInclude Include="..\..\..\..\..\Engine\source\platform\input\oculusVR\oculusVRDevice.h" />
@@ -1334,12 +1334,12 @@
     <ClCompile Include="..\..\..\..\..\Engine\source\math\mMathAltivec.cpp" />
     <ClCompile Include="..\..\..\..\..\Engine\source\math\mMathAMD.cpp" />
     <ClInclude Include="..\..\..\source\AudioTools.h" />
+    <ClInclude Include="..\..\..\source\ExpressionGesture.h" />
     <ClInclude Include="..\..\..\source\HandsTracker.h" />
     <ClInclude Include="..\..\..\source\Options.h" />
     <ClInclude Include="..\..\..\source\Track.h" />
     <ClInclude Include="..\..\..\source\TransportGesture.h" />
     <ClInclude Include="..\..\..\source\TSCallback.h" />
-    <ClInclude Include="..\..\..\source\VelocityGesture.h" />
     <ClInclude Include="..\..\..\source\Zone2D.h" />
     <CustomBuild Include="..\..\..\..\..\Engine\source\math\mMathAMD_ASM.asm">
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"..\..\..\..\..\Engine\bin\nasm\nasm.exe" -f win32 "%(FullPath)" -o "$(IntDir)%(Filename).obj"</Command>

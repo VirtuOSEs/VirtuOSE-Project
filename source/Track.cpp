@@ -8,14 +8,13 @@ namespace JuceModule
 
 const double Track::WILL_PLAY_DELAY_MS = 2000.0;
 const double Track::DO_NOT_PLAY_DELAY_MS = 3000.0;
+const int Track::EXPRESSION_CC = 11;
 
 Track::Track(juce::MidiMessageSequence sequence)
   : sequence(sequence),
     eventIndex(0), 
     trackName(juce::String::empty),
-    velocityFactor(1),
-    velocity(0.5f),
-    velocityChanged(false),
+    expressionChanged(false),
     playingStatus(DO_NOT_PLAY),
     msPerTick(0)
 {
@@ -51,7 +50,7 @@ void Track::restart()
     AudioTools::getInstance().makePluginPlay(trackName, midiEvent->message);
   }
   eventIndex = 0;
-  velocityChanged = false;
+  expressionChanged = false;
   incomingKeyUp.clear();
 }
 
@@ -60,18 +59,17 @@ bool Track::isFinished() const
   return eventIndex >= sequence.getNumEvents();
 }
 
-void Track::setVelocity(float value)
+void Track::setExpression(float value)
 {
-  jassert(velocity >= 0.f && velocity <= 1.f);
-  velocity = value;
-  velocityChanged = true;
+  int integerValue = static_cast<int>(value * 127);
+  expressionMessage = juce::MidiMessage::controllerEvent(1, EXPRESSION_CC, integerValue);
+  expressionChanged = true;
 }
 
 void Track::playAtTick(double tick)
 {
   if (isFinished())
     return;
-
 
   juce::MidiMessageSequence::MidiEventHolder* midiEvent = nullptr;
   {
@@ -90,8 +88,12 @@ void Track::playAtTick(double tick)
   //If it's time, play the event
   if ( timeStamp <= tick)
   {
-    if (velocityChanged)
-      midiEvent->message.setVelocity(velocity);
+    if (expressionChanged)
+    {
+      expressionMessage.setTimeStamp(timeStamp);
+      AudioTools::getInstance().makePluginPlay(trackName, expressionMessage);
+      expressionChanged = false;
+    }
     AudioTools::getInstance().makePluginPlay(trackName, midiEvent->message);
     //Used to track the playing status of the track
     if (isNoteOn)

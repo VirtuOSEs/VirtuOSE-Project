@@ -12,6 +12,7 @@ public:
 
   static void tempoJustChanged(int newTempo);
   static void velocityChanged(float newVelocity);
+  static void expressionChanged(float newExpression);
   static void tempoGestureStart();
   static void tempoGestureEnd();
 

@@ -20,6 +20,7 @@ public:
   typedef juce::ReferenceCountedObjectPtr<Track> Ptr;
 
   enum PlayingStatus {DO_NOT_PLAY, PLAY, WILL_PLAY_SOON};
+  static const int EXPRESSION_CC;
   static const double WILL_PLAY_DELAY_MS;
   static const double DO_NOT_PLAY_DELAY_MS;
 
@@ -30,13 +31,7 @@ public:
   juce::MidiMessageSequence getSequence() const;
   bool isFinished() const;
 
-  void increaseVelocityFactor(short percentage)
-    {velocityFactor +=  velocityFactor / 100.f * percentage;}
-
-  void decreaseVelocityFactor(short percentage)
-    {velocityFactor -= velocityFactor / 100.f * percentage;}
-
-  void setVelocity(float value);
+  void setExpression(float value);
 
   void setMsPerTick(double msPerTick)
     {this->msPerTick = msPerTick;}
@@ -63,9 +58,8 @@ protected:
   int eventIndex;
   juce::String trackName;
   juce::String instrumentName;
-  float velocityFactor;
-  float velocity;
-  bool velocityChanged;
+  juce::MidiMessage expressionMessage;
+  bool expressionChanged;
   PlayingStatus playingStatus;
   double msPerTick;
   juce::CriticalSection sequenceAccess;
