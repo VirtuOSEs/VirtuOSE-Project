@@ -1271,13 +1271,13 @@ new SimGroup(MissionGroup) {
          canSaveDynamicFields = "1";
       };
       new ParticleEmitterNode(rightHandParticleNode) {
-         active = "0";
+         active = "1";
          emitter = "rightHandEmitter";
          velocity = "1";
          dataBlock = "SimpleEmitterNodeData";
-         position = "0.98659 24.9451 6.40856";
+         position = "0.98659 24.9451 5.40629";
          rotation = "1 0 0 0";
-         scale = "0.597011 0.597011 0.597011";
+         scale = "5.54427 5.54427 7.59286";
          canSave = "1";
          canSaveDynamicFields = "1";
       };

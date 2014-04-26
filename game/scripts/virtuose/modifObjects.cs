@@ -37,8 +37,8 @@ function changeColor(%obj,%var){
 	// %b=1-%newVelocity;
 	
     rightHandParticle.colors[0]="1 1 1 1";
-	rightHandParticle.colors[1]=%r/2 SPC %g/2 SPC %b/2 SPC "0.62";
-	rightHandParticle.colors[2]=%r SPC %g SPC %b SPC "0.629";
+	rightHandParticle.colors[2]=%r/2 SPC %g/2 SPC %b/2 SPC "0.62";
+	rightHandParticle.colors[1]=%r SPC %g SPC %b SPC "0.629";
 	rightHandParticle.colors[3]="0.724 1 0 0";
 	
 	%mapTo.reload();
