@@ -1,13 +1,13 @@
-#include "VelocityGesture.h"
+#include "ExpressionGesture.h"
 #include "math/mPoint3.h"
 
-const float VelocityGesture::GESTURE_WIDTH_PERCENTAGE = 50.f/100.f;
-const VectorF VelocityGesture::GESTURE_VECTOR = VectorF(0, 1, 0);
-const float VelocityGesture::GESTURE_SIMILARITY_THRESHOLD = 0.95f;
-const double VelocityGesture::GESTURE_MAX_SPEED_MM_PER_MS = 0.5; 
+const float ExpressionGesture::GESTURE_WIDTH_PERCENTAGE = 50.f/100.f;
+const VectorF ExpressionGesture::GESTURE_VECTOR = VectorF(0, 1, 0);
+const float ExpressionGesture::GESTURE_SIMILARITY_THRESHOLD = 0.95f;
+const double ExpressionGesture::GESTURE_MAX_SPEED_MM_PER_MS = 0.5; 
 
-VelocityGesture::VelocityGesture(const Options& options)
-  : velocityDetected(0.5f)
+ExpressionGesture::ExpressionGesture(const Options& options)
+  : expressionDetected(0.5f)
 {
   if (options.handedness == LEFT_HANDEDNESS)
   {
@@ -23,7 +23,7 @@ VelocityGesture::VelocityGesture(const Options& options)
   }
 }
 
-bool VelocityGesture::checkVelocityGesture(const HandsTracker& handsTracker, const nite::Skeleton& skeleton)
+bool ExpressionGesture::checkExpressionGesture(const HandsTracker& handsTracker, const nite::Skeleton& skeleton)
 {
 
   if (! tryToCalibrateGesture(handsTracker, skeleton))
@@ -50,14 +50,14 @@ bool VelocityGesture::checkVelocityGesture(const HandsTracker& handsTracker, con
   
   if (gestureZone.isCoordinateInZone(handX, handY))
   {
-    velocityDetected = (handY - gestureZone.bottom) / gestureZone.length();
+    expressionDetected = (handY - gestureZone.bottom) / gestureZone.length();
     return true;
   }
 
   return false;
 }
 
-bool VelocityGesture::tryToCalibrateGesture(const HandsTracker& handsTracker, const nite::Skeleton& skeleton)
+bool ExpressionGesture::tryToCalibrateGesture(const HandsTracker& handsTracker, const nite::Skeleton& skeleton)
 {
   const nite::SkeletonJoint& leftHip = skeleton.getJoint(nite::JOINT_LEFT_HIP);
   const nite::SkeletonJoint& hand = skeleton.getJoint(gestureHand);

@@ -32,9 +32,7 @@ public:
 
   juce::uint32 getTempo() const;
   void setTempo(juce::uint32 tempo);
-  void increaseVelocityFactorInPercent(short percentage);
-  void decreaseVelocityFactorInPercent(short percentage);
-  void setVelocityAbsolute(float value);
+  void setExpression(float value);
 
   void stop();
   void pause();

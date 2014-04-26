@@ -37,7 +37,7 @@ function virtuoseStart(){
 		options = %options;
 	  };
   
-  $orchestrator.loadMidiFile("../" @ $vfileName);
+  $orchestrator.loadMidiFile("../tracks/" @ $vfileName);
   $orchestrator.setTempo(90);
 
 	HideSun();

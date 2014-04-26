@@ -8,14 +8,14 @@ namespace JuceModule
 
 const double Track::WILL_PLAY_DELAY_MS = 2000.0;
 const double Track::DO_NOT_PLAY_DELAY_MS = 3000.0;
+const int Track::EXPRESSION_CC = 11;
 
 Track::Track(juce::MidiMessageSequence sequence)
   : sequence(sequence),
     eventIndex(0), 
     trackName(juce::String::empty),
-    velocityFactor(1),
-    velocity(0.5f),
-    velocityChanged(false),
+    expressionValue(64),
+    expressionChanged(false),
     playingStatus(DO_NOT_PLAY),
     msPerTick(0)
 {
@@ -30,6 +30,7 @@ Track::Track(juce::MidiMessageSequence sequence)
     }
     ++i;
   }
+  
   //We consider that the instrument name is in the track name (ex: "2 Horns in Eb")
   instrumentName = extractInstrumentNameFromTrackName(trackName);
 
@@ -51,7 +52,7 @@ void Track::restart()
     AudioTools::getInstance().makePluginPlay(trackName, midiEvent->message);
   }
   eventIndex = 0;
-  velocityChanged = false;
+  expressionChanged = false;
   incomingKeyUp.clear();
 }
 
@@ -60,11 +61,10 @@ bool Track::isFinished() const
   return eventIndex >= sequence.getNumEvents();
 }
 
-void Track::setVelocity(float value)
+void Track::setExpression(float value)
 {
-  jassert(velocity >= 0.f && velocity <= 1.f);
-  velocity = value;
-  velocityChanged = true;
+  expressionValue = static_cast<int>(value * 127);
+  expressionChanged = true;
 }
 
 void Track::playAtTick(double tick)
@@ -72,26 +72,40 @@ void Track::playAtTick(double tick)
   if (isFinished())
     return;
 
-
   juce::MidiMessageSequence::MidiEventHolder* midiEvent = nullptr;
   {
     juce::ScopedLock sl(sequenceAccess);
     midiEvent = sequence.getEventPointer(eventIndex);
   }
 
-  double timeStamp = midiEvent->message.getTimeStamp();
+  if (expressionChanged.get())
+  {
+    juce::MidiMessage expressionMessage = juce::MidiMessage::controllerEvent(1, EXPRESSION_CC, expressionValue);
+    expressionMessage.setTimeStamp(tick);
+    expressionMessage.setChannel(midiEvent->message.getChannel());
+    AudioTools::getInstance().makePluginPlay(trackName, expressionMessage);
+    sequence.addEvent(expressionMessage);
+    expressionChanged = false;
+  }
 
-  if (timeStamp == 0) 
+  double timeStamp = midiEvent->message.getTimeStamp();
+  while (timeStamp == 0) 
   { 
     ++eventIndex;
-    return;
+    if (isFinished())
+      return;
+    {
+      juce::ScopedLock sl(sequenceAccess);
+      midiEvent = sequence.getEventPointer(eventIndex);
+    }
+
+    timeStamp = midiEvent->message.getTimeStamp();
   }
-  bool isNoteOn = midiEvent->message.isNoteOn();
+
   //If it's time, play the event
-  if ( timeStamp <= tick)
+  while ( timeStamp <= tick)
   {
-    if (velocityChanged)
-      midiEvent->message.setVelocity(velocity);
+    bool isNoteOn = midiEvent->message.isNoteOn();
     AudioTools::getInstance().makePluginPlay(trackName, midiEvent->message);
     //Used to track the playing status of the track
     if (isNoteOn)
@@ -105,16 +119,27 @@ void Track::playAtTick(double tick)
       if (indexKeyUp != -1)
         incomingKeyUp.push_back(indexKeyUp);
     }
+ 
+    //Remove the incomingKeyUp which already came
+    //it's not clean, but it works. See std::list::remove_if
+    equals eq;
+    eq.value2 = eventIndex;
+    incomingKeyUp.remove_if(eq);
+
     ++eventIndex;
+    checkPlayingStatus(tick, timeStamp, isNoteOn);
+
+    if (isFinished())
+      break;
+
+    midiEvent = nullptr;
+    {
+      juce::ScopedLock sl(sequenceAccess);
+      midiEvent = sequence.getEventPointer(eventIndex);
+    }
+
+    timeStamp = midiEvent->message.getTimeStamp();
   }
-
-  //Remove the incomingKeyUp which already came
-  //it's not clean, but it works. See std::list::remove_if
-  equals eq;
-  eq.value2 = eventIndex-1;
-  incomingKeyUp.remove_if(eq);
-
-  checkPlayingStatus(tick, timeStamp, isNoteOn);
 }
 
 juce::MidiMessageSequence Track::getSequence() const

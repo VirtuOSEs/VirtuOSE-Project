@@ -25,14 +25,14 @@ bool PlayerTracker::KINECT_DETECTED = false;
 
 PlayerTracker::PlayerTracker()
   : tempoGesture(Options()),
-    velocityGesture(Options())
+    expressionGesture(Options())
 {
 }
 
 PlayerTracker::PlayerTracker(JuceModule::Sequencer::Ptr sequencer, const Options& options)
   : sequencer(sequencer),
     tempoGesture(options),
-    velocityGesture(options),
+    expressionGesture(options),
     musicalGestureDetectionActivated(false)
 {
   if (!KINECT_DETECTED)
@@ -154,11 +154,11 @@ void PlayerTracker::onNewFrame(nite::UserTracker& userTracker)
         }
       }
 
-      //Detect velocity changes
-      if (musicalGestureDetectionActivated && velocityGesture.checkVelocityGesture(handsTracker, user.getSkeleton()))
+      //Detect expression changes
+      if (musicalGestureDetectionActivated && expressionGesture.checkExpressionGesture(handsTracker, user.getSkeleton()))
       {
-        sequencer->setVelocityAbsolute(velocityGesture.getVelocityDetected());
-        CallbackManager::velocityChanged(velocityGesture.getVelocityDetected());
+        sequencer->setExpression(expressionGesture.getExpressionDetected());
+        CallbackManager::expressionChanged(expressionGesture.getExpressionDetected());
         
       }
 

@@ -108,23 +108,7 @@ void Sequencer::setTempo(juce::uint32 tempo)
   newTempoTrack.addEvent(tempoMessage);
 }
 
-void Sequencer::increaseVelocityFactorInPercent(short percentage)
-{
-  for (unsigned int i = 0; i < tracks.size(); ++i)
-  {
-    tracks[i]->increaseVelocityFactor(percentage);
-  }
-}
-
-void Sequencer::decreaseVelocityFactorInPercent(short percentage)
-{
-  for (unsigned int i = 0; i < tracks.size(); ++i)
-  {
-    tracks[i]->decreaseVelocityFactor(percentage);
-  }
-}
-
-void Sequencer::setVelocityAbsolute(float value)
+void Sequencer::setExpression(float value)
 {
   if (value > 1.f)
     value = 1.f;
@@ -133,7 +117,7 @@ void Sequencer::setVelocityAbsolute(float value)
 
   for (unsigned int i = 0; i < tracks.size(); ++i)
   {
-    tracks[i]->setVelocity(value);
+    tracks[i]->setExpression(value);
   }
 }
 

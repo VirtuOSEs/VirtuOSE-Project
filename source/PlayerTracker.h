@@ -16,7 +16,7 @@
 #include "JuceLibraryCode/JuceHeader.h"
 #include "Sequencer.h"
 #include "TempoGesture.h"
-#include "VelocityGesture.h"
+#include "ExpressionGesture.h"
 #include "TransportGesture.h"
 #include "Options.h"
 #include "HandsTracker.h"
@@ -49,7 +49,7 @@ private:
   HandsTracker handsTracker;
 
   TempoGesture tempoGesture;
-  VelocityGesture velocityGesture;
+  ExpressionGesture expressionGesture;
   TransportGesture transportGesture;
 
   float velocity;

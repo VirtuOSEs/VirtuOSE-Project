@@ -22,10 +22,10 @@ Orchestrator::Orchestrator()
 {
 }
 
-
-
 Orchestrator::~Orchestrator()
 {
+  //TODO
+  saveSequence("../tracks/saveFile.mid");
 }
 
 void Orchestrator::loadMidiFile(const char* filePath)
@@ -71,20 +71,6 @@ void Orchestrator::loadMidiFile(const char* filePath)
   sequencer->setTempoTrack(tempoTrack);
 
   playerTracker = new PlayerTracker(sequencer, *options);   
-}
-
-void Orchestrator::increaseVelocityFactor(short percentage)
-{
-  if (!sequencer)
-    return;
-  sequencer->increaseVelocityFactorInPercent(percentage);
-}
-
-void Orchestrator::decreaseVelocityFactor(short percentage)
-{
-  if (!sequencer)
-    return;
-    sequencer->decreaseVelocityFactorInPercent(percentage);
 }
 
 void Orchestrator::saveSequence(const char* filePath)
@@ -201,16 +187,6 @@ DefineEngineMethod(Orchestrator, setTempo, void, (unsigned int tempo),, "Set a n
 DefineEngineMethod(Orchestrator, saveSequence, void, (const char* filePath),, "Save the modified sequence")
 {
   object->saveSequence(filePath);
-}
-
-DefineEngineMethod(Orchestrator, increaseVelocity, void, (int percentage),, "Increase velocity of midi notes")
-{
-  object->increaseVelocityFactor(static_cast<short>(percentage));
-}
-
-DefineEngineMethod(Orchestrator, decreaseVelocity, void, (int percentage),, "Decrease velocity of midi notes")
-{
-  object->decreaseVelocityFactor(static_cast<short>(percentage));
 }
 
 DefineEngineMethod(Orchestrator, getNumTracks, int, (),, "Return the number of tracks in the sequence")
