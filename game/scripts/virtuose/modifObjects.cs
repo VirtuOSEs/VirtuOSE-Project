@@ -21,7 +21,49 @@ function decrementOpacity(%obj){
 	
 }
 
-function changeColor(%obj,%var){
+function hide(%obj){
+	%obj.hidden=!%obj.hidden;
+}
+
+function changeTempo(%r, %g, %b){
+	if(strcmp($orchestrator.options.handedness,"LEFT_HANDEDNESS")==0){
+		%obj="rightHand";	
+	}
+	else {
+		%obj="leftHand";
+	}
+	
+	%mapTo=%obj.getTargetName(0);
+	%mapTo.diffuseColor.r=%r;
+	%mapTo.diffuseColor.g=%g;
+	%mapTo.diffuseColor.b=%b;
+}
+
+function turnOff(){
+echo("Hello");
+	velocityParticleNode.setActive(false);
+
+}
+
+function particle(){
+	
+	velocityParticleNode.setHidden(true);	
+	velocityParticleNode.setActive(false);
+	velocityEmitter.reload();
+	velocityParticleNode.setHidden(false);	
+	velocityParticleNode.setActive(true);
+	velocityEmitter.reload();
+}
+
+function changeVelocity(%var){
+	
+	if(strcmp($orchestrator.options.handedness,"LEFT_HANDEDNESS")==0){
+		%obj="leftHand";
+	}
+	else {
+		%obj="rightHand";
+	}
+	
 	%mapTo=%obj.getTargetName(0);
 	
 	%r=%var;
@@ -32,27 +74,23 @@ function changeColor(%obj,%var){
 	%mapTo.diffuseColor.g=%g;
 	%mapTo.diffuseColor.b=%b;
 	
-	// %r=%newVelocity;
-	// %g=1-%newVelocity;
-	// %b=1-%newVelocity;
 	
-    rightHandParticle.colors[0]="1 1 1 1";
-	rightHandParticle.colors[2]=%r/2 SPC %g/2 SPC %b/2 SPC "0.62";
-	rightHandParticle.colors[1]=%r SPC %g SPC %b SPC "0.629";
-	rightHandParticle.colors[3]="0.724 1 0 0";
+	velocityParticle.colors[0]="1 1 1 1";
+	velocityParticle.colors[2]=%r/2 SPC %g/2 SPC %b/2 SPC "0.62";
+	velocityParticle.colors[1]=%r SPC %g SPC %b SPC "0.629";
+	velocityParticle.colors[3]="0.724 1 0 0";
+	velocityParticleNode.position=%obj.position;
 	
+	//Refresh à trouver
+	velocityEmitter.reload();
 	%mapTo.reload();
+	//particle();
 	
 }
 
-function particle(){
-	rightHandParticleNode.setActive(!rightHandParticleNode.active);
-	leftHandParticleNode.setActive(!leftHandParticleNode.active);
-	
-	// leftHandParticle.colors[0]="1 1 1 1";
-	// leftHandParticle.colors[1]="0 1 0.627 0.62";
-	// leftHandParticle.colors[2]="0 0.071 1 0.629";
-	// leftHandParticle.colors[3]="0.724 1 0 0";
+function liftInstrument(%instrumentName,%y){
+	%instrumentName.position.y+=%y;
+	echo("Hello");
 }
 
 function light(){
@@ -82,25 +120,31 @@ function onVelocityChanged(%newVelocity)
 {
    echo("Velocity just changed " @ %newVelocity); 
 		
-	changeColor("rightHand",%newVelocity);
+	changeVelocity(%newVelocity);
 }
 
 function onExpressionChanged(%newExpression)
 {
-   changeColor("rightHand",%newExpression);
+   //changeColor("rightHand",%newExpression);
 }
 
 function onInstrumentWillPlay(%instrumentName, %delayInMillis) 
 {
   echo(%instrumentName @ " will play in " @ %delayInMillis);
+
+  //for(%i=0;%i<2;%i+=0.2)
+		schedule(10,"liftInstrument",%instrumentName, 1);
+
 }
 
 function onInstrumentStartPlaying(%instrumentName)
 {
   echo(%instrumentName @ " starts playing");
+  changeOpacity(%instrumentName,0.5);
 }
 
 function onInstrumentStoppedPlaying(%instrumentName)
 {
   echo(%instrumentName @ " stops playing");
+  changeOpacity(%instrumentName,1);
 }

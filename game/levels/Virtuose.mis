@@ -1259,23 +1259,12 @@ new SimGroup(MissionGroup) {
       canSave = "1";
       canSaveDynamicFields = "1";
 
-      new ParticleEmitterNode(leftHandParticleNode) {
-         active = "0";
-         emitter = "leftHandEmitter";
+      new ParticleEmitterNode(velocityParticleNode) {
+         active = "1";
+         emitter = "velocityEmitter";
          velocity = "1";
          dataBlock = "SimpleEmitterNodeData";
          position = "-3.01341 24.9451 6.40856";
-         rotation = "1 0 0 0";
-         scale = "1 1 1";
-         canSave = "1";
-         canSaveDynamicFields = "1";
-      };
-      new ParticleEmitterNode(rightHandParticleNode) {
-         active = "1";
-         emitter = "rightHandEmitter";
-         velocity = "1";
-         dataBlock = "SimpleEmitterNodeData";
-         position = "0.98659 24.9451 5.40629";
          rotation = "1 0 0 0";
          scale = "5.54427 5.54427 7.59286";
          canSave = "1";
@@ -1310,7 +1299,6 @@ new SimGroup(MissionGroup) {
          position = "0.98659 24.9451 6.40856";
          rotation = "1 0 0 0";
          scale = "0.275127 0.275127 0.275127";
-         internalName = "f";
          canSave = "1";
          canSaveDynamicFields = "1";
       };

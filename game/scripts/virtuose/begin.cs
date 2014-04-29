@@ -20,6 +20,7 @@ function virtuoseStart(){
    datablock ParticleEmitterNodeData(SimpleEmitterNodeData)
 	{
     timeMultiple = 1.0;
+	position="0 0 0";
 	};
 
 	%options = new Options();
@@ -44,12 +45,12 @@ function virtuoseStart(){
 	HideSun();
     leftHand.position = Spawn.position.x-2 SPC Spawn.position.y+5 SPC Spawn.position.z+1;
     rightHand.position = Spawn.position.x+2 SPC Spawn.position.y+5 SPC Spawn.position.z+1;
-	rightHandParticleNode.active=false;
-	leftHandParticleNode.active=false;
-	rightHandParticleNode.setDataBlock(SimpleEmitterNodeData);
-	leftHandParticleNode.setDataBlock(SimpleEmitterNodeData);
-	rightHandParticleNode.position=rightHand.position;
-	leftHandParticleNode.position=leftHand.position;
+	velocityParticleNode.active=true;
+	//leftHandParticleNode.active=false;
+	velocityParticleNode.setDataBlock(SimpleEmitterNodeData);
+	//leftHandParticleNode.setDataBlock(SimpleEmitterNodeData);
+	velocityParticleNode.position=rightHand.position;
+	//leftHandParticleNode.position=leftHand.position;
 	changeColor(leftHand,0.5);
 	changeColor(rightHand,0.5);
 	placeInstrumentsTrack();
