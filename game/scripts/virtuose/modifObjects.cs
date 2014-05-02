@@ -125,7 +125,7 @@ function onVelocityChanged(%newVelocity)
 
 function onExpressionChanged(%newExpression)
 {
-   //changeColor("rightHand",%newExpression);
+   changeVelocity(%newExpression);
 }
 
 function onInstrumentWillPlay(%instrumentName, %delayInMillis) 

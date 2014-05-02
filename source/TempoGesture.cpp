@@ -1,7 +1,10 @@
 #include "TempoGesture.h"
 #include "TSCallback.h"
 
-// TempoGesture implem
+const float TempoGesture::GESTURE_WIDTH_PERCENTAGE = 50.f/100.f;
+const VectorF TempoGesture::GESTURE_VECTOR = VectorF(0, 1, 0);
+const float TempoGesture::GESTURE_SIMILARITY_THRESHOLD = 0.95f;
+
 TempoGesture::TempoGesture(const Options& options)
   : status(NO_GESTURE),
     startTime(0.),
@@ -24,6 +27,18 @@ bool TempoGesture::checkTempoGesture(const HandsTracker& handsTracker, const nit
   
   if (!calibrateGesture(rightHip))
     return false;
+
+   //Detect if current movement is compatible with this gesture
+  if (gestureHand == nite::JOINT_LEFT_HAND)
+  {
+    if (fabs(mDot(handsTracker.leftHandDirection, GESTURE_VECTOR)) < GESTURE_SIMILARITY_THRESHOLD)
+      return false;
+  }
+  else if (gestureHand == nite::JOINT_RIGHT_HAND)
+  {
+    if (fabs(mDot(handsTracker.rightHandDirection, GESTURE_VECTOR)) < GESTURE_SIMILARITY_THRESHOLD)
+      return false;
+  }
 
   float handY = hand.getPosition().y;
 

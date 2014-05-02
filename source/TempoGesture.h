@@ -11,6 +11,15 @@ class TempoGesture
 public:
   enum GestureStatus{NO_GESTURE, IN_ZONE, OUT_ZONE};
 
+    ///Width of the gesture zone in percentage of the arm lenght
+  static const float GESTURE_WIDTH_PERCENTAGE;
+  ///Gesture vector "signature": the gesture move can be modelized by this vector
+  static const VectorF GESTURE_VECTOR;
+  ///Value between 0 and 1 indicating the level of similarity needed between
+  ///the GESTURE_VECTOR and the hand direction to consider that the gesture is
+  ///being performed
+  static const float GESTURE_SIMILARITY_THRESHOLD;
+  
   TempoGesture(const Options& options);
 
   juce::int32 getTempo() const
