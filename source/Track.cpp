@@ -27,6 +27,12 @@ Track::Track(juce::MidiMessageSequence sequence)
     if (message.isTrackNameEvent())
     {
       trackName = message.getTextFromTextMetaEvent();
+      trackName = trackName.removeCharacters(" ");
+      if (trackName.indexOfAnyOf("0123456789", 0, true) == 0)
+      {
+        trackName = trackName.replaceSection(0, 1, "X");
+        Platform::outputDebugString(juce::String("Track name : " + trackName).toStdString().c_str());
+      }
     }
     ++i;
   }
