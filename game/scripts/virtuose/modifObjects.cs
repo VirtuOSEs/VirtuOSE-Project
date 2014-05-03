@@ -88,9 +88,8 @@ function changeVelocity(%var){
 	
 }
 
-function liftInstrument(%instrumentName,%y){
-	%instrumentName.position.y+=%y;
-	echo("Hello");
+function TSStatic::liftInstrument(%instrumentName,%z){
+	%instrumentName.position=%instrumentName.position.x SPC %instrumentName.position.y SPC (%instrumentName.position.z+%z);
 }
 
 function light(){
@@ -131,9 +130,10 @@ function onExpressionChanged(%newExpression)
 function onInstrumentWillPlay(%instrumentName, %delayInMillis) 
 {
   echo(%instrumentName @ " will play in " @ %delayInMillis);
-
-  //for(%i=0;%i<2;%i+=0.2)
-		%instrumentName.schedule(10,"liftInstrument",%instrumentName, 1);
+	%nombreAppels=100;
+  for(%i=0;%i<%delayInMillis;%i=%i+%delayInMillis/%nombreAppels){
+		%instrumentName.schedule(%i,"liftInstrument", 1/(%nombreAppels));
+	}
 
 }
 
@@ -147,6 +147,11 @@ function onInstrumentStoppedPlaying(%instrumentName)
 {
   echo(%instrumentName @ " stops playing");
   changeOpacity(%instrumentName,1);
+  %delayInMillis=2000;
+  %nombreAppels=100;
+  for(%i=0;%i<%delayInMillis;%i=%i+%delayInMillis/%nombreAppels){
+		%instrumentName.schedule(%i,"liftInstrument", -1/(%nombreAppels));
+	}
 }
 
 /*function Instrument::liftInstrument(){
