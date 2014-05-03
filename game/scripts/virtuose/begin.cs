@@ -64,23 +64,12 @@ function placeInstruments(%nbInstruments){
 	}
 }
 
-function createInstruments(%instrument,%id){
-				%good=0;
-				for(%i=1;%i<%id;%i++){
-					if($orchestrator.getInstrumentName(%i)$=%instrument){
-						%good=%good+1;
-					}
-				}
+function createInstruments(%instrument,%file){
 				
-				if(%good==0){
-					%good="";
-				}
-					
-				//$Instruments[%id]=%instrument;
-				%nameInstru=%instrument @ %good;
+				%nameInstru=%instrument;
 
 				
-			  switch$(%instrument){
+			  switch$(%file){
 			   	case "piano":
 			   		%famille = "corde";
 			   		$posxcorde +=1.5;
@@ -171,7 +160,7 @@ function createInstruments(%instrument,%id){
 			   
 			   new TSStatic(%nameInstru) 
 			   {
-					shapeName = "art/shapes/virtuose/" @ %instrument @ ".dae";
+					shapeName = "art/shapes/virtuose/" @ %file @ ".dae";
 
 					name=%nameInstru;
 					internalName=%nameInstru;
@@ -189,8 +178,9 @@ function createInstruments(%instrument,%id){
 
 function placeInstrumentsTrack(){
 	for(%i=1;%i<$orchestrator.getNumTracks();%i++){
+		//echo($orchestrator.getTrackName(%i));
 		//echo($orchestrator.getInstrumentName(%i));
-		createInstruments($orchestrator.getInstrumentName(%i),%i);
+		createInstruments($orchestrator.getTrackName(%i),$orchestrator.getInstrumentName(%i));
 		
 	}
 }
