@@ -6,12 +6,12 @@
 
 #pragma warning(disable:4996) 
 
-void CallbackManager::instrumentWillPlay(const juce::String& instrumentName, double delayInMillis)
+void CallbackManager::instrumentWillPlay(const juce::String& trackName, double delayInMillis)
 {
   const S32 argc = 3;
-  size_t arg1Lenght = instrumentName.length();
+  size_t arg1Lenght = trackName.length();
   char* arg1 = new char[arg1Lenght];
-  instrumentName.toStdString().copy(arg1, arg1Lenght);
+  trackName.toStdString().copy(arg1, arg1Lenght);
   arg1[arg1Lenght] = 0;
 
   juce::String doubleArg(delayInMillis);
@@ -25,12 +25,12 @@ void CallbackManager::instrumentWillPlay(const juce::String& instrumentName, dou
   Sim::postEvent(Sim::getRootGroup(), evt, -1);
 }
 
-void CallbackManager::instrumentStartPlaying(const juce::String& instrumentName)
+void CallbackManager::instrumentStartPlaying(const juce::String& trackName)
 {
   const S32 argc = 2;
-  size_t arg1Lenght = instrumentName.length();
+  size_t arg1Lenght = trackName.length();
   char* arg1 = new char[arg1Lenght];
-  instrumentName.toStdString().copy(arg1, arg1Lenght);
+  trackName.toStdString().copy(arg1, arg1Lenght);
   arg1[arg1Lenght] = 0;
 
   const char* argv[2] = {"onInstrumentStartPlaying",arg1};
@@ -38,12 +38,12 @@ void CallbackManager::instrumentStartPlaying(const juce::String& instrumentName)
   Sim::postEvent(Sim::getRootGroup(), evt, -1);
 }
 
-void CallbackManager::instrumentStoppedPlay(const juce::String& instrumentName)
+void CallbackManager::instrumentStoppedPlay(const juce::String& trackName)
 {
   const S32 argc = 2;
-  size_t arg1Lenght = instrumentName.length();
+  size_t arg1Lenght = trackName.length();
   char* arg1 = new char[arg1Lenght];
-  instrumentName.toStdString().copy(arg1, arg1Lenght);
+  trackName.toStdString().copy(arg1, arg1Lenght);
   arg1[arg1Lenght] = 0;
 
   const char* argv[2] = {"onInstrumentStoppedPlaying",arg1};

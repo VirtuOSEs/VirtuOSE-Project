@@ -6,9 +6,9 @@
 class CallbackManager
 {
 public:
-  static void instrumentWillPlay(const juce::String& instrumentName, double delayInMillis);
-  static void instrumentStartPlaying(const juce::String& instrumentName);
-  static void instrumentStoppedPlay(const juce::String& instrumentName);
+  static void instrumentWillPlay(const juce::String& trackName, double delayInMillis);
+  static void instrumentStartPlaying(const juce::String& trackName);
+  static void instrumentStoppedPlay(const juce::String& trackName);
 
   static void tempoJustChanged(int newTempo);
   static void velocityChanged(float newVelocity);

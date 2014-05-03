@@ -173,12 +173,12 @@ void Track::checkPlayingStatus(double tick, double timeStamp, bool isNoteOn)
     if (timeStamp <= tick)
     {
       playingStatus = PLAY;
-      CallbackManager::instrumentStartPlaying(instrumentName);
+      CallbackManager::instrumentStartPlaying(trackName);
     }
     else if (timeStamp > tick && (delay = (timeStamp - tick) * msPerTick) < WILL_PLAY_DELAY_MS)
     {
       playingStatus = WILL_PLAY_SOON;
-      CallbackManager::instrumentWillPlay(instrumentName, delay);
+      CallbackManager::instrumentWillPlay(trackName, delay);
     }
   }
   else if (playingStatus == WILL_PLAY_SOON && isNoteOn)
@@ -186,7 +186,7 @@ void Track::checkPlayingStatus(double tick, double timeStamp, bool isNoteOn)
     if (timeStamp <= tick)
     {
       playingStatus = PLAY;
-      CallbackManager::instrumentStartPlaying(instrumentName);
+      CallbackManager::instrumentStartPlaying(trackName);
     }
   }
   else if (playingStatus == PLAY)
@@ -194,7 +194,7 @@ void Track::checkPlayingStatus(double tick, double timeStamp, bool isNoteOn)
     if (isFinished() || (incomingKeyUp.empty() && (timeStamp - tick) * msPerTick > DO_NOT_PLAY_DELAY_MS) )
     {
       playingStatus = DO_NOT_PLAY;
-      CallbackManager::instrumentStoppedPlay(instrumentName);
+      CallbackManager::instrumentStoppedPlay(trackName);
     }
   }
 }
