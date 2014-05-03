@@ -1274,18 +1274,18 @@ new SimGroup(MissionGroup) {
          emitter = "TempoEmitter";
          velocity = "1";
          dataBlock = "SimpleEmitterNodeData";
-         position = "-1.0832 27.5732 6.18559";
+         position = "0.98659 24.9451 6.40856";
          rotation = "1 0 0 0";
          scale = "5.54427 5.54427 7.59286";
          canSave = "1";
          canSaveDynamicFields = "1";
       };
       new ParticleEmitterNode(velocityParticleNode) {
-         active = "0";
+         active = "1";
          emitter = "velocityEmitter";
          velocity = "1";
          dataBlock = "SimpleEmitterNodeData";
-         position = "-2.143 24.9451 6.40856";
+         position = "-3.01341 24.9451 6.40856";
          rotation = "1 0 0 0";
          scale = "5.54427 5.54427 7.59286";
          canSave = "1";

@@ -155,6 +155,7 @@ function onTempoGestureEnd()
 	%mapTo.diffuseColor.b=0;
 	
 	%mapTo.reload();
+	TempoParticleNode.position=%obj.position;
 	TempoParticleNode.active=true;
 	%obj.schedule(300,"whiteOut");
 }
