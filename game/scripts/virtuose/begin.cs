@@ -48,10 +48,9 @@ function virtuoseStart(){
     rightHand.position = Spawn.position.x+2 SPC Spawn.position.y+5 SPC Spawn.position.z+1;
 	velocityParticleNode.active=true;
 	velocityParticleNode.setDataBlock(SimpleEmitterNodeData);
+	TempoParticleNode.setDataBlock(SimpleEmitterNodeData);
 	velocityParticleNode.position=leftHand.position;
 
-	changeColor(leftHand,0.5);
-	changeColor(rightHand,0.5);
 	placeInstrumentsTrack();
 	
 }
