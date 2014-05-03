@@ -103,12 +103,62 @@ function HideSun(){
 function onTempoGestureStart()
 {
   echo("Tempo Gesture Start");
+  if(strcmp($orchestrator.options.handedness,"lEFT_HANDEDNESS")==0){
+		%obj="leftHand";
+	}
+	else {
+		%obj="rightHand";
+	}
+	
+	echo(%obj);
+	%mapTo=%obj.getTargetName(0);
+	
+	%mapTo.diffuseColor.r=0;
+	%mapTo.diffuseColor.g=0;
+	%mapTo.diffuseColor.b=1;
+	
+	%mapTo.reload();
+}
+
+function TSStatic::whiteOut(){
+	if(strcmp($orchestrator.options.handedness,"lEFT_HANDEDNESS")==0){
+		%obj="leftHand";
+	}
+	else {
+		%obj="rightHand";
+	}
+	
+	%mapTo=%obj.getTargetName(0);
+	
+	%mapTo.diffuseColor.r=0.5;
+	%mapTo.diffuseColor.g=0.5;
+	%mapTo.diffuseColor.b=0.5;
+	
+	%mapTo.reload();
+	
 }
 
 function onTempoGestureEnd()
 {
   echo("Tempo Gesture End");
+  if(strcmp($orchestrator.options.handedness,"lEFT_HANDEDNESS")==0){
+		%obj="leftHand";
+	}
+	else {
+		%obj="rightHand";
+	}
+	
+	%mapTo=%obj.getTargetName(0);
+	
+	%mapTo.diffuseColor.r=1;
+	%mapTo.diffuseColor.g=0;
+	%mapTo.diffuseColor.b=0;
+	
+	%mapTo.reload();
+	
+	%obj.schedule(500,"whiteOut");
 }
+
 
 function onTempoJustChanged(%newTempo)
 {
@@ -124,7 +174,9 @@ function onVelocityChanged(%newVelocity)
 
 function onExpressionChanged(%newExpression)
 {
-   changeVelocity(%newExpression);
+	velocityParticleNode.setHidden(true);
+    changeVelocity(%newExpression);
+    velocityParticleNode.setHidden(false);
 }
 
 function onInstrumentWillPlay(%instrumentName, %delayInMillis) 
