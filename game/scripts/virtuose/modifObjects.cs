@@ -57,7 +57,7 @@ function particle(){
 
 function changeVelocity(%var){
 	
-	if(strcmp($orchestrator.options.handedness,"LEFT_HANDEDNESS")==0){
+	if(strcmp($orchestrator.options.handedness,"RIGHT_HANDEDNESS")==0){
 		%obj="leftHand";
 	}
 	else {
@@ -140,6 +140,7 @@ function onInstrumentWillPlay(%instrumentName, %delayInMillis)
 function onInstrumentStartPlaying(%instrumentName)
 {
   echo(%instrumentName @ " starts playing");
+  %instrumentName.liftInstrument(1);
   //changeOpacity(%instrumentName,0.5);
 }
 
