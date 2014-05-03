@@ -12,6 +12,7 @@ $posxbois = 0.0;
 $posxcuivre = 0.0;
 $posxvent = 0.0;
 
+
  //Initialisation
 function virtuoseStart(){
 	echo("Virtuose is beginning");
@@ -63,15 +64,22 @@ function placeInstruments(%nbInstruments){
 	}
 }
 
-function createInstruments(%instrument){
+function createInstruments(%instrument,%id){
+				%good=0;
+				for(%i=1;%i<%id;%i++){
+					if($orchestrator.getInstrumentName(%i)$=%instrument){
+						%good=%good+1;
+					}
+				}
 				
+				if(%good==0){
+					%good="";
+				}
+					
+				//$Instruments[%id]=%instrument;
+				%nameInstru=%instrument @ %good;
 
-				datablock StaticShapeData(%instrument) 
-			   {   
-				   shapeFile = "art/shapes/virtuose/" @ %instrument @ ".dae";
-				   junkvar = "helloworld";
-			   };
-			
+				
 			  switch$(%instrument){
 			   	case "piano":
 			   		%famille = "corde";
@@ -154,17 +162,27 @@ function createInstruments(%instrument){
 
 			   }
 			   
+			   /*datablock StaticShapeData(%instrument) 
+			   {   
+				   shapeFile = "art/shapes/virtuose/" @ %instrument @ ".dae";
+				   junkvar = "helloworld";
+				   name=%instrument;
+			   };*/
 			   
-			   new StaticShape() 
+			   new TSStatic(%nameInstru) 
 			   {
-				   dataBlock = %instrument;
+					shapeName = "art/shapes/virtuose/" @ %instrument @ ".dae";
+
+					name=%nameInstru;
+					internalName=%nameInstru;
+				   //dataBlock = %instrument;
 	
 				  position = $posx+%famille.position.x SPC %famille.position.y SPC %famille.position.z;
 
 				   rotation = "1 90 0 0";
 				   scale = "1 1 1";
-				   name=%instrument;
-
+				   //name=%instrument;
+					
 			   };
 		   
 }
@@ -172,6 +190,7 @@ function createInstruments(%instrument){
 function placeInstrumentsTrack(){
 	for(%i=1;%i<$orchestrator.getNumTracks();%i++){
 		//echo($orchestrator.getInstrumentName(%i));
-		createInstruments($orchestrator.getInstrumentName(%i));
+		createInstruments($orchestrator.getInstrumentName(%i),%i);
+		
 	}
 }

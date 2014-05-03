@@ -133,7 +133,7 @@ function onInstrumentWillPlay(%instrumentName, %delayInMillis)
   echo(%instrumentName @ " will play in " @ %delayInMillis);
 
   //for(%i=0;%i<2;%i+=0.2)
-		schedule(10,"liftInstrument",%instrumentName, 1);
+		%instrumentName.schedule(10,"liftInstrument",%instrumentName, 1);
 
 }
 
@@ -148,3 +148,7 @@ function onInstrumentStoppedPlaying(%instrumentName)
   echo(%instrumentName @ " stops playing");
   changeOpacity(%instrumentName,1);
 }
+
+/*function Instrument::liftInstrument(){
+
+}*/
