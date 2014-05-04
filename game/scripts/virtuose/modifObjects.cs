@@ -108,7 +108,7 @@ function changeVelocity(%var){
 		echo($velocityParticleNode.emitter.position);
 		echo($velocityParticleNode.emitter.particles[0].position);*/
 	
-		%obj.schedule(1000,"deleteParticle");
+		%obj.schedule(100,"deleteParticle");
 	
 }
 
