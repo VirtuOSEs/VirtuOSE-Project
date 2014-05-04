@@ -21,7 +21,6 @@ function virtuoseStart(){
    datablock ParticleEmitterNodeData(SimpleEmitterNodeData)
 	{
     timeMultiple = 1.0;
-	position="0 0 0";
 	};
 
 	%options = new Options();
@@ -47,9 +46,20 @@ function virtuoseStart(){
     leftHand.position = Spawn.position.x-2 SPC Spawn.position.y+5 SPC Spawn.position.z+1;
     rightHand.position = Spawn.position.x+2 SPC Spawn.position.y+5 SPC Spawn.position.z+1;
 	velocityParticleNode.active=true;
+	TempoParticleNode.active=false;
 	velocityParticleNode.setDataBlock(SimpleEmitterNodeData);
 	TempoParticleNode.setDataBlock(SimpleEmitterNodeData);
-	velocityParticleNode.position=leftHand.position;
+	
+	if(strcmp($orchestrator.options.handedness,"lEFT_HANDEDNESS")==0){
+		velocityParticleNode.position=rightHand.position;
+		TempoParticleNode.position=leftHand.position;
+	}
+	else {
+		velocityParticleNode.position=leftHand.position;
+		//velocityParticleNode.position="0 0 0";
+		TempoParticleNode.position=rightHand.position;
+	}
+	
 
 	placeInstrumentsTrack();
 	

@@ -58,32 +58,50 @@ function particle(){
 function changeVelocity(%var){
 	
 	if(strcmp($orchestrator.options.handedness,"RIGHT_HANDEDNESS")==0){
-		%obj="leftHand";
+		%obj=leftHand;
 	}
 	else {
-		%obj="rightHand";
+		%obj=rightHand;
 	}
+		
+		%mapTo=%obj.getTargetName(0);
+		
+		%r=%var;
+		%g=1-%var;
+		%b=1-%var;
+		
+		%mapTo.diffuseColor.r=%r;
+		%mapTo.diffuseColor.g=%g;
+		%mapTo.diffuseColor.b=%b;
+		
+		//velocityParticleNode.active=!velocityParticleNode.active;
+		
+		// velocityParticleNode.setHidden(true);
+		// velocityParticleNode.emitter.setHidden(true);
+		// velocityParticleNode.emitter.particles[0].setHidden(true);
+		
+		velocityParticleNode.position=%obj.position;
+		
+		for(%i=0;%i<4;%i++){
+			if(velocityParticleNode.emitter.particles[%i]$="")
+				continue;
+			velocityParticleNode.emitter.particles[%i].colors[0]="1 1 1 1";
+			velocityParticleNode.emitter.particles[%i].colors[1]=%r SPC %g SPC %b SPC "0.629";
+			velocityParticleNode.emitter.particles[%i].colors[2]=%r/2 SPC %g/2 SPC %b/2 SPC "0.62";
+			velocityParticleNode.emitter.particles[%i].colors[3]="0.724 1 0 0";
+			velocityParticleNode.emitter.particles[%i].position=velocityParticleNode.position;
+			velocityParticleNode.emitter.particles[%i].reload();
+		}
+		velocityParticleNode.emitter.reload();
+		
+		//Refresh à trouver
+		%mapTo.reload();
 	
-	%mapTo=%obj.getTargetName(0);
-	
-	%r=%var;
-	%g=1-%var;
-	%b=1-%var;
-	
-	%mapTo.diffuseColor.r=%r;
-	%mapTo.diffuseColor.g=%g;
-	%mapTo.diffuseColor.b=%b;
-	
-	
-	velocityParticle.colors[0]="1 1 1 1";
-	velocityParticle.colors[2]=%r/2 SPC %g/2 SPC %b/2 SPC "0.62";
-	velocityParticle.colors[1]=%r SPC %g SPC %b SPC "0.629";
-	velocityParticle.colors[3]="0.724 1 0 0";
-	velocityParticleNode.position=%obj.position;
-	
-	//Refresh à trouver
-	velocityEmitter.reload();
-	%mapTo.reload();
+		
+		echo(%obj.position);
+		echo(velocityParticleNode.position);
+		echo(velocityParticleNode.emitter.position);
+		echo(velocityParticleNode.emitter.particles[0].position);
 	//particle();
 	
 }
@@ -110,7 +128,6 @@ function onTempoGestureStart()
 		%obj="rightHand";
 	}
 	
-	echo(%obj);
 	%mapTo=%obj.getTargetName(0);
 	
 	%mapTo.diffuseColor.r=0;
