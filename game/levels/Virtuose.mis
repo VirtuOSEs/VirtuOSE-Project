@@ -1269,28 +1269,6 @@ new SimGroup(MissionGroup) {
       canSave = "1";
       canSaveDynamicFields = "1";
 
-      new ParticleEmitterNode(TempoParticleNode) {
-         active = "0";
-         emitter = "TempoEmitter";
-         velocity = "1";
-         dataBlock = "SimpleEmitterNodeData";
-         position = "0.98659 24.9451 6.40856";
-         rotation = "1 0 0 0";
-         scale = "5.54427 5.54427 7.59286";
-         canSave = "1";
-         canSaveDynamicFields = "1";
-      };
-      new ParticleEmitterNode(velocityParticleNode) {
-         active = "1";
-         emitter = "velocityEmitter";
-         velocity = "1";
-         dataBlock = "SimpleEmitterNodeData";
-         position = "-1.56837 24.9451 6.40856";
-         rotation = "1 0 0 0";
-         scale = "5.54427 5.54427 7.59286";
-         canSave = "1";
-         canSaveDynamicFields = "1";
-      };
       new TSStatic(leftHand) {
          shapeName = "art/shapes/virtuose/sphere.dae";
          playAmbient = "1";

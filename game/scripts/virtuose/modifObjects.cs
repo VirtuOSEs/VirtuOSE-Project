@@ -41,17 +41,17 @@ function changeTempo(%r, %g, %b){
 
 function turnOff(){
 echo("Hello");
-	velocityParticleNode.setActive(false);
+	$velocityParticleNode.setActive(false);
 
 }
 
 function particle(){
 	
-	velocityParticleNode.setHidden(true);	
-	velocityParticleNode.setActive(false);
+	$velocityParticleNode.setHidden(true);	
+	$velocityParticleNode.setActive(false);
 	velocityEmitter.reload();
-	velocityParticleNode.setHidden(false);	
-	velocityParticleNode.setActive(true);
+	$velocityParticleNode.setHidden(false);	
+	$velocityParticleNode.setActive(true);
 	velocityEmitter.reload();
 }
 
@@ -64,6 +64,9 @@ function changeVelocity(%var){
 		%obj=rightHand;
 	}
 		
+		if($particuleVeloTmp!$="") return;
+		$particuleVeloTmp=$velocityParticleNode.clone();
+		$particuleVeloTmp.active=true;
 		%mapTo=%obj.getTargetName(0);
 		
 		%r=%var;
@@ -74,36 +77,46 @@ function changeVelocity(%var){
 		%mapTo.diffuseColor.g=%g;
 		%mapTo.diffuseColor.b=%b;
 		
-		//velocityParticleNode.active=!velocityParticleNode.active;
+		//$velocityParticleNode.active=!$velocityParticleNode.active;
 		
-		// velocityParticleNode.setHidden(true);
-		// velocityParticleNode.emitter.setHidden(true);
-		// velocityParticleNode.emitter.particles[0].setHidden(true);
+		// $velocityParticleNode.setHidden(true);
+		//$velocityParticleNode.emitter.setHidden(true);
+		// $velocityParticleNode.emitter.particles[0].setHidden(true);
 		
-		velocityParticleNode.position=%obj.position;
+		$particuleVeloTmp.position=%obj.position.x SPC %obj.position.y SPC %obj.position.z-1;
+		//$velocityParticleNode.setScale($velocityParticleNode.getScale());
 		
 		for(%i=0;%i<4;%i++){
-			if(velocityParticleNode.emitter.particles[%i]$="")
+			if($particuleVeloTmp.emitter.particles[%i]$="")
 				continue;
-			velocityParticleNode.emitter.particles[%i].colors[0]="1 1 1 1";
-			velocityParticleNode.emitter.particles[%i].colors[1]=%r SPC %g SPC %b SPC "0.629";
-			velocityParticleNode.emitter.particles[%i].colors[2]=%r/2 SPC %g/2 SPC %b/2 SPC "0.62";
-			velocityParticleNode.emitter.particles[%i].colors[3]="0.724 1 0 0";
-			velocityParticleNode.emitter.particles[%i].position=velocityParticleNode.position;
-			velocityParticleNode.emitter.particles[%i].reload();
+			$particuleVeloTmp.emitter.particles[%i].colors[0]="1 1 1 1";
+			$particuleVeloTmp.emitter.particles[%i].colors[1]=%r SPC %g SPC %b SPC "0.629";
+			$particuleVeloTmp.emitter.particles[%i].colors[2]=%r/2 SPC %g/2 SPC %b/2 SPC "0.62";
+			$particuleVeloTmp.emitter.particles[%i].colors[3]="0.724 1 0 0";
+			$particuleVeloTmp.emitter.particles[%i].position=$velocityParticleNode.position;
+			$particuleVeloTmp.emitter.particles[%i].reload();
 		}
-		velocityParticleNode.emitter.reload();
+		$particuleVeloTmp.emitter.reload();
 		
+
 		//Refresh à trouver
 		%mapTo.reload();
 	
 		
-		echo(%obj.position);
-		echo(velocityParticleNode.position);
-		echo(velocityParticleNode.emitter.position);
-		echo(velocityParticleNode.emitter.particles[0].position);
-	//particle();
+		/*echo(%obj.position);
+		echo($velocityParticleNode.position);
+		echo($velocityParticleNode.emitter.position);
+		echo($velocityParticleNode.emitter.particles[0].position);*/
 	
+		%obj.schedule(1000,"deleteParticle");
+	
+}
+
+function TSStatic::deleteParticle(){
+	if($particuleVeloTmp!$="")
+		$particuleVeloTmp.delete();
+	$particuleVeloTmp="";
+	echo("Boom");
 }
 
 function TSStatic::liftInstrument(%instrumentName,%z){
@@ -172,8 +185,8 @@ function onTempoGestureEnd()
 	%mapTo.diffuseColor.b=0;
 	
 	%mapTo.reload();
-	TempoParticleNode.position=%obj.position;
-	TempoParticleNode.active=true;
+	$TempoParticleNode.position=%obj.position;
+	$TempoParticleNode.active=true;
 	%obj.schedule(300,"whiteOut");
 }
 
@@ -192,9 +205,9 @@ function onVelocityChanged(%newVelocity)
 
 function onExpressionChanged(%newExpression)
 {
-	velocityParticleNode.setHidden(true);
+	$velocityParticleNode.setHidden(true);
     changeVelocity(%newExpression);
-    velocityParticleNode.setHidden(false);
+    $velocityParticleNode.setHidden(false);
 }
 
 function onInstrumentWillPlay(%instrumentName, %delayInMillis) 

@@ -45,22 +45,39 @@ function virtuoseStart(){
 	HideSun();
     leftHand.position = Spawn.position.x-2 SPC Spawn.position.y+5 SPC Spawn.position.z+1;
     rightHand.position = Spawn.position.x+2 SPC Spawn.position.y+5 SPC Spawn.position.z+1;
-	velocityParticleNode.active=true;
-	TempoParticleNode.active=false;
-	velocityParticleNode.setDataBlock(SimpleEmitterNodeData);
-	TempoParticleNode.setDataBlock(SimpleEmitterNodeData);
+	
+	$TempoParticleNode=new ParticleEmitterNode(TempoParticleNode) {
+         active = "0";
+         emitter = "TempoEmitter";
+         velocity = "1";
+         dataBlock = "SimpleEmitterNodeData";
+         position = "0.98659 24.9451 6.40856";
+         rotation = "1 0 0 0";
+         scale = "1 1 1";
+         canSave = "1";
+         canSaveDynamicFields = "1";
+      };
+      $velocityParticleNode=new ParticleEmitterNode(velocityParticleNode) {
+         active = "0";
+         emitter = "velocityEmitter";
+         velocity = "1";
+         dataBlock = "SimpleEmitterNodeData";
+         position = "-3.01341 24.9451 6.40856";
+         rotation = "1 0 0 0";
+         scale = "1 1 1";
+         canSave = "1";
+         canSaveDynamicFields = "1";
+      };
 	
 	if(strcmp($orchestrator.options.handedness,"lEFT_HANDEDNESS")==0){
-		velocityParticleNode.position=rightHand.position;
-		TempoParticleNode.position=leftHand.position;
+		$velocityParticleNode.position=rightHand.position;
+		$TempoParticleNode.position=leftHand.position;
 	}
 	else {
-		velocityParticleNode.position=leftHand.position;
-		//velocityParticleNode.position="0 0 0";
-		TempoParticleNode.position=rightHand.position;
+		$velocityParticleNode.position=leftHand.position;
+		$TempoParticleNode.position=rightHand.position;
 	}
 	
-
 	placeInstrumentsTrack();
 	
 }
