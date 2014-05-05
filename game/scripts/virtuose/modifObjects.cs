@@ -63,8 +63,9 @@ function changeVelocity(%var){
 	else {
 		%obj=rightHand;
 	}
-		
+	
 		if($particuleVeloTmp!$="") return;
+		
 		$particuleVeloTmp=$velocityParticleNode.clone();
 		$particuleVeloTmp.active=true;
 		%mapTo=%obj.getTargetName(0);
@@ -107,16 +108,15 @@ function changeVelocity(%var){
 		echo($velocityParticleNode.position);
 		echo($velocityParticleNode.emitter.position);
 		echo($velocityParticleNode.emitter.particles[0].position);*/
-	
-		%obj.schedule(100,"deleteParticle");
-	
+	//particle();
+		%obj.schedule(500,"deleteParticle");
+		
 }
 
 function TSStatic::deleteParticle(){
-	if($particuleVeloTmp!$="")
-		$particuleVeloTmp.delete();
+	$particuleVeloTmp.delete();
 	$particuleVeloTmp="";
-	echo("Boom");
+	//echo("Boom");
 }
 
 function TSStatic::liftInstrument(%instrumentName,%z){
@@ -205,9 +205,7 @@ function onVelocityChanged(%newVelocity)
 
 function onExpressionChanged(%newExpression)
 {
-	$velocityParticleNode.setHidden(true);
     changeVelocity(%newExpression);
-    $velocityParticleNode.setHidden(false);
 }
 
 function onInstrumentWillPlay(%instrumentName, %delayInMillis) 
