@@ -104,13 +104,16 @@ void Track::playAtTick(double tick)
       midiEvent = sequence.getEventPointer(eventIndex);
     }
 
-    timeStamp = midiEvent->message.getTimeStamp();
+    timeStamp = midiEvent->message.getTimeStamp(); 
   }
+
+  bool isNoteOn = midiEvent->message.isNoteOn();
+  checkPlayingStatus(tick, timeStamp, isNoteOn);
 
   //If it's time, play the event
   while ( timeStamp <= tick)
   {
-    bool isNoteOn = midiEvent->message.isNoteOn();
+    isNoteOn = midiEvent->message.isNoteOn();
     AudioTools::getInstance().makePluginPlay(trackName, midiEvent->message);
     //Used to track the playing status of the track
     if (isNoteOn)
@@ -142,8 +145,9 @@ void Track::playAtTick(double tick)
       juce::ScopedLock sl(sequenceAccess);
       midiEvent = sequence.getEventPointer(eventIndex);
     }
-
+    isNoteOn = midiEvent->message.isNoteOn();
     timeStamp = midiEvent->message.getTimeStamp();
+    checkPlayingStatus(tick, timeStamp, isNoteOn);
   }
 }
 
