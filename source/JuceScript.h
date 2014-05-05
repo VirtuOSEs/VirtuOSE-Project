@@ -31,6 +31,7 @@ public:
   Orchestrator(const Options*);
   ~Orchestrator();
 
+  void setSaveFile(const char* filePath);
   void loadMidiFile(const char* filePath);
   int getNumTracks();
   String getInstrumentName(int index);
@@ -54,6 +55,7 @@ private:
   std::vector<JuceModule::Track::Ptr > tracks;
   Options defaultOptions;
   const Options* options;
+  juce::String saveFileName;
 };
 
 

@@ -24,8 +24,12 @@ Orchestrator::Orchestrator()
 
 Orchestrator::~Orchestrator()
 {
-  //TODO
-  saveSequence("../tracks/saveFile.mid");
+  saveSequence(saveFileName.toStdString().c_str());
+}
+
+void Orchestrator::setSaveFile(const char* fileName) 
+{
+  saveFileName = fileName;
 }
 
 void Orchestrator::loadMidiFile(const char* filePath)
@@ -202,4 +206,9 @@ DefineEngineMethod(Orchestrator, getInstrumentName, String, (int index),, "Get n
 DefineEngineMethod(Orchestrator, getTrackName, String, (int index),, "Get the track name at index 'index' in the sequence")
 {
   return object->getTrackName(index);
+}
+
+DefineEngineMethod(Orchestrator, setSaveFile, void, (const char* fileName),, "Get the track name at index 'index' in the sequence")
+{
+  object->setSaveFile(fileName);
 }

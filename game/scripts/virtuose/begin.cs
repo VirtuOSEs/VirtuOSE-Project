@@ -37,7 +37,7 @@ function virtuoseStart(){
 	  {
 		options = %options;
 	  };
-  
+  $orchestrator.setSaveFile("../tracks/" @ $vsaveFile);
   $orchestrator.loadMidiFile("../tracks/" @ $vfileName);
   $orchestrator.setTempo(90);
 
