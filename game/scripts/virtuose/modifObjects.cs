@@ -207,7 +207,6 @@ function onInstrumentWillPlay(%instrumentName, %delayInMillis)
 function onInstrumentStartPlaying(%instrumentName)
 {
   echo(%instrumentName @ " starts playing");
-  %instrumentName.liftInstrument(1);
 }
 
 function onInstrumentStoppedPlaying(%instrumentName)
