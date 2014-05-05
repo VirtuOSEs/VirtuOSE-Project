@@ -39,22 +39,6 @@ function changeTempo(%r, %g, %b){
 	%mapTo.diffuseColor.b=%b;
 }
 
-function turnOff(){
-echo("Hello");
-	$velocityParticleNode.setActive(false);
-
-}
-
-function particle(){
-	
-	$velocityParticleNode.setHidden(true);	
-	$velocityParticleNode.setActive(false);
-	velocityEmitter.reload();
-	$velocityParticleNode.setHidden(false);	
-	$velocityParticleNode.setActive(true);
-	velocityEmitter.reload();
-}
-
 function changeVelocity(%var){
 	
 	if(strcmp($orchestrator.options.handedness,"RIGHT_HANDEDNESS")==0){
@@ -165,7 +149,7 @@ function TSStatic::whiteOut(){
 	%mapTo.diffuseColor.b=0.5;
 	
 	%mapTo.reload();
-	
+	$particuleTempoTmp.delete();	
 }
 
 function onTempoGestureEnd()
@@ -178,6 +162,8 @@ function onTempoGestureEnd()
 		%obj="rightHand";
 	}
 	
+	$particuleTempoTmp=$TempoParticleNode.clone();
+		
 	%mapTo=%obj.getTargetName(0);
 	
 	%mapTo.diffuseColor.r=1;
@@ -185,9 +171,9 @@ function onTempoGestureEnd()
 	%mapTo.diffuseColor.b=0;
 	
 	%mapTo.reload();
-	$TempoParticleNode.position=%obj.position;
-	$TempoParticleNode.active=true;
-	%obj.schedule(300,"whiteOut");
+	$particuleTempoTmp.position=%obj.position;
+	$particuleTempoTmp.active=true;
+	%obj.schedule(100,"whiteOut");
 }
 
 
