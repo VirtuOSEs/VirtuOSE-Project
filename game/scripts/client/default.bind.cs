@@ -277,7 +277,7 @@ moveMap.bind( keyboard, down, movebackward );
 moveMap.bind( keyboard, e, moveup );
 moveMap.bind( keyboard, c, movedown );
 
-moveMap.bind( keyboard, space, jump );
+moveMap.bind( keyboard, v, jump );
 moveMap.bind( mouse, xaxis, yaw );
 moveMap.bind( mouse, yaxis, pitch );
 

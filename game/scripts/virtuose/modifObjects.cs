@@ -207,8 +207,12 @@ function onInstrumentWillPlay(%instrumentName, %delayInMillis)
 function onInstrumentStartPlaying(%instrumentName)
 {
   echo(%instrumentName @ " starts playing");
-  %instrumentName.liftInstrument(1);
-  //changeOpacity(%instrumentName,0.5);
+  //%instrumentName.liftInstrument(1);
+  %delayInMillis=3000;
+  	%nombreAppels=100;
+  for(%i=0;%i<%delayInMillis;%i=%i+%delayInMillis/%nombreAppels){
+		%instrumentName.schedule(%i,"liftInstrument", 1/(%nombreAppels));
+	}
 }
 
 function onInstrumentStoppedPlaying(%instrumentName)

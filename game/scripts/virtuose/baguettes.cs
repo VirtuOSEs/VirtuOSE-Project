@@ -35,6 +35,7 @@ function Hit(){
 
 //Fonctions avec la souris
 function changeHand(){
+hideSun();
 	if($relache==1){
 		if(strcmp($handSelected,"rightHand")==0){
 			$handSelected="leftHand";
@@ -53,20 +54,14 @@ function changeHand(){
 
 function handMoveX(%val){
    %x = getMouseAdjustAmount(%val);
-   //$handSelected.position.x+=%x;
+   $handSelected.position.x+=%x;
 }
 
 function handMoveY(%val){
    %z = getMouseAdjustAmount(%val);
-   //$handSelected.position.z-=%z;
+   $handSelected.position.z-=%z;
 }
 
-function handMoveZ(%val)
-{
-  /*
-	if(%val>0)
-		$handSelected.position.y+=0.5;
-	else
-		$handSelected.position.y-=0.5;
-*/
+function theSunIsRising(){
+	soleil.setHidden(!soleil.hidden);	
 }

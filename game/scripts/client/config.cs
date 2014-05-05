@@ -12,13 +12,14 @@ moveMap.bind(keyboard, "right", moveright);
 moveMap.bind(keyboard, "w", moveForward);
 moveMap.bind(keyboard, "s", movebackward);
 moveMap.bind(keyboard, "up", moveForward);
+moveMap.bind(keyboard, "v", jump);
 moveMap.bind(keyboard, "down", movebackward);
 moveMap.bind(keyboard, "e", moveup);
 moveMap.bind(keyboard, "c", movedown);
 moveMap.bind(keyboard, "space", playPause);
+moveMap.bind(keyboard, "f", theSunIsRising);
 moveMap.bind(keyboard, "lcontrol", doCrouch);
 moveMap.bind(keyboard, "lshift", doSprint);
-moveMap.bind(keyboard, "f", setZoomFOV);
 moveMap.bind(keyboard, "z", toggleZoom);
 moveMap.bind(keyboard, "v", toggleFreeLook);
 moveMap.bind(keyboard, "tab", toggleFirstPerson);
@@ -45,9 +46,10 @@ moveMap.bind(keyboard, "f8", dropCameraAtPlayer);
 moveMap.bind(keyboard, "f7", dropPlayerAtCamera);
 moveMap.bindCmd(keyboard, "n", "toggleNetGraph();", "");
 moveMap.bindCmd(keyboard, "ctrl z", "carjack();", "");
-moveMap.bind(mouse0, "xaxis", yaw);
-moveMap.bind(mouse0, "yaxis", pitch);
+moveMap.bind(mouse0, "xaxis", handMoveX); //yaw
+moveMap.bind(mouse0, "yaxis", handMoveY); //pitch
 moveMap.bind(mouse0, "button0", changeHand);
+moveMap.bind(mouse0, "button1", jump);
 moveMap.bind(mouse0, "zaxis", handMoveZ);
 moveMap.bind(gamepad0, "thumbrx", D, "-0.23 0.23", gamepadYaw);
 moveMap.bind(gamepad0, "thumbry", D, "-0.23 0.23", gamepadPitch);
