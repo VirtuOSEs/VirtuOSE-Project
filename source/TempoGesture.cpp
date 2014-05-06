@@ -23,30 +23,31 @@ TempoGesture::TempoGesture(const Options& options)
 bool TempoGesture::checkTempoGesture(const HandsTracker& handsTracker, const nite::Skeleton& skeleton)
 {
   const nite::SkeletonJoint& hand = skeleton.getJoint(gestureHand);
-  const nite::SkeletonJoint& rightHip = skeleton.getJoint(nite::JOINT_RIGHT_HIP);
   
-  if (!calibrateGesture(rightHip))
+  if (!calibrateGesture(skeleton))
     return false;
 
+  VectorF handDirection;
    //Detect if current movement is compatible with this gesture
   if (gestureHand == nite::JOINT_LEFT_HAND)
   {
+    handDirection = handsTracker.leftHandDirection;
     if (fabs(mDot(handsTracker.leftHandDirection, GESTURE_VECTOR)) < GESTURE_SIMILARITY_THRESHOLD)
       return false;
   }
   else if (gestureHand == nite::JOINT_RIGHT_HAND)
   {
+    handDirection = handsTracker.rightHandDirection;
     if (fabs(mDot(handsTracker.rightHandDirection, GESTURE_VECTOR)) < GESTURE_SIMILARITY_THRESHOLD)
       return false;
   }
 
   float handY = hand.getPosition().y;
 
-  //Si on était pas rentré dans la zone une première fois...
   if (status == NO_GESTURE)
   {
-    //Suis-je dans la zone ?
-    if (handY >= yBottom && handY <= yTop)
+    //Am I in the zone and is my hand raising up ?
+    if (handY >= yBottom && handY <= yTop && handDirection.y > 0)
     {
       // Con::printf("DANS ZONE : DEBUT MOUVEMENT %f", handY);
       status = IN_ZONE;
@@ -54,16 +55,15 @@ bool TempoGesture::checkTempoGesture(const HandsTracker& handsTracker, const nit
       CallbackManager::tempoGestureStart();
     }
   }
-  //Si au dernier check on était dans la zone, on regarde si on en est sorti...
   else if (status == IN_ZONE)
   {
-    //Suis-je sorti de la zone ? On considère qu'on ne sort que "par le haut"
+    //Did I cross the zone meaning the gesture go next step ?
     if (handY > yTop)
     {
       // Con::printf("HORS ZONE : SUITE MOUVEMENT %f", handY);
       status = OUT_ZONE;
     }
-    //Si on sort par le bas : annulation du geste
+    //Leaving the zone by bottom means cancelling the gesture
     else if (handY < yBottom)
     {
       // Con::printf("SORTIE PAR LE BAS : NO GESTURE %f", handY);
@@ -77,7 +77,7 @@ bool TempoGesture::checkTempoGesture(const HandsTracker& handsTracker, const nit
       CallbackManager::tempoGestureEnd();
     }
   }
-  //Si au dernier check on était hors de la zone et qu'on rentre à nouveau dedans : nouveau tempo
+  //If I were outzone and now I am again in zone: I just finished a tempo gesture!
   else if (status == OUT_ZONE)
   {
     if (handY >= yBottom && handY <= yTop)
@@ -100,10 +100,10 @@ bool TempoGesture::checkTempoGesture(const HandsTracker& handsTracker, const nit
 
       CallbackManager::tempoGestureEnd();
 
-      //Pour simplifier pour l'instant on ne peut pas enchainer
       status = NO_GESTURE;
       return true;
     }
+    //Gesture timeout
     else if (juce::Time::getMillisecondCounterHiRes() - startTime >= timeOut)
     {
     //  Con::printf("TIMEOUT %f", handY);
@@ -113,10 +113,12 @@ bool TempoGesture::checkTempoGesture(const HandsTracker& handsTracker, const nit
   return false;
 }
 
-bool TempoGesture::calibrateGesture(const nite::SkeletonJoint& rightHip)
+bool TempoGesture::calibrateGesture(const nite::Skeleton& skeleton)
 {
+  const nite::SkeletonJoint& rightHip = skeleton.getJoint(nite::JOINT_RIGHT_HIP);
+  const nite::SkeletonJoint& head = skeleton.getJoint(nite::JOINT_HEAD);
   if (rightHip.getPositionConfidence() < 0.5f)
     return false;
-  yBottom = rightHip.getPosition().y;
-  yTop = yBottom + 200.f;
+  yBottom = rightHip.getPosition().y + (head.getPosition().y - rightHip.getPosition().y) / 3.f;
+  yTop = yBottom + 100.f;
 }

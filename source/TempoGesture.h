@@ -28,7 +28,7 @@ public:
   bool checkTempoGesture(const HandsTracker& handsTracker, const nite::Skeleton& skeleton);
 
 private:
-  bool calibrateGesture(const nite::SkeletonJoint& rightHip);
+  bool calibrateGesture(const nite::Skeleton& skeleton);
   nite::JointType gestureHand; 
   GestureStatus status;
 

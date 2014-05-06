@@ -5,7 +5,7 @@
 
 namespace JuceModule
 {
-  // IMPLEM AUDIOTOOLS
+
 AudioTools* AudioTools::singleton = nullptr;
 
 AudioTools::AudioTools()
@@ -23,7 +23,7 @@ AudioTools::AudioTools()
   
   CoInitialize(nullptr);
   juce::String error = deviceManager.initialise (20, 20, nullptr, false, juce::String::empty, &setup);
-  Con::errorf(error.toStdString().c_str());
+  Platform::outputDebugString(error.toStdString().c_str());
 
   deviceManager.playTestSound();
 }
@@ -69,10 +69,10 @@ void AudioTools::generatePlugin(const juce::String& trackName, const juce::Strin
   juce::File fxpFile = juce::File::getCurrentWorkingDirectory().getChildFile("../fxp/" + instrumentName + ".fxp").getFullPathName();
   if (!fxpFile.existsAsFile())
   {
-    Platform::outputDebugString("Impossible de charger l'instrument demandé");
+    Platform::outputDebugString("Unable to load instrument");
     return;
   }
-  Platform::outputDebugString(juce::String("Chargement de " + instrumentName).toStdString().c_str());
+  Platform::outputDebugString(juce::String("Loading " + instrumentName).toStdString().c_str());
 
   //Si le plugin correspondant à l'instrument n'existe pas encore
   if (pluginsMap.find(trackName) == pluginsMap.end())
