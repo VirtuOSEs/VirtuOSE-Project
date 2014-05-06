@@ -88,7 +88,7 @@ function placeInstruments(%nbInstruments){
 }
 
 function createInstruments(%instrument,%file){
-				
+				echo(%instrument SPC %file);
 				%nameInstru=%instrument;
 
 				
@@ -200,7 +200,7 @@ function createInstruments(%instrument,%file){
 }
 
 function placeInstrumentsTrack(){
-	for(%i=1;%i<$orchestrator.getNumTracks();%i++){
+	for(%i=0;%i<$orchestrator.getNumTracks();%i++){
 		//echo($orchestrator.getTrackName(%i));
 		//echo($orchestrator.getInstrumentName(%i));
 		createInstruments($orchestrator.getTrackName(%i),$orchestrator.getInstrumentName(%i));
