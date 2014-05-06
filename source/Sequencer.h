@@ -20,6 +20,12 @@ class Sequencer : public juce::Thread, public juce::ReferenceCountedObject
 {
 public:
   typedef juce::ReferenceCountedObjectPtr<Sequencer> Ptr;
+  
+  ///Time of wait of the sequencer thread
+  static const int TIME_STEP;
+  ///Number of milliseconds per minute
+  static const double MS_PER_MINUTE;
+
   Sequencer(std::vector<JuceModule::Track::Ptr > tracks, short ticksPerQuarterNote,
             const Options& options);
   ~Sequencer();
@@ -45,6 +51,7 @@ protected:
 
 private:
   inline double computeMsPerTicks();
+  inline double computeTickStep();
 
   short ticksPerQuarterNote;
   std::vector<JuceModule::Track::Ptr > tracks;
@@ -60,6 +67,7 @@ private:
   double ticks;
   double msPerTick;
   unsigned int tempoTrackIndex;
+  double tickStep;//Number of ticks incremented after each timeStep
 
   juce::CriticalSection ticksAccess;
   juce::CriticalSection tempoAccess;

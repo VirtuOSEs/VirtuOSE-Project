@@ -6,12 +6,26 @@
 namespace JuceModule
 {
 
+const int Sequencer::TIME_STEP = 3;
+const double Sequencer::MS_PER_MINUTE = 60000.0;
+
+double Sequencer::computeTickStep() 
+{
+  //If dotted whole note : 1 - 2/4, dotted quarter note : 4 - 4/4 => 3 etc
+  double rythmUnit = options.rythmUnitDotted ? options.rythmUnit - options.rythmUnit / QUARTER_NOTE : options.rythmUnit;
+
+  double ticksPerMinute = tempo * (double)QUARTER_NOTE / (double)rythmUnit * ticksPerQuarterNote;
+  double nbTimeStepPerMinute = MS_PER_MINUTE / (double)TIME_STEP;
+
+  return ticksPerMinute / nbTimeStepPerMinute;
+}
+
 double Sequencer::computeMsPerTicks()
 {
   //If dotted whole note : 1 - 2/4, dotted quarter note : 4 - 4/4 => 3 etc
   double rythmUnit = options.rythmUnitDotted ? options.rythmUnit - options.rythmUnit / QUARTER_NOTE : options.rythmUnit;
   int ticksPerMinute = tempo * (double)QUARTER_NOTE / (double)rythmUnit * ticksPerQuarterNote;
-  return  60000.0 / (double)ticksPerMinute;
+  return  MS_PER_MINUTE / (double)ticksPerMinute;
 }
 
 Sequencer::Sequencer(std::vector<JuceModule::Track::Ptr > tracks, short ticksPerQuarterNote, const Options& options)
@@ -42,6 +56,8 @@ Sequencer::Sequencer(std::vector<JuceModule::Track::Ptr > tracks, short ticksPer
 
   msPerTick = computeMsPerTicks();
   updateTracksMsPerTick(msPerTick);
+
+  tickStep = computeTickStep();
 }
 
 Sequencer::~Sequencer()
@@ -97,13 +113,14 @@ void Sequencer::setTempo(juce::uint32 tempo)
     const juce::ScopedLock lockTempo(tempoAccess);
     this->tempo = tempo;
     msPerTick = computeMsPerTicks();
-    microSecPerQuarterNote = msPerTick * ticksPerQuarterNote * 1000.0;
+    microSecPerQuarterNote = msPerTick * ticksPerQuarterNote * 1000.0;//1000.0 = microsec per millisec
     updateTracksMsPerTick(msPerTick);
   }
   juce::MidiMessage tempoMessage = juce::MidiMessage::tempoMetaEvent(microSecPerQuarterNote);
   {
     const juce::ScopedLock sL(ticksAccess);
     tempoMessage.setTimeStamp(ticks);
+    tickStep = computeTickStep();
   }
   newTempoTrack.addEvent(tempoMessage);
 }
@@ -182,29 +199,19 @@ void Sequencer::run()
   double lag = 0.0;
   double elapsedTime = 0.0;
   double startTime = 0.0;
-  //Tentative d'optimisation de l'accès concurrentiel 
-  //à msPerTick et stopped
-  double localMsPerTick = 0.0;
   bool localStopped = false;
   for (;;)
   {
     startTime = juce::Time::getMillisecondCounterHiRes();
-    //Tentative d'optimisation de l'accès concurrentiel 
-    //à msPerTick
-    {
-      const juce::ScopedLock tempoLock(tempoAccess);
-      localMsPerTick = msPerTick;
-    }
-    wait(localMsPerTick);
+    
+    wait(TIME_STEP);
+
     elapsedTime = juce::Time::getMillisecondCounterHiRes() - startTime;
     lag += elapsedTime;
 
-    while (lag >= localMsPerTick)
+    while (lag >= TIME_STEP)
     {
-      { //stoppedAccess scope
-        const juce::ScopedLock sL(stoppedAccess);
-        localStopped = stopped;
-      }
+       localStopped = stopped;
 
       //Gestion de la pause
       while (paused && !threadShouldExit() && !localStopped)
@@ -218,14 +225,14 @@ void Sequencer::run()
       {
         {
           const juce::ScopedLock modifyingTicks(ticksAccess);
-          ticks++;
+          ticks += tickStep;
         }
         checkTempoChangeTrack();
         for(int i = 0; i< tracks.size(); ++i)
           tracks[i]->playAtTick(ticks);
       }
       else return;
-      lag -= localMsPerTick;
+      lag -= TIME_STEP;
       
     }
   }
@@ -244,7 +251,7 @@ void Sequencer::checkTempoChangeTrack()
       juce::ScopedLock sL(tempoAccess);
       double rythmUnitModificator = (options.rythmUnit + (options.rythmUnit / 2.0 * options.rythmUnitDotted));
       msPerTick = midiEvent->message.getTempoMetaEventTickLength(ticksPerQuarterNote) * rythmUnitModificator *  1000.0;
-      tempo = 60000.0 / msPerTick / (double)ticksPerQuarterNote / rythmUnitModificator;
+      tempo = MS_PER_MINUTE / msPerTick / (double)ticksPerQuarterNote / rythmUnitModificator;
       updateTracksMsPerTick(msPerTick);
     }
     ++tempoTrackIndex;
