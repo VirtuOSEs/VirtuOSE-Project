@@ -227,7 +227,7 @@ void Sequencer::run()
       else return;
       lag -= localMsPerTick;
       
-    }// end of tempo access (critical section)
+    }
   }
 }
 

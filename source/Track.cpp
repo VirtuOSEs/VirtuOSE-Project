@@ -47,7 +47,7 @@ Track::Track(juce::MidiMessageSequence sequence)
 
 void Track::restart()
 {
-  if (eventIndex == 0 || incomingKeyUp.empty())
+  if (eventIndex == 0)
     return;
 
   AudioTools::getInstance().enableAudioProcessing();
