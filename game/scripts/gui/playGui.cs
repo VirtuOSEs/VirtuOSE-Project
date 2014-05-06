@@ -36,8 +36,9 @@ function PlayGui::onWake(%this)
    // Message hud dialog
    if ( isObject( MainChatHud ) )
    {
-      Canvas.pushDialog( MainChatHud );
-      chatHud.attach(HudMessageVector);
+     //VIRTUOSE DISABLE CHATBOX
+      //Canvas.pushDialog( MainChatHud );
+      //chatHud.attach(HudMessageVector);
    }      
    
    // just update the action map here
