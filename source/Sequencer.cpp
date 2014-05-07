@@ -200,6 +200,7 @@ void Sequencer::run()
   double elapsedTime = 0.0;
   double startTime = 0.0;
   bool localStopped = false;
+  double songTimeInMs = 0.0;
   for (;;)
   {
     startTime = juce::Time::getMillisecondCounterHiRes();
@@ -211,7 +212,8 @@ void Sequencer::run()
 
     while (lag >= TIME_STEP)
     {
-       localStopped = stopped;
+      songTimeInMs += TIME_STEP;
+      localStopped = stopped;
 
       //Gestion de la pause
       while (paused && !threadShouldExit() && !localStopped)
@@ -229,7 +231,7 @@ void Sequencer::run()
         }
         checkTempoChangeTrack();
         for(int i = 0; i< tracks.size(); ++i)
-          tracks[i]->playAtTick(ticks);
+          tracks[i]->playAtTick(ticks, songTimeInMs * 0.001);
       }
       else return;
       lag -= TIME_STEP;

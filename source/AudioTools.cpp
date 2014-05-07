@@ -11,12 +11,12 @@ AudioTools* AudioTools::singleton = nullptr;
 AudioTools::AudioTools()
 {
   juce::AudioDeviceManager::AudioDeviceSetup setup;
-  setup.inputChannels = 20;
-  setup.outputChannels = 20;
+  setup.inputChannels = 1;//20
+  setup.outputChannels = 2;//20
   setup.outputDeviceName = "ASIO4ALL v2";
   setup.inputDeviceName = "ASIO4ALL v2";
   setup.sampleRate = 44100.0000;
-  setup.bufferSize = 0;
+  setup.bufferSize = 1024;
   setup.useDefaultInputChannels = true;
   setup.useDefaultOutputChannels = true;
     
@@ -74,7 +74,7 @@ void AudioTools::generatePlugin(const juce::String& trackName, const juce::Strin
   }
   Platform::outputDebugString(juce::String("Loading " + instrumentName).toStdString().c_str());
 
-  //Si le plugin correspondant à l'instrument n'existe pas encore
+  //If plugin for required instrument is not loaded yet
   if (pluginsMap.find(trackName) == pluginsMap.end())
   {
     pluginsMap[trackName] = formatManager.createPluginInstance(description, errorMessage);
@@ -89,13 +89,14 @@ void AudioTools::generatePlugin(const juce::String& trackName, const juce::Strin
   }
 }
 
-void AudioTools::makePluginPlay(const juce::String& trackName, const juce::MidiMessage& message)
+void AudioTools::makePluginPlay(const juce::String& trackName, const juce::MidiMessage& messageWithTimestampInSeconds)
 {
+  //WARNING: PRE CONDITION: message's timestamp MUST BE in seconds
   if(pluginsMap.find(trackName) == pluginsMap.end())
     return;
 
   const juce::ScopedLock sL(criticalSection);
-  playersMap[trackName]->handleIncomingMidiMessage(nullptr, message);
+  playersMap[trackName]->handleIncomingMidiMessage(nullptr, messageWithTimestampInSeconds);
 }
 
 void AudioTools::disableAudioProcessing()
