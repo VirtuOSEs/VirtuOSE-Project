@@ -549,7 +549,7 @@ function GameCore::onClientEnterGame(%game, %client)
 
    // Inform the client we've joined up
    messageClient(%client,
-      'MsgClientJoin', '\c2Welcome to the Torque demo app %1.',
+      'MsgClientJoin', 'Welcome on Virtuose', //VIRTUOSE
       %client.playerName,
       %client,
       %client.sendGuid,

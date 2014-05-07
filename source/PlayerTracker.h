@@ -84,6 +84,9 @@ public:
     if (spawn == nullptr)
     {
       spawn = dynamic_cast<SpawnSphere* > (Sim::findObject("Spawn"));
+      //Special case when scene is destroyed before this event
+      if (spawn == nullptr)
+        return;
       MatrixF eyeMatrix;
       spawn->getEyeTransform(&eyeMatrix);
       eyePosition = eyeMatrix.getPosition();

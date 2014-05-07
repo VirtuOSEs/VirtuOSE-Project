@@ -191,6 +191,7 @@ function onVelocityChanged(%newVelocity)
 
 function onExpressionChanged(%newExpression)
 {
+  echo("Expression: " @ %newExpression);
     changeVelocity(%newExpression);
 }
 

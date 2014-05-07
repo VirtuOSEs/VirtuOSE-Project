@@ -52,6 +52,7 @@ Sequencer::Sequencer(std::vector<JuceModule::Track::Ptr > tracks, short ticksPer
   midiData.append(header, sizeof(header));
   midiData.append(trackName, sizeof(trackName));
   juce::MidiMessage trackNameEvent(midiData.getData(), midiData.getSize());
+  trackNameEvent.setTimeStamp(0);
   newTempoTrack.addEvent(trackNameEvent);
 
   msPerTick = computeMsPerTicks();
@@ -68,6 +69,12 @@ Sequencer::~Sequencer()
   stop();
 }
 
+void Sequencer::setTempoTrack(const juce::MidiMessageSequence& tempoTrack)
+{
+  this->tempoTrack = tempoTrack;
+  newTempoTrack.addSequence(tempoTrack, 0.0, 0.0, tempoTrack.getEndTime() + 1);
+  newTempoTrack.updateMatchedPairs();
+}
 void Sequencer::saveSequence(const juce::String& filePath)
 {
   jassert(stopped);
@@ -246,10 +253,11 @@ void Sequencer::checkTempoChangeTrack()
     if (midiEvent->message.isTempoMetaEvent())
     {
       juce::ScopedLock sL(tempoAccess);
-      double rythmUnitModificator = (options.rythmUnit + (options.rythmUnit / 2.0 * options.rythmUnitDotted));
-      msPerTick = midiEvent->message.getTempoMetaEventTickLength(ticksPerQuarterNote) * rythmUnitModificator *  1000.0;
-      tempo = MS_PER_MINUTE / msPerTick / (double)ticksPerQuarterNote / rythmUnitModificator;
+      double rythmUnitModificator = options.rythmUnitDotted ? options.rythmUnit - options.rythmUnit / QUARTER_NOTE : options.rythmUnit;;
+      msPerTick = midiEvent->message.getTempoMetaEventTickLength(ticksPerQuarterNote) * (rythmUnitModificator  / QUARTER_NOTE) *  1000.0;
+      tempo = (MS_PER_MINUTE / msPerTick) / (double)ticksPerQuarterNote / ((double) (rythmUnitModificator / QUARTER_NOTE));
       updateTracksMsPerTick(msPerTick);
+      tickStep = computeTickStep();
     }
     ++tempoTrackIndex;
   }

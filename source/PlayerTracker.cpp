@@ -138,19 +138,16 @@ void PlayerTracker::onNewFrame(nite::UserTracker& userTracker)
         {
           activateMusicalGestureDetection();
           sequencer->play();
-          Platform::outputDebugString("PLAY");
         }
         else if (transportGesture.getTransportStatus() == TransportGesture::PAUSE)
         {
           deactivateMusicalGestureDetection();
           sequencer->pause();
-          Platform::outputDebugString("PAUSE");
         }
         else if (transportGesture.getTransportStatus() == TransportGesture::STOP)
         {
           deactivateMusicalGestureDetection();
           sequencer->stop();
-          Platform::outputDebugString("STOP");
         }
       }
 
