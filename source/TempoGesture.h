@@ -6,6 +6,11 @@
 #include "Options.h"
 #include "HandsTracker.h"
 
+/**
+   Triggers the following TS Callbacks:
+   * onTempoGestureStart()
+   * onTempoGestureEnd()
+  */
 class TempoGesture
 {
 public:

@@ -15,6 +15,12 @@ namespace JuceModule
   The actual objects which play the midi tracks.
   Maintains also a special MidiSequence containing all the tempo change
   events.
+  Trigger the following TS Callbacks:
+  * onPlay()
+  * onPause()
+  * onStop()
+  * onExpressionChanged(%newExpression)
+  * onTempoChanged(%newTempo)
  **/
 class Sequencer : public juce::Thread, public juce::ReferenceCountedObject
 {

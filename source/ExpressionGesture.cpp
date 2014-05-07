@@ -1,6 +1,5 @@
 #include "ExpressionGesture.h"
 #include "math/mPoint3.h"
-#include "TSCallback.h"
 
 const float ExpressionGesture::GESTURE_WIDTH_PERCENTAGE = 50.f/100.f;
 const VectorF ExpressionGesture::GESTURE_VECTOR = VectorF(0, 1, 0);
@@ -52,7 +51,6 @@ bool ExpressionGesture::checkExpressionGesture(const HandsTracker& handsTracker,
   if (gestureZone.isCoordinateInZone(handX, handY))
   {
     expressionDetected = (handY - gestureZone.bottom) / gestureZone.length();
-    CallbackManager::expressionChanged(expressionDetected);
     return true;
   }
 

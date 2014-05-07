@@ -131,7 +131,7 @@ void PlayerTracker::onNewFrame(nite::UserTracker& userTracker)
       if (! handsTracker.update(user.getSkeleton()))
         return;
 
-      if (transportGesture.checkTransportGesture(handsTracker))
+      if (transportGesture.checkTransportGesture(handsTracker, user.getSkeleton()))
       {
         if (transportGesture.getTransportStatus() == TransportGesture::PLAY)
         {

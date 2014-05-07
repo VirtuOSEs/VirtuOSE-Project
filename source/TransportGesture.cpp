@@ -6,18 +6,20 @@ const juce::int64 TransportGesture::STOP_GESTURE_TIME_MS = 1500;
 
 TransportGesture::TransportGesture()
   : status(STOP), 
-  gestureCalibrated(false), 
   firstTimeZoneEntered(0),
   zoneStatus(OUT_ZONE)
 {
 }
 
-bool TransportGesture::checkTransportGesture(const HandsTracker& handsTracker)
+bool TransportGesture::checkTransportGesture(const HandsTracker& handsTracker, const nite::Skeleton& skeleton)
 {
+  if (!calibrateGesture(skeleton))
+    return false;
+
   distanceBetweenHands = handsTracker.currentRightHand - handsTracker.currentLeftHand;
 
-  //Are hands together ?
-  if ( fabs(distanceBetweenHands.len()) < GESTURE_ZONE_RADIUS_MM)
+  //Are hands together and in the gesture zone?
+  if ( fabs(distanceBetweenHands.len()) < GESTURE_ZONE_RADIUS_MM && gestureZone.isCoordinateInZone(handsTracker.currentRightHand.x, handsTracker.currentRightHand.y) )
   {
     //If they already were in zone, check if it's a STOP gesture
     if (zoneStatus == IN_ZONE)
@@ -58,4 +60,18 @@ bool TransportGesture::checkTransportGesture(const HandsTracker& handsTracker)
   }
 
   return false;
+}
+
+bool TransportGesture::calibrateGesture(const nite::Skeleton& skeleton)
+{
+  const nite::SkeletonJoint& neck = skeleton.getJoint(nite::JOINT_NECK);
+  if (neck.getPositionConfidence() < 0.5f)
+    return false;
+
+  gestureZone.bottom = neck.getPosition().y - 100.0f;
+  gestureZone.top = neck.getPosition().y + 100.0f;
+  gestureZone.left = neck.getPosition().x - 100.0f;
+  gestureZone.right = neck.getPosition().x + 100.0f;
+
+  return true;
 }

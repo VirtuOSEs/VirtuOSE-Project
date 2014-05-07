@@ -131,6 +131,7 @@ void Sequencer::setTempo(juce::uint32 tempo)
     tickStep = computeTickStep();
   }
   newTempoTrack.addEvent(tempoMessage);
+  CallbackManager::tempoJustChanged(tempo);
 }
 
 void Sequencer::setExpression(float value)
@@ -144,6 +145,7 @@ void Sequencer::setExpression(float value)
   {
     tracks[i]->setExpression(value);
   }
+  CallbackManager::expressionChanged(value);
 }
 
 void Sequencer::stop()

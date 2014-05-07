@@ -96,7 +96,6 @@ bool TempoGesture::checkTempoGesture(const HandsTracker& handsTracker, const nit
       }
 
       tempo = tmpTempo;
-      CallbackManager::tempoJustChanged(tempo);
       startTime = currentTime;
 
       CallbackManager::tempoGestureEnd();
