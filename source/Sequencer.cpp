@@ -155,10 +155,6 @@ void Sequencer::stop()
   }
 
   tempoTrackIndex = 0;
-
-  //Si on disable l'audio on empeche les NoteOff de restart()
-  //d'etre jouees
-  //AudioTools::getInstance().disableAudioProcessing();
 }
 
 void Sequencer::pause()
@@ -215,11 +211,10 @@ void Sequencer::run()
       songTimeInMs += TIME_STEP;
       localStopped = stopped;
 
-      //Gestion de la pause
+      //Pause handling
       while (paused && !threadShouldExit() && !localStopped)
         wait(100);
 
-      //Interrompt la lecture si le thread doit être fermé
       if (threadShouldExit())
         return;
 

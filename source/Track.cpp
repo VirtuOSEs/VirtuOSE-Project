@@ -43,6 +43,7 @@ Track::Track(juce::MidiMessageSequence sequence)
   AudioTools::getInstance().generatePlugin(trackName, instrumentName);
 
   this->sequence.updateMatchedPairs();
+  resultingSequence = this->sequence;
 }
 
 void Track::restart()
@@ -92,7 +93,10 @@ void Track::playAtTick(double tick, double songTimeInSec)
     juce::MidiMessage expressionMessage = juce::MidiMessage::controllerEvent(midiEvent->message.getChannel(), EXPRESSION_CC, expressionValue);
     expressionMessage.setTimeStamp(songTimeInSec);
     AudioTools::getInstance().makePluginPlay(trackName, expressionMessage);
-    sequence.addEvent(expressionMessage);
+    {
+      juce::ScopedLock sl(sequenceAccess);
+      resultingSequence.addEvent(expressionMessage);
+    }
     expressionChanged = false;
   }
 
@@ -159,7 +163,7 @@ void Track::playAtTick(double tick, double songTimeInSec)
 juce::MidiMessageSequence Track::getSequence() const
 {
   juce::ScopedLock sL(sequenceAccess);
-  return sequence;
+  return resultingSequence;
 
 }
 

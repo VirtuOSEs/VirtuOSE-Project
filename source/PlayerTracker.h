@@ -67,6 +67,13 @@ public:
     : leftHand(leftHand), rightHand(rightHand)
   {}
 
+  static void resetSimObjects()
+  {
+    rightHandSphere = nullptr;
+    leftHandSphere = nullptr;
+    spawn = nullptr;
+  }
+
   virtual void process(SimObject *object)
   {
     //Mini optim pour ne faire le test qu'une fois

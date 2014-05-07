@@ -61,6 +61,7 @@ protected:
   void checkPlayingStatus(double tick, double timeStamp, bool isNoteOn);
 
   juce::MidiMessageSequence sequence;
+  juce::MidiMessageSequence resultingSequence;
   int eventIndex;
   juce::String trackName;
   juce::String instrumentName;

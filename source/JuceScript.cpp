@@ -25,6 +25,7 @@ Orchestrator::Orchestrator()
 Orchestrator::~Orchestrator()
 {
   saveSequence(saveFileName.toStdString().c_str());
+  HandsMove::resetSimObjects();
 }
 
 void Orchestrator::setSaveFile(const char* fileName) 
