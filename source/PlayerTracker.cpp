@@ -3,7 +3,6 @@
 #include <string.h>
 #include <NiteSampleUtilities.h>
 #include "PlayerTracker.h"
-#include "TSCallback.h"
 #include "platform/platform.h"
 
 #define USER_MESSAGE(msg) \
@@ -155,15 +154,12 @@ void PlayerTracker::onNewFrame(nite::UserTracker& userTracker)
       if (musicalGestureDetectionActivated && expressionGesture.checkExpressionGesture(handsTracker, user.getSkeleton()))
       {
         sequencer->setExpression(expressionGesture.getExpressionDetected());
-        CallbackManager::expressionChanged(expressionGesture.getExpressionDetected());
-        
       }
 
       //Detect tempo changes
       if (musicalGestureDetectionActivated && tempoGesture.checkTempoGesture(handsTracker, user.getSkeleton()))
       {
         sequencer->setTempo(tempoGesture.getTempo());
-        CallbackManager::tempoJustChanged(tempoGesture.getTempo());
       }
 
       //Send hands position to game (display hands as spheres)

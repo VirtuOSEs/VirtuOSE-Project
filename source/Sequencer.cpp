@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sys/stat.h>
 #include "AudioTools.h"
+#include "TSCallback.h"
 
 namespace JuceModule
 {
@@ -162,6 +163,7 @@ void Sequencer::stop()
   }
 
   tempoTrackIndex = 0;
+  CallbackManager::stop();
 }
 
 void Sequencer::pause()
@@ -174,6 +176,7 @@ void Sequencer::pause()
 
   paused = true;
   AudioTools::getInstance().disableAudioProcessing();
+  CallbackManager::pause();
 }
 
 void Sequencer::play()
@@ -190,6 +193,7 @@ void Sequencer::play()
     paused = false;
     notify();  
   }
+  CallbackManager::play();
 }
 
 void Sequencer::run()

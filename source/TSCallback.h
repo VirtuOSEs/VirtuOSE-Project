@@ -3,21 +3,21 @@
 
 #include "JuceLibraryCode\JuceHeader.h"
 
-class CallbackManager
+namespace CallbackManager
 {
-public:
-  static void instrumentWillPlay(const juce::String& trackName, double delayInMillis);
-  static void instrumentStartPlaying(const juce::String& trackName);
-  static void instrumentStoppedPlay(const juce::String& trackName);
+  void instrumentWillPlay(const juce::String& trackName, double delayInMillis);
+  void instrumentStartPlaying(const juce::String& trackName);
+  void instrumentStoppedPlay(const juce::String& trackName);
 
-  static void tempoJustChanged(int newTempo);
-  static void velocityChanged(float newVelocity);
-  static void expressionChanged(float newExpression);
-  static void tempoGestureStart();
-  static void tempoGestureEnd();
+  void tempoJustChanged(int newTempo);
+  void velocityChanged(float newVelocity);
+  void expressionChanged(float newExpression);
+  void tempoGestureStart();
+  void tempoGestureEnd();
 
-private:
-  CallbackManager(){}
+  void play();
+  void pause();
+  void stop();
 };
 
 

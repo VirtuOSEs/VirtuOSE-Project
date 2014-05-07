@@ -96,6 +96,7 @@ bool TempoGesture::checkTempoGesture(const HandsTracker& handsTracker, const nit
       }
 
       tempo = tmpTempo;
+      CallbackManager::tempoJustChanged(tempo);
       startTime = currentTime;
 
       CallbackManager::tempoGestureEnd();
@@ -121,4 +122,5 @@ bool TempoGesture::calibrateGesture(const nite::Skeleton& skeleton)
     return false;
   yBottom = rightHip.getPosition().y + (head.getPosition().y - rightHip.getPosition().y) / 3.f;
   yTop = yBottom + 100.f;
+  return true;
 }

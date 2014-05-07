@@ -220,3 +220,18 @@ function onInstrumentStoppedPlaying(%instrumentName)
 		%instrumentName.schedule(%i,"liftInstrument", -1/(%nombreAppels));
 	}
 }
+
+function onPlay()
+{
+  echo("PLAY");
+}
+
+function onPause()
+{
+  echo("PAUSE");
+}
+
+function onStop()
+{
+  echo("STOP");
+}

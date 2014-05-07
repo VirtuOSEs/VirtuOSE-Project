@@ -114,3 +114,29 @@ void CallbackManager::tempoGestureEnd()
   Sim::postEvent(Sim::getRootGroup(), evt, -1);
 }
 
+void CallbackManager::play()
+{
+  const S32 argc = 1;
+  const char* argv[1] = {"onPlay"};
+
+  SimConsoleEvent* evt = new SimConsoleEvent(argc, argv, false);
+  Sim::postEvent(Sim::getRootGroup(), evt, -1);
+}
+
+void CallbackManager::pause()
+{
+  const S32 argc = 1;
+  const char* argv[1] = {"onPause"};
+
+  SimConsoleEvent* evt = new SimConsoleEvent(argc, argv, false);
+  Sim::postEvent(Sim::getRootGroup(), evt, -1);
+}
+
+void CallbackManager::stop()
+{
+  const S32 argc = 1;
+  const char* argv[1] = {"onStop"};
+
+  SimConsoleEvent* evt = new SimConsoleEvent(argc, argv, false);
+  Sim::postEvent(Sim::getRootGroup(), evt, -1);
+}
