@@ -2,6 +2,7 @@
 exec( "scripts/virtuose/baguettes.cs" );
 exec( "scripts/virtuose/modifObjects.cs" );
 exec( "scripts/virtuose/sounds.cs" );
+exec( "scripts/virtuose/instruments.cs" );
 
 $posx = 0.0;
 $posy = 0.0;
@@ -12,9 +13,10 @@ $posxbois = 0.0;
 $posxcuivre = 0.0;
 $posxvent = 0.0;
 
-
  //Initialisation
 function virtuoseStart(){
+  initialiseFamilies();
+  
 	echo("Virtuose is beginning");
 	
 	//DataBlock Particle
@@ -89,107 +91,33 @@ function placeInstruments(%nbInstruments){
 
 function createInstruments(%instrument,%file){
 				echo(%instrument SPC %file);
+
 				%nameInstru=%instrument;
+				if (isWoodwind(%file))
+				{
+				  %famille = "vent";
+          $posxvent ++;
+			   	$posx= $posxvent;	
+				}
+				else if (isHorn(%file))
+				{
+          %famille = "cuivre";
+          $posxcuivre ++;
+          $posx= $posxcuivre;
+				}
+				else if (isString(%file))
+				{
+          %famille = "corde";
+          $posxcorde +=1.5;
+          $posx= $posxcorde;
+				}
+				else if (isPercussion(%file))
+				{
+          %famille = "percussion";
+          $posxpercu ++;
+          $posx= $posxpercu;
+				}
 
-				
-			  switch$(%file){
-			   	case "piano":
-			   		%famille = "corde";
-			   		$posxcorde +=1.5;
-			   		$posx= $posxcorde;
-			   	case "harp":
-			   		%famille = "corde";	
-			   		$posxcorde +=1.5;
-			   		$posx= $posxcorde;
-			   	case "electricbass":
-			   		%famille = "corde";
-			   		$posxcorde +=1.5;
-			   		$posx= $posxcorde;		
-			   	case "Guitar":
-			   		%famille = "corde";
-			   		$posxcorde +=1.5;
-			   		$posx= $posxcorde;	
-			   	case "acousticguitar":
-			   		%famille = "corde";
-			   		$posxcorde +=1.5;
-			   		$posx= $posxcorde;		
-			   	case "violins":
-			   	case "violin":
-			   		%famille = "corde";
-			   		$posxcorde +=1.5;
-			   		$posx= $posxcorde;	
-			   	case "cellos":
-			   	case "celli":
-			   	case "cello":
-			   		%famille = "corde";
-			   		$posxcorde +=1.5;
-			   		$posx= $posxcorde;	
-			   	case "violas":
-			   	case "viola":
-			   		%famille = "corde";
-			   		$posxcorde +=1.5;
-			   		$posx= $posxcorde;
-			   	case "bass":
-			   	case "basses":
-			   		%famille = "corde";
-			   		$posxcorde +=1.5;
-			   		$posx= $posxcorde;
-			   	case "drum":
-			   		%famille = "percussion";
-			   		$posxpercu ++;
-			   		$posx= $posxpercu;
-			   	case "timpani":
-			   		%famille = "percussion";
-			   		$posxpercu ++;
-			   		$posx= $posxpercu;	
-			   	case "saxophone":
-			   		%famille = "bois";
-			   		$posxbois ++;
-			   		$posx= $posxbois;
-			   	case "oboes":
-			   	case "oboe":
-			   		%famille = "bois";
-			   		$posxbois ++;
-			   		$posx= $posxbois;	
-			   	case "bassoons":
-			   	case "bassoon":
-			   		%famille = "bois";
-			   		$posxbois ++;
-			   		$posx= $posxbois;	
-			   	case "trombone":
-			   		%famille = "cuivre";
-			   		$posxcuivre ++;
-			   		$posx= $posxcuivre;
-			   	case "trumpets":
-			   	case "trumpet":
-			   		%famille = "cuivre";
-			   		$posxcuivre ++;
-			   		$posx= $posxcuivre;
-			   	case "flutes":
-			   	case "flute":
-          case "clarinets":
-			   	case "clarinet":
-			   		%famille = "vent";
-			   		$posxvent ++;
-			   		$posx= $posxvent;
-			   	case "horns":
-			   	case "horn":
-			   		%famille = "vent";
-			   		$posxvent ++;
-			   		$posx= $posxvent;	
-			
-			   	default:
-			   	  echo("Unknown family: " @ %file);
-
-			   }
-			   
-			   /*datablock StaticShapeData(%instrument) 
-			   {   
-				   shapeFile = "art/shapes/virtuose/" @ %instrument @ ".dae";
-				   junkvar = "helloworld";
-				   name=%instrument;
-			   };*/
-			   
 			   //Handling case where the instrument has not been yet modelised in 3D
 			   %file3DName = "art/shapes/virtuose/" @ strlwr(%file) @ ".dae";
 			   %fileExist = getFileCount(%file3DName, false);
@@ -204,6 +132,7 @@ function createInstruments(%instrument,%file){
 			     }
 			   }
 			   echo("Final name : " @ %file3DName);
+			   echo(%famille @ ":" @ %famille.position.x);
 			   new TSStatic(%nameInstru) 
 			   {
 					shapeName = %file3DName;
@@ -224,8 +153,6 @@ function createInstruments(%instrument,%file){
 
 function placeInstrumentsTrack(){
 	for(%i=0;%i<$orchestrator.getNumTracks();%i++){
-		//echo($orchestrator.getTrackName(%i));
-		//echo($orchestrator.getInstrumentName(%i));
 		createInstruments($orchestrator.getTrackName(%i),$orchestrator.getInstrumentName(%i));
 		
 	}

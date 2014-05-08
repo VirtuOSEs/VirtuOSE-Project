@@ -1278,7 +1278,7 @@ new SimGroup(MissionGroup) {
          allowPlayerStep = "1";
          renderNormals = "0";
          forceDetail = "-1";
-         position = "-3.01341 24.9451 6.40856";
+         position = "-2.15709 19.5151 3.49837";
          rotation = "1 0 0 0";
          scale = "0.275127 0.275127 0.275127";
          canSave = "1";
@@ -1294,7 +1294,7 @@ new SimGroup(MissionGroup) {
          allowPlayerStep = "1";
          renderNormals = "0";
          forceDetail = "-1";
-         position = "0.98659 24.9451 6.40856";
+         position = "0.699582 18.4869 4.18635";
          rotation = "1 0 0 0";
          scale = "0.275127 0.275127 0.275127";
          canSave = "1";
@@ -1333,22 +1333,6 @@ new SimGroup(MissionGroup) {
       canSave = "1";
       canSaveDynamicFields = "1";
    };
-   new TSStatic(bois) {
-      shapeName = "art/shapes/cube/cube.dae";
-      playAmbient = "1";
-      meshCulling = "0";
-      originSort = "0";
-      collisionType = "Collision Mesh";
-      decalType = "Collision Mesh";
-      allowPlayerStep = "1";
-      renderNormals = "0";
-      forceDetail = "-1";
-      position = "-6.57216 22.5325 4.84899";
-      rotation = "0 0 1 175.852";
-      scale = "0.01 0.01 0.0331474";
-      canSave = "1";
-      canSaveDynamicFields = "1";
-   };
    new TSStatic(cuivre) {
       shapeName = "art/shapes/cube/cube.dae";
       playAmbient = "1";
@@ -1359,7 +1343,7 @@ new SimGroup(MissionGroup) {
       allowPlayerStep = "1";
       renderNormals = "0";
       forceDetail = "-1";
-      position = "2.00557 20.9879 4.27437";
+      position = "-6.57216 24.4598 4.84899";
       rotation = "1 0 0 0";
       scale = "0.01 0.01 0.01";
       canSave = "1";

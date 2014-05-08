@@ -7,7 +7,7 @@ namespace JuceModule
 {
 
 AudioTools* AudioTools::singleton = nullptr;
-const juce::String AudioTools::FXP_DIRECTORY = "fxp";
+const juce::String AudioTools::FXP_DIRECTORY = "fxpTest";
 
 AudioTools::AudioTools()
 {
@@ -66,13 +66,18 @@ void AudioTools::generatePlugin(const juce::String& trackName, const juce::Strin
   description.pluginFormatName = "VST";
   description.category = "Instrument";
   description.fileOrIdentifier =  juce::File::getCurrentWorkingDirectory().getChildFile("../sfz.dll").getFullPathName();
-
-  juce::File fxpFile = juce::File::getCurrentWorkingDirectory().getChildFile("../"+FXP_DIRECTORY+"/" + instrumentName + ".fxp").getFullPathName();
-  if (!fxpFile.existsAsFile())
+  
+  juce::Array<juce::File> result;
+  juce::File fxpFile;
+  juce::File::getCurrentWorkingDirectory().getChildFile("../"+FXP_DIRECTORY).findChildFiles(result, juce::File::findFiles, true, juce::String(instrumentName) + ".fxp");
+  if (result.size() == 0)
   {
     Platform::outputDebugString(juce::String("Unable to load instrument " + juce::String(instrumentName)).toStdString().c_str());
     return;
   }
+  else
+    fxpFile = result.getFirst().getFullPathName();
+
   Platform::outputDebugString(juce::String("Loading " + instrumentName).toStdString().c_str());
 
   //If plugin for required instrument is not loaded yet
