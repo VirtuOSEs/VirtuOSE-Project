@@ -62,14 +62,8 @@ function changeVelocity(%var){
 		%mapTo.diffuseColor.g=%g;
 		%mapTo.diffuseColor.b=%b;
 		
-		//$velocityParticleNode.active=!$velocityParticleNode.active;
-		
-		// $velocityParticleNode.setHidden(true);
-		//$velocityParticleNode.emitter.setHidden(true);
-		// $velocityParticleNode.emitter.particles[0].setHidden(true);
-		
 		$particuleVeloTmp.position=%obj.position.x SPC %obj.position.y SPC %obj.position.z-1;
-		//$velocityParticleNode.setScale($velocityParticleNode.getScale());
+		
 		
 		for(%i=0;%i<4;%i++){
 			if($particuleVeloTmp.emitter.particles[%i]$="")
@@ -100,7 +94,6 @@ function changeVelocity(%var){
 function TSStatic::deleteParticle(){
 	$particuleVeloTmp.delete();
 	$particuleVeloTmp="";
-	//echo("Boom");
 }
 
 function TSStatic::liftInstrument(%instrumentName,%z){
@@ -207,12 +200,22 @@ function onInstrumentWillPlay(%instrumentName, %delayInMillis)
 function onInstrumentStartPlaying(%instrumentName)
 {
   echo(%instrumentName @ " starts playing");
+  %pos=%instrumentName.position.x SPC %instrumentName.position.y SPC %instrumentName.position.z;
+  
+  %particle=$playParticleNode.clone();
+  %particle.position=%pos;
+  %particle.active=true;
+  
+  %instrumentName.particle=%particle;
 }
 
 function onInstrumentStoppedPlaying(%instrumentName)
 {
   echo(%instrumentName @ " stops playing");
   //changeOpacity(%instrumentName,1);
+  if(%instrumentName.particle!$="")
+	%instrumentName.particle.delete();
+	
   %delayInMillis=2000;
   %nombreAppels=100;
   for(%i=0;%i<%delayInMillis;%i=%i+%delayInMillis/%nombreAppels){

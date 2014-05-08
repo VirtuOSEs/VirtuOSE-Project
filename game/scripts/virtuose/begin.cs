@@ -68,6 +68,19 @@ function virtuoseStart(){
          canSave = "1";
          canSaveDynamicFields = "1";
       };
+	$playParticleNode=new ParticleEmitterNode(playParticleNode) {
+         active = "0";
+         emitter = "playEmitter";
+         velocity = "1";
+         dataBlock = "SimpleEmitterNodeData";
+         position = "0 0 0";
+         rotation = "1 0 0 0";
+         scale = "1 1 1";
+         canSave = "1";
+         canSaveDynamicFields = "1";
+      };
+	
+	$playParticleNode.position="0 0 0";
 	
 	if(strcmp($orchestrator.options.handedness,"lEFT_HANDEDNESS")==0){
 		$velocityParticleNode.position=rightHand.position;
@@ -182,7 +195,7 @@ function createInstruments(%instrument,%file){
 				   name=%instrument;
 			   };*/
 			   
-			   new TSStatic(%nameInstru) 
+				new TSStatic(%nameInstru) 
 			   {
 					shapeName = "art/shapes/virtuose/" @ %file @ ".dae";
 
@@ -190,8 +203,8 @@ function createInstruments(%instrument,%file){
 					internalName=%nameInstru;
 				   //dataBlock = %instrument;
 	
-				  position = $posx+%famille.position.x SPC %famille.position.y SPC %famille.position.z;
-
+					position = $posx+%famille.position.x SPC %famille.position.y SPC %famille.position.z;
+					particule="";
 				   rotation = "1 90 0 0";
 				   scale = "1 1 1";
 				   //name=%instrument;
@@ -202,9 +215,6 @@ function createInstruments(%instrument,%file){
 
 function placeInstrumentsTrack(){
 	for(%i=0;%i<$orchestrator.getNumTracks();%i++){
-		//echo($orchestrator.getTrackName(%i));
-		//echo($orchestrator.getInstrumentName(%i));
 		createInstruments($orchestrator.getTrackName(%i),$orchestrator.getInstrumentName(%i));
-		
 	}
 }
