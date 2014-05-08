@@ -1,7 +1,7 @@
 
 function initialiseFamilies()
 {
-  %pattern = "../fxpTest/Woodwinds/*.fxp";
+  %pattern = "../fxp/Woodwinds/*.fxp";
   %nbInstrus = getFileCount(%pattern);
   $woodwinds[0] = findFirstFile(%pattern);
   $nbWoodwinds = %nbInstrus;
@@ -9,11 +9,12 @@ function initialiseFamilies()
   {
     %instruName = findNextFile(%pattern);
     %instruName = fileName(%instruName);
-    %instruName = stripChars(%instruName, ".fxp");
+    %instruName = strreplace(%instruName, ".fxp", "");
     $woodwinds[%i] = %instruName;
+    echo(%instruName);
   }
   
-  %pattern = "../fxpTest/Strings/*.fxp";
+  %pattern = "../fxp/Strings/*.fxp";
   %nbInstrus = getFileCount(%pattern);
   $strings[0] = findFirstFile(%pattern);
   $nbStrings = %nbInstrus;
@@ -21,11 +22,12 @@ function initialiseFamilies()
   {
     %instruName = findNextFile(%pattern);
     %instruName = fileName(%instruName);
-    %instruName = stripChars(%instruName, ".fxp");
+    %instruName = strreplace(%instruName, ".fxp", "");
     $strings[%i] = %instruName;
+    echo(%instruName);
   }
   
-  %pattern = "../fxpTest/Horns/*.fxp";
+  %pattern = "../fxp/Horns/*.fxp";
   %nbInstrus = getFileCount(%pattern);
   $horns[0] = findFirstFile(%pattern);
   $nbHorns = %nbInstrus;
@@ -33,11 +35,12 @@ function initialiseFamilies()
   {
     %instruName = findNextFile(%pattern);
     %instruName = fileName(%instruName);
-    %instruName = stripChars(%instruName, ".fxp");
+    %instruName = strreplace(%instruName, ".fxp", "");
     $horns[%i] = %instruName;
+    echo(%instruName);
   }
   
-  %pattern = "../fxpTest/Percussions/*.fxp";
+  %pattern = "../fxp/Percussions/*.fxp";
   %nbInstrus = getFileCount(%pattern);
   $percussions[0] = findFirstFile(%pattern);
   $nbPercussions = %nbInstrus;
@@ -45,8 +48,9 @@ function initialiseFamilies()
   {
     %instruName = findNextFile(%pattern);
     %instruName = fileName(%instruName);
-    %instruName = stripChars(%instruName, ".fxp");
+    %instruName = strreplace(%instruName, ".fxp", "");
     $percussions[%i] = %instruName;
+    echo(%instruName);
   }
 }
 
