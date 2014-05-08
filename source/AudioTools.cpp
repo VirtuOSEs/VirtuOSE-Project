@@ -68,6 +68,7 @@ void AudioTools::generatePlugin(const juce::String& trackName, const juce::Strin
   description.fileOrIdentifier =  juce::File::getCurrentWorkingDirectory().getChildFile("../sfz.dll").getFullPathName();
   
   juce::Array<juce::File> result;
+  result.clear();
   juce::File fxpFile;
   juce::File::getCurrentWorkingDirectory().getChildFile("../"+FXP_DIRECTORY).findChildFiles(result, juce::File::findFiles, true, juce::String(instrumentName) + ".fxp");
   if (result.size() == 0)
@@ -76,9 +77,10 @@ void AudioTools::generatePlugin(const juce::String& trackName, const juce::Strin
     return;
   }
   else
+  {
     fxpFile = result.getFirst().getFullPathName();
-
-  Platform::outputDebugString(juce::String("Loading " + instrumentName).toStdString().c_str());
+    Platform::outputDebugString(juce::String("Loading " + instrumentName + " with " + fxpFile.getFileName()).toStdString().c_str());
+  }
 
   //If plugin for required instrument is not loaded yet
   if (pluginsMap.find(trackName) == pluginsMap.end())
@@ -87,7 +89,7 @@ void AudioTools::generatePlugin(const juce::String& trackName, const juce::Strin
 
     juce::MemoryBlock fxpData;
     fxpFile.loadFileAsData(fxpData);
-    juce::VSTPluginFormat::loadFromFXBFile(pluginsMap[trackName], fxpData.getData(), fxpData.getSize());
+    jassert(juce::VSTPluginFormat::loadFromFXBFile(pluginsMap[trackName], fxpData.getData(), fxpData.getSize()));
 
     playersMap[trackName] = new juce::AudioProcessorPlayer();
     playersMap[trackName]->setProcessor(pluginsMap[trackName]);
