@@ -207,7 +207,8 @@ function createInstruments(%instrument,%file){
 				   rotation = "1 90 0 0";
 				   scale = "1 1 1";
 				   //name=%instrument;
-					
+					timeLeft=0;
+					distanceLeft=1;
 			   };
 		   
 }
