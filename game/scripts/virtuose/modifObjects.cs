@@ -184,6 +184,7 @@ function onVelocityChanged(%newVelocity)
 
 function onExpressionChanged(%newExpression)
 {
+  echo("Expression: " @ %newExpression);
     changeVelocity(%newExpression);
 }
 
@@ -221,4 +222,19 @@ function onInstrumentStoppedPlaying(%instrumentName)
   for(%i=0;%i<%delayInMillis;%i=%i+%delayInMillis/%nombreAppels){
 		%instrumentName.schedule(%i,"liftInstrument", -1/(%nombreAppels));
 	}
+}
+
+function onPlay()
+{
+  echo("PLAY");
+}
+
+function onPause()
+{
+  echo("PAUSE");
+}
+
+function onStop()
+{
+  echo("STOP");
 }

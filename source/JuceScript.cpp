@@ -25,6 +25,7 @@ Orchestrator::Orchestrator()
 Orchestrator::~Orchestrator()
 {
   saveSequence(saveFileName.toStdString().c_str());
+  HandsMove::resetSimObjects();
 }
 
 void Orchestrator::setSaveFile(const char* fileName) 
@@ -41,7 +42,7 @@ void Orchestrator::loadMidiFile(const char* filePath)
 
   if (stream.failedToOpen())
   {
-    Platform::outputDebugString("Impossible d'ouvrir le fichier midi");
+    Platform::outputDebugString("Unable to open midi file");
     // DEBUG CHECK : the file must be correctly loaded in order to continue
     jassert(false);
   }

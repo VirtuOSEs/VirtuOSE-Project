@@ -15,11 +15,23 @@ namespace JuceModule
   The actual objects which play the midi tracks.
   Maintains also a special MidiSequence containing all the tempo change
   events.
+  Trigger the following TS Callbacks:
+  * onPlay()
+  * onPause()
+  * onStop()
+  * onExpressionChanged(%newExpression)
+  * onTempoChanged(%newTempo)
  **/
 class Sequencer : public juce::Thread, public juce::ReferenceCountedObject
 {
 public:
   typedef juce::ReferenceCountedObjectPtr<Sequencer> Ptr;
+  
+  ///Time of wait of the sequencer thread
+  static const int TIME_STEP;
+  ///Number of milliseconds per minute
+  static const double MS_PER_MINUTE;
+
   Sequencer(std::vector<JuceModule::Track::Ptr > tracks, short ticksPerQuarterNote,
             const Options& options);
   ~Sequencer();
@@ -27,8 +39,7 @@ public:
   void saveSequence(const juce::String& filePath);
   double getTick();
 
-  void setTempoTrack(const juce::MidiMessageSequence& tempoTrack)
-    {this->tempoTrack = tempoTrack; newTempoTrack = tempoTrack;}
+  void setTempoTrack(const juce::MidiMessageSequence& tempoTrack);
 
   juce::uint32 getTempo() const;
   void setTempo(juce::uint32 tempo);
@@ -45,6 +56,7 @@ protected:
 
 private:
   inline double computeMsPerTicks();
+  inline double computeTickStep();
 
   short ticksPerQuarterNote;
   std::vector<JuceModule::Track::Ptr > tracks;
@@ -60,6 +72,7 @@ private:
   double ticks;
   double msPerTick;
   unsigned int tempoTrackIndex;
+  double tickStep;//Number of ticks incremented after each timeStep
 
   juce::CriticalSection ticksAccess;
   juce::CriticalSection tempoAccess;

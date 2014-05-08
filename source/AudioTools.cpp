@@ -5,25 +5,25 @@
 
 namespace JuceModule
 {
-  // IMPLEM AUDIOTOOLS
+
 AudioTools* AudioTools::singleton = nullptr;
 
 AudioTools::AudioTools()
 {
   juce::AudioDeviceManager::AudioDeviceSetup setup;
-  setup.inputChannels = 20;
-  setup.outputChannels = 20;
+  setup.inputChannels = 1;//20
+  setup.outputChannels = 2;//20
   setup.outputDeviceName = "ASIO4ALL v2";
   setup.inputDeviceName = "ASIO4ALL v2";
   setup.sampleRate = 44100.0000;
-  setup.bufferSize = 0;
+  setup.bufferSize = 1024;
   setup.useDefaultInputChannels = true;
   setup.useDefaultOutputChannels = true;
     
   
   CoInitialize(nullptr);
   juce::String error = deviceManager.initialise (20, 20, nullptr, false, juce::String::empty, &setup);
-  Con::errorf(error.toStdString().c_str());
+  Platform::outputDebugString(error.toStdString().c_str());
 
   deviceManager.playTestSound();
 }
@@ -69,12 +69,12 @@ void AudioTools::generatePlugin(const juce::String& trackName, const juce::Strin
   juce::File fxpFile = juce::File::getCurrentWorkingDirectory().getChildFile("../fxp/" + instrumentName + ".fxp").getFullPathName();
   if (!fxpFile.existsAsFile())
   {
-    Platform::outputDebugString("Impossible de charger l'instrument demandé");
+    Platform::outputDebugString("Unable to load instrument");
     return;
   }
-  Platform::outputDebugString(juce::String("Chargement de " + instrumentName).toStdString().c_str());
+  Platform::outputDebugString(juce::String("Loading " + instrumentName).toStdString().c_str());
 
-  //Si le plugin correspondant à l'instrument n'existe pas encore
+  //If plugin for required instrument is not loaded yet
   if (pluginsMap.find(trackName) == pluginsMap.end())
   {
     pluginsMap[trackName] = formatManager.createPluginInstance(description, errorMessage);
@@ -89,13 +89,14 @@ void AudioTools::generatePlugin(const juce::String& trackName, const juce::Strin
   }
 }
 
-void AudioTools::makePluginPlay(const juce::String& trackName, const juce::MidiMessage& message)
+void AudioTools::makePluginPlay(const juce::String& trackName, const juce::MidiMessage& messageWithTimestampInSeconds)
 {
+  //WARNING: PRE CONDITION: message's timestamp MUST BE in seconds
   if(pluginsMap.find(trackName) == pluginsMap.end())
     return;
 
   const juce::ScopedLock sL(criticalSection);
-  playersMap[trackName]->handleIncomingMidiMessage(nullptr, message);
+  playersMap[trackName]->handleIncomingMidiMessage(nullptr, messageWithTimestampInSeconds);
 }
 
 void AudioTools::disableAudioProcessing()

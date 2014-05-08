@@ -43,18 +43,23 @@ Track::Track(juce::MidiMessageSequence sequence)
   AudioTools::getInstance().generatePlugin(trackName, instrumentName);
 
   this->sequence.updateMatchedPairs();
+  resultingSequence = this->sequence;
 }
 
 void Track::restart()
 {
-  if (eventIndex == 0 || incomingKeyUp.empty())
+  if (eventIndex == 0)
     return;
 
+  AudioTools::getInstance().disableAudioProcessing();
   AudioTools::getInstance().enableAudioProcessing();
+  juce::MidiMessage inSecondsMidiMessage;
   for (auto it = incomingKeyUp.begin(); it != incomingKeyUp.end(); ++it)
   {
     juce::MidiMessageSequence::MidiEventHolder* midiEvent = sequence.getEventPointer(*it);
-    AudioTools::getInstance().makePluginPlay(trackName, midiEvent->message);
+    inSecondsMidiMessage = midiEvent->message;
+    inSecondsMidiMessage.setTimeStamp(juce::Time::currentTimeMillis() * 0.001);
+    AudioTools::getInstance().makePluginPlay(trackName, inSecondsMidiMessage);
   }
   eventIndex = 0;
   expressionChanged = false;
@@ -72,7 +77,7 @@ void Track::setExpression(float value)
   expressionChanged = true;
 }
 
-void Track::playAtTick(double tick)
+void Track::playAtTick(double tick, double songTimeInSec)
 {
   if (isFinished())
     return;
@@ -85,11 +90,15 @@ void Track::playAtTick(double tick)
 
   if (expressionChanged.get())
   {
-    juce::MidiMessage expressionMessage = juce::MidiMessage::controllerEvent(1, EXPRESSION_CC, expressionValue);
-    expressionMessage.setTimeStamp(tick);
-    expressionMessage.setChannel(midiEvent->message.getChannel());
+    juce::MidiMessage expressionMessage = juce::MidiMessage::controllerEvent(midiEvent->message.getChannel(), EXPRESSION_CC, expressionValue);
+    expressionMessage.setTimeStamp(songTimeInSec);//AudioTools needs timestamp in seconds
     AudioTools::getInstance().makePluginPlay(trackName, expressionMessage);
-    sequence.addEvent(expressionMessage);
+    expressionMessage.setTimeStamp(tick);//But we want to save the timestamp in tick (tempo independant)
+    resultingSequence.addEvent(expressionMessage);
+    {
+      juce::ScopedLock sl(sequenceAccess);
+      resultingSequence.addEvent(expressionMessage);
+    }
     expressionChanged = false;
   }
 
@@ -109,12 +118,15 @@ void Track::playAtTick(double tick)
 
   bool isNoteOn = midiEvent->message.isNoteOn();
   checkPlayingStatus(tick, timeStamp, isNoteOn);
-
+  juce::MidiMessage inSecondsMidiMessage;
   //If it's time, play the event
   while ( timeStamp <= tick)
   {
     isNoteOn = midiEvent->message.isNoteOn();
-    AudioTools::getInstance().makePluginPlay(trackName, midiEvent->message);
+
+    inSecondsMidiMessage = midiEvent->message;
+    inSecondsMidiMessage.setTimeStamp(songTimeInSec);
+    AudioTools::getInstance().makePluginPlay(trackName, inSecondsMidiMessage);
     //Used to track the playing status of the track
     if (isNoteOn)
     {
@@ -133,10 +145,10 @@ void Track::playAtTick(double tick)
     equals eq;
     eq.value2 = eventIndex;
     incomingKeyUp.remove_if(eq);
-
-    ++eventIndex;
+    
     checkPlayingStatus(tick, timeStamp, isNoteOn);
-
+    
+    ++eventIndex;
     if (isFinished())
       break;
 
@@ -154,7 +166,7 @@ void Track::playAtTick(double tick)
 juce::MidiMessageSequence Track::getSequence() const
 {
   juce::ScopedLock sL(sequenceAccess);
-  return sequence;
+  return resultingSequence;
 
 }
 

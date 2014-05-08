@@ -67,6 +67,13 @@ public:
     : leftHand(leftHand), rightHand(rightHand)
   {}
 
+  static void resetSimObjects()
+  {
+    rightHandSphere = nullptr;
+    leftHandSphere = nullptr;
+    spawn = nullptr;
+  }
+
   virtual void process(SimObject *object)
   {
     //Mini optim pour ne faire le test qu'une fois
@@ -77,6 +84,9 @@ public:
     if (spawn == nullptr)
     {
       spawn = dynamic_cast<SpawnSphere* > (Sim::findObject("Spawn"));
+      //Special case when scene is destroyed before this event
+      if (spawn == nullptr)
+        return;
       MatrixF eyeMatrix;
       spawn->getEyeTransform(&eyeMatrix);
       eyePosition = eyeMatrix.getPosition();

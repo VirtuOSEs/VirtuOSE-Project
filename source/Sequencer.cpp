@@ -2,16 +2,31 @@
 #include <fstream>
 #include <sys/stat.h>
 #include "AudioTools.h"
+#include "TSCallback.h"
 
 namespace JuceModule
 {
+
+const int Sequencer::TIME_STEP = 3;
+const double Sequencer::MS_PER_MINUTE = 60000.0;
+
+double Sequencer::computeTickStep() 
+{
+  //If dotted whole note : 1 - 2/4, dotted quarter note : 4 - 4/4 => 3 etc
+  double rythmUnit = options.rythmUnitDotted ? options.rythmUnit - options.rythmUnit / QUARTER_NOTE : options.rythmUnit;
+
+  double ticksPerMinute = tempo * (double)QUARTER_NOTE / (double)rythmUnit * ticksPerQuarterNote;
+  double nbTimeStepPerMinute = MS_PER_MINUTE / (double)TIME_STEP;
+
+  return ticksPerMinute / nbTimeStepPerMinute;
+}
 
 double Sequencer::computeMsPerTicks()
 {
   //If dotted whole note : 1 - 2/4, dotted quarter note : 4 - 4/4 => 3 etc
   double rythmUnit = options.rythmUnitDotted ? options.rythmUnit - options.rythmUnit / QUARTER_NOTE : options.rythmUnit;
   int ticksPerMinute = tempo * (double)QUARTER_NOTE / (double)rythmUnit * ticksPerQuarterNote;
-  return  60000.0 / (double)ticksPerMinute;
+  return  MS_PER_MINUTE / (double)ticksPerMinute;
 }
 
 Sequencer::Sequencer(std::vector<JuceModule::Track::Ptr > tracks, short ticksPerQuarterNote, const Options& options)
@@ -38,10 +53,13 @@ Sequencer::Sequencer(std::vector<JuceModule::Track::Ptr > tracks, short ticksPer
   midiData.append(header, sizeof(header));
   midiData.append(trackName, sizeof(trackName));
   juce::MidiMessage trackNameEvent(midiData.getData(), midiData.getSize());
+  trackNameEvent.setTimeStamp(0);
   newTempoTrack.addEvent(trackNameEvent);
 
   msPerTick = computeMsPerTicks();
   updateTracksMsPerTick(msPerTick);
+
+  tickStep = computeTickStep();
 }
 
 Sequencer::~Sequencer()
@@ -52,6 +70,12 @@ Sequencer::~Sequencer()
   stop();
 }
 
+void Sequencer::setTempoTrack(const juce::MidiMessageSequence& tempoTrack)
+{
+  this->tempoTrack = tempoTrack;
+  newTempoTrack.addSequence(tempoTrack, 0.0, 0.0, tempoTrack.getEndTime() + 1);
+  newTempoTrack.updateMatchedPairs();
+}
 void Sequencer::saveSequence(const juce::String& filePath)
 {
   jassert(stopped);
@@ -97,15 +121,17 @@ void Sequencer::setTempo(juce::uint32 tempo)
     const juce::ScopedLock lockTempo(tempoAccess);
     this->tempo = tempo;
     msPerTick = computeMsPerTicks();
-    microSecPerQuarterNote = msPerTick * ticksPerQuarterNote * 1000.0;
+    microSecPerQuarterNote = msPerTick * ticksPerQuarterNote * 1000.0;//1000.0 = microsec per millisec
     updateTracksMsPerTick(msPerTick);
   }
   juce::MidiMessage tempoMessage = juce::MidiMessage::tempoMetaEvent(microSecPerQuarterNote);
   {
     const juce::ScopedLock sL(ticksAccess);
     tempoMessage.setTimeStamp(ticks);
+    tickStep = computeTickStep();
   }
   newTempoTrack.addEvent(tempoMessage);
+  CallbackManager::tempoJustChanged(tempo);
 }
 
 void Sequencer::setExpression(float value)
@@ -119,6 +145,7 @@ void Sequencer::setExpression(float value)
   {
     tracks[i]->setExpression(value);
   }
+  CallbackManager::expressionChanged(value);
 }
 
 void Sequencer::stop()
@@ -138,10 +165,7 @@ void Sequencer::stop()
   }
 
   tempoTrackIndex = 0;
-
-  //Si on disable l'audio on empeche les NoteOff de restart()
-  //d'etre jouees
-  //AudioTools::getInstance().disableAudioProcessing();
+  CallbackManager::stop();
 }
 
 void Sequencer::pause()
@@ -154,6 +178,7 @@ void Sequencer::pause()
 
   paused = true;
   AudioTools::getInstance().disableAudioProcessing();
+  CallbackManager::pause();
 }
 
 void Sequencer::play()
@@ -170,6 +195,7 @@ void Sequencer::play()
     paused = false;
     notify();  
   }
+  CallbackManager::play();
 }
 
 void Sequencer::run()
@@ -182,35 +208,26 @@ void Sequencer::run()
   double lag = 0.0;
   double elapsedTime = 0.0;
   double startTime = 0.0;
-  //Tentative d'optimisation de l'accès concurrentiel 
-  //à msPerTick et stopped
-  double localMsPerTick = 0.0;
   bool localStopped = false;
+  double songTimeInMs = 0.0;
   for (;;)
   {
     startTime = juce::Time::getMillisecondCounterHiRes();
-    //Tentative d'optimisation de l'accès concurrentiel 
-    //à msPerTick
-    {
-      const juce::ScopedLock tempoLock(tempoAccess);
-      localMsPerTick = msPerTick;
-    }
-    wait(localMsPerTick);
+    
+    wait(TIME_STEP);
+
     elapsedTime = juce::Time::getMillisecondCounterHiRes() - startTime;
     lag += elapsedTime;
 
-    while (lag >= localMsPerTick)
+    while (lag >= TIME_STEP)
     {
-      { //stoppedAccess scope
-        const juce::ScopedLock sL(stoppedAccess);
-        localStopped = stopped;
-      }
+      songTimeInMs += TIME_STEP;
+      localStopped = stopped;
 
-      //Gestion de la pause
+      //Pause handling
       while (paused && !threadShouldExit() && !localStopped)
         wait(100);
 
-      //Interrompt la lecture si le thread doit être fermé
       if (threadShouldExit())
         return;
 
@@ -218,16 +235,16 @@ void Sequencer::run()
       {
         {
           const juce::ScopedLock modifyingTicks(ticksAccess);
-          ticks++;
+          ticks += tickStep;
         }
         checkTempoChangeTrack();
         for(int i = 0; i< tracks.size(); ++i)
-          tracks[i]->playAtTick(ticks);
+          tracks[i]->playAtTick(ticks, songTimeInMs * 0.001);
       }
       else return;
-      lag -= localMsPerTick;
+      lag -= TIME_STEP;
       
-    }// end of tempo access (critical section)
+    }
   }
 }
 
@@ -242,10 +259,11 @@ void Sequencer::checkTempoChangeTrack()
     if (midiEvent->message.isTempoMetaEvent())
     {
       juce::ScopedLock sL(tempoAccess);
-      double rythmUnitModificator = (options.rythmUnit + (options.rythmUnit / 2.0 * options.rythmUnitDotted));
-      msPerTick = midiEvent->message.getTempoMetaEventTickLength(ticksPerQuarterNote) * rythmUnitModificator *  1000.0;
-      tempo = 60000.0 / msPerTick / (double)ticksPerQuarterNote / rythmUnitModificator;
+      double rythmUnitModificator = options.rythmUnitDotted ? options.rythmUnit - options.rythmUnit / QUARTER_NOTE : options.rythmUnit;;
+      msPerTick = midiEvent->message.getTempoMetaEventTickLength(ticksPerQuarterNote) * (rythmUnitModificator  / QUARTER_NOTE) *  1000.0;
+      tempo = (MS_PER_MINUTE / msPerTick) / (double)ticksPerQuarterNote / ((double) (rythmUnitModificator / QUARTER_NOTE));
       updateTracksMsPerTick(msPerTick);
+      tickStep = computeTickStep();
     }
     ++tempoTrackIndex;
   }

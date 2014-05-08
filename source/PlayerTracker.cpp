@@ -3,7 +3,6 @@
 #include <string.h>
 #include <NiteSampleUtilities.h>
 #include "PlayerTracker.h"
-#include "TSCallback.h"
 #include "platform/platform.h"
 
 #define USER_MESSAGE(msg) \
@@ -132,25 +131,22 @@ void PlayerTracker::onNewFrame(nite::UserTracker& userTracker)
       if (! handsTracker.update(user.getSkeleton()))
         return;
 
-      if (transportGesture.checkTransportGesture(handsTracker))
+      if (transportGesture.checkTransportGesture(handsTracker, user.getSkeleton()))
       {
         if (transportGesture.getTransportStatus() == TransportGesture::PLAY)
         {
           activateMusicalGestureDetection();
           sequencer->play();
-          Platform::outputDebugString("PLAY");
         }
         else if (transportGesture.getTransportStatus() == TransportGesture::PAUSE)
         {
           deactivateMusicalGestureDetection();
           sequencer->pause();
-          Platform::outputDebugString("PAUSE");
         }
         else if (transportGesture.getTransportStatus() == TransportGesture::STOP)
         {
           deactivateMusicalGestureDetection();
           sequencer->stop();
-          Platform::outputDebugString("STOP");
         }
       }
 
@@ -158,15 +154,12 @@ void PlayerTracker::onNewFrame(nite::UserTracker& userTracker)
       if (musicalGestureDetectionActivated && expressionGesture.checkExpressionGesture(handsTracker, user.getSkeleton()))
       {
         sequencer->setExpression(expressionGesture.getExpressionDetected());
-        CallbackManager::expressionChanged(expressionGesture.getExpressionDetected());
-        
       }
 
       //Detect tempo changes
       if (musicalGestureDetectionActivated && tempoGesture.checkTempoGesture(handsTracker, user.getSkeleton()))
       {
         sequencer->setTempo(tempoGesture.getTempo());
-        CallbackManager::tempoJustChanged(tempoGesture.getTempo());
       }
 
       //Send hands position to game (display hands as spheres)

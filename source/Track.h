@@ -26,7 +26,13 @@ public:
 
   Track(juce::MidiMessageSequence sequence);
 
-  void playAtTick(double tick);
+  /** Play next events of the track which are
+    * *before* 'tick'.
+    * songTimeInSec: current time of the song played in seconds.
+    * This parameter is used to set the timestamp of the events in seconds
+    * because that's what need Juce.
+    */
+  void playAtTick(double tick, double songTimeInSec);
   void restart();
   juce::MidiMessageSequence getSequence() const;
   bool isFinished() const;
@@ -55,6 +61,7 @@ protected:
   void checkPlayingStatus(double tick, double timeStamp, bool isNoteOn);
 
   juce::MidiMessageSequence sequence;
+  juce::MidiMessageSequence resultingSequence;
   int eventIndex;
   juce::String trackName;
   juce::String instrumentName;

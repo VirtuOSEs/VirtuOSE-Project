@@ -39,10 +39,9 @@ function virtuoseStart(){
 	  };
   $orchestrator.setSaveFile("../tracks/" @ $vsaveFile);
   $orchestrator.loadMidiFile("../tracks/" @ $vfileName);
-  $orchestrator.setTempo(90);
 
-	HideSun();
-	HideSun();
+	//HideSun();
+	//HideSun();
     leftHand.position = Spawn.position.x-2 SPC Spawn.position.y+5 SPC Spawn.position.z+1;
     rightHand.position = Spawn.position.x+2 SPC Spawn.position.y+5 SPC Spawn.position.z+1;
 	
