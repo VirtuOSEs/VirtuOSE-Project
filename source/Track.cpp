@@ -34,7 +34,7 @@ Track::Track(juce::MidiMessageSequence sequence)
         trackName = trackName.replaceSection(0, 1, "X");
       }
     }
-    else if (message.isNoteOnOrOff())
+    else if (!message.isMetaEvent())
     {
       channel = message.getChannel();
     }
@@ -92,7 +92,7 @@ void Track::playAtTick(double tick, double songTimeInSec)
     midiEvent = sequence.getEventPointer(eventIndex);
   }
 
-  if (expressionChanged.get())
+  if (expressionChanged.get() && channel != 0)
   {
     juce::MidiMessage expressionMessage = juce::MidiMessage::controllerEvent(midiEvent->message.getChannel(), EXPRESSION_CC, expressionValue);
     expressionMessage.setTimeStamp(songTimeInSec);//AudioTools needs timestamp in seconds
