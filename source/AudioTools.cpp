@@ -7,6 +7,7 @@ namespace JuceModule
 {
 
 AudioTools* AudioTools::singleton = nullptr;
+const juce::String AudioTools::FXP_DIRECTORY = "fxp";
 
 AudioTools::AudioTools()
 {
@@ -20,7 +21,7 @@ AudioTools::AudioTools()
   setup.useDefaultInputChannels = true;
   setup.useDefaultOutputChannels = true;
     
-  
+  //If you remove me, it won't work... threading stuff
   CoInitialize(nullptr);
   juce::String error = deviceManager.initialise (20, 20, nullptr, false, juce::String::empty, &setup);
   Platform::outputDebugString(error.toStdString().c_str());
@@ -66,10 +67,10 @@ void AudioTools::generatePlugin(const juce::String& trackName, const juce::Strin
   description.category = "Instrument";
   description.fileOrIdentifier =  juce::File::getCurrentWorkingDirectory().getChildFile("../sfz.dll").getFullPathName();
 
-  juce::File fxpFile = juce::File::getCurrentWorkingDirectory().getChildFile("../fxp/" + instrumentName + ".fxp").getFullPathName();
+  juce::File fxpFile = juce::File::getCurrentWorkingDirectory().getChildFile("../"+FXP_DIRECTORY+"/" + instrumentName + ".fxp").getFullPathName();
   if (!fxpFile.existsAsFile())
   {
-    Platform::outputDebugString("Unable to load instrument");
+    Platform::outputDebugString(juce::String("Unable to load instrument " + juce::String(instrumentName)).toStdString().c_str());
     return;
   }
   Platform::outputDebugString(juce::String("Loading " + instrumentName).toStdString().c_str());

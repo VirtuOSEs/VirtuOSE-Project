@@ -37,7 +37,7 @@ Track::Track(juce::MidiMessageSequence sequence)
   }
   
   //We consider that the instrument name is in the track name (ex: "2 Horns in Eb")
-  instrumentName = extractInstrumentNameFromTrackName(trackName);
+  instrumentName = extractInstrumentNameFromTrackName(trackName).toLowerCase();
 
   //We instanciate a plugin for this track with the right instrument, based on the instrumentName
   AudioTools::getInstance().generatePlugin(trackName, instrumentName);

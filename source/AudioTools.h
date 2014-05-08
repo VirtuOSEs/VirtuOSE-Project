@@ -24,6 +24,8 @@ public:
   static AudioTools& getInstance();
   static void deleteInstance();
 
+  static const juce::String FXP_DIRECTORY;
+
   ///Generate a plugin associated with the trackName
   void generatePlugin(const juce::String& trackName, const juce::String& instrumentName);
   ///Make the plugin associated with the trackName given in argument plays the message passed as a second argument

@@ -127,18 +127,23 @@ function createInstruments(%instrument,%file){
 			   		$posxcorde +=1.5;
 			   		$posx= $posxcorde;		
 			   	case "violins":
+			   	case "violin":
 			   		%famille = "corde";
 			   		$posxcorde +=1.5;
 			   		$posx= $posxcorde;	
 			   	case "cellos":
+			   	case "celli":
+			   	case "cello":
 			   		%famille = "corde";
 			   		$posxcorde +=1.5;
 			   		$posx= $posxcorde;	
 			   	case "violas":
+			   	case "viola":
 			   		%famille = "corde";
 			   		$posxcorde +=1.5;
 			   		$posx= $posxcorde;
 			   	case "bass":
+			   	case "basses":
 			   		%famille = "corde";
 			   		$posxcorde +=1.5;
 			   		$posx= $posxcorde;
@@ -155,10 +160,12 @@ function createInstruments(%instrument,%file){
 			   		$posxbois ++;
 			   		$posx= $posxbois;
 			   	case "oboes":
+			   	case "oboe":
 			   		%famille = "bois";
 			   		$posxbois ++;
 			   		$posx= $posxbois;	
 			   	case "bassoons":
+			   	case "bassoon":
 			   		%famille = "bois";
 			   		$posxbois ++;
 			   		$posx= $posxbois;	
@@ -167,23 +174,25 @@ function createInstruments(%instrument,%file){
 			   		$posxcuivre ++;
 			   		$posx= $posxcuivre;
 			   	case "trumpets":
+			   	case "trumpet":
 			   		%famille = "cuivre";
 			   		$posxcuivre ++;
 			   		$posx= $posxcuivre;
 			   	case "flutes":
-			   		%famille = "vent";
-			   		$posxvent ++;
-			   		$posx= $posxvent;
-			   	case "clarinets":
+			   	case "flute":
+          case "clarinets":
+			   	case "clarinet":
 			   		%famille = "vent";
 			   		$posxvent ++;
 			   		$posx= $posxvent;
 			   	case "horns":
+			   	case "horn":
 			   		%famille = "vent";
 			   		$posxvent ++;
 			   		$posx= $posxvent;	
 			
-		
+			   	default:
+			   	  echo("Unknown family: " @ %file);
 
 			   }
 			   
@@ -193,10 +202,26 @@ function createInstruments(%instrument,%file){
 				   junkvar = "helloworld";
 				   name=%instrument;
 			   };*/
-			   
-				new TSStatic(%nameInstru) 
+		
+		
+			   //Handling case where the instrument has not been yet modelised in 3D
+			   %file3DName = "art/shapes/virtuose/" @ strlwr(%file) @ ".dae";
+			   %fileExist = getFileCount(%file3DName, false);
+			   if (%fileExist <= 0)
 			   {
-					shapeName = "art/shapes/virtuose/" @ %file @ ".dae";
+			     //We try with an 's' at the end!
+			     %file3DName = "art/shapes/virtuose/" @ strlwr(%file) @ "s.dae";
+			     %fileExist = getFileCount(%file3DName);
+			     if (%fileExist < 0)
+			     {
+			       %file3DName = "art/shapes/virtuose/timpani.dae";
+			     }
+			   }
+			   echo("Final name : " @ %file3DName);
+			   new TSStatic(%nameInstru) 
+
+			   {
+					shapeName = %file3DName;
 
 					name=%nameInstru;
 					internalName=%nameInstru;
