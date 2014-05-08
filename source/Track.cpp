@@ -176,7 +176,7 @@ juce::String Track::extractInstrumentNameFromTrackName(const juce::String& track
   //Si la trackName contient un de ces noms, c'est l'instrument qu'on cherche !
   juce::Array<juce::File> fxpFiles;
   juce::File fxpDirectory = juce::File::getCurrentWorkingDirectory().getChildFile("../fxp").getFullPathName();
-  fxpDirectory.findChildFiles(fxpFiles, juce::File::findFiles, false, "*.fxp");
+  fxpDirectory.findChildFiles(fxpFiles, juce::File::findFiles, true, "*.fxp");
   for(int i = 0; i < fxpFiles.size(); ++i)
   {
     if (trackName.containsIgnoreCase(fxpFiles[i].getFileNameWithoutExtension()))

@@ -7,7 +7,7 @@ namespace JuceModule
 {
 
 AudioTools* AudioTools::singleton = nullptr;
-const juce::String AudioTools::FXP_DIRECTORY = "fxpTest";
+const juce::String AudioTools::FXP_DIRECTORY = "fxp";
 
 AudioTools::AudioTools()
 {

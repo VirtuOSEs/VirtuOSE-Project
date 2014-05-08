@@ -1,5 +1,8 @@
 // Le script du projet Virtuose
 
+$nbAppels=100; //Nombre d'appels pour les schedule (plus c'est grand, plus le mouvement est realiste)
+$play=0; // 0 : pause, 1 : play
+
 function changeOpacity(%obj,%a){
 	// return;
 	%mapTo=%obj.getTargetName(0);
@@ -62,14 +65,8 @@ function changeVelocity(%var){
 		%mapTo.diffuseColor.g=%g;
 		%mapTo.diffuseColor.b=%b;
 		
-		//$velocityParticleNode.active=!$velocityParticleNode.active;
-		
-		// $velocityParticleNode.setHidden(true);
-		//$velocityParticleNode.emitter.setHidden(true);
-		// $velocityParticleNode.emitter.particles[0].setHidden(true);
-		
 		$particuleVeloTmp.position=%obj.position.x SPC %obj.position.y SPC %obj.position.z-1;
-		//$velocityParticleNode.setScale($velocityParticleNode.getScale());
+		
 		
 		for(%i=0;%i<4;%i++){
 			if($particuleVeloTmp.emitter.particles[%i]$="")
@@ -100,11 +97,12 @@ function changeVelocity(%var){
 function TSStatic::deleteParticle(){
 	$particuleVeloTmp.delete();
 	$particuleVeloTmp="";
-	//echo("Boom");
 }
 
-function TSStatic::liftInstrument(%instrumentName,%z){
+function TSStatic::liftInstrument(%instrumentName,%z,%timeLeft,%distanceLeft){
 	%instrumentName.position=%instrumentName.position.x SPC %instrumentName.position.y SPC (%instrumentName.position.z+%z);
+	%instrumentName.timeLeft=%timeLeft;
+	%instrumentName.distanceLeft=%distanceLeft;
 }
 
 function light(){
@@ -197,41 +195,90 @@ function onExpressionChanged(%newExpression)
 
 function onInstrumentWillPlay(%instrumentName, %delayInMillis) 
 {
+$play=1;
   echo(%instrumentName @ " will play in " @ %delayInMillis);
-	%nombreAppels=100;
-  for(%i=0;%i<%delayInMillis;%i=%i+%delayInMillis/%nombreAppels){
-		%instrumentName.schedule(%i,"liftInstrument", 1/(%nombreAppels));
+	  %w=1;
+	  %distance=%instrumentName.distanceLeft;
+	  
+	  if(%distance==0 || %delayInMillis==0)
+		return;
+		
+  for(%i=0;%i<%delayInMillis;%i=%i+%delayInMillis/$nbAppels){
+		// if(%distance-%w/($nbAppels)<0)
+			// break;
+		%instrumentName.sched[%w]=%instrumentName.schedule(%i,"liftInstrument", %distance/($nbAppels),%delayInMillis-%i,%distance-(%w*%distance)/($nbAppels));
+		%w++;
 	}
-
+	%instrumentName.sched[0]=%w-1; // Le premier indique le nombre de schedule appelés
 }
 
 function onInstrumentStartPlaying(%instrumentName)
 {
+$play=1;
   echo(%instrumentName @ " starts playing");
+  %pos=%instrumentName.position.x SPC %instrumentName.position.y SPC %instrumentName.position.z;
+  
+  %particle=$playParticleNode.clone();
+  %particle.position=%pos;
+  %particle.active=true;
+  
+  %instrumentName.particle=%particle;
+  %instrumentName.distanceLeft=0;
+  %instrumentName.timeLeft=0;
 }
 
 function onInstrumentStoppedPlaying(%instrumentName)
 {
+$play=1;
   echo(%instrumentName @ " stops playing");
   //changeOpacity(%instrumentName,1);
+  if(%instrumentName.particle!$="")
+	%instrumentName.particle.delete();
+	
   %delayInMillis=2000;
-  %nombreAppels=100;
-  for(%i=0;%i<%delayInMillis;%i=%i+%delayInMillis/%nombreAppels){
-		%instrumentName.schedule(%i,"liftInstrument", -1/(%nombreAppels));
+
+  for(%i=0;%i<%delayInMillis;%i=%i+%delayInMillis/$nbAppels){
+		%instrumentName.schedule(%i,"liftInstrument", -1/($nbAppels));
+		%w++;
 	}
+%instrumentName.distanceLeft=1;
 }
 
 function onPlay()
 {
+if($play!=0) return;
+$play=1;
   echo("PLAY");
+  
+  for(%i=0;%i<$orchestrator.getNumTracks();%i++){
+	 onInstrumentWillPlay($orchestrator.getTrackName(%i),$orchestrator.getTrackName(%i).timeLeft);
+	 }
 }
 
 function onPause()
 {
+if($play!=1) return;
+$play=0;
   echo("PAUSE");
+  	for(%i=0;%i<$orchestrator.getNumTracks();%i++){
+	 for(%j=1;%j<=$orchestrator.getTrackName(%i).sched[0];%j++){
+		cancel($orchestrator.getTrackName(%i).sched[%j]);
+		$orchestrator.getTrackName(%i).sched[%j]="";
+	  }
+	  $orchestrator.getTrackName(%i).sched[0]=0;
+  }
+  
 }
 
 function onStop()
 {
   echo("STOP");
+	$posx = 0.0;
+	$posy = 0.0;
+	$posz = 0.0;
+	$posxcorde = 0.0;
+	$posxpercu = 0.0;
+	$posxbois = 0.0;
+	$posxcuivre = 0.0;
+	$posxvent = 0.0;
 }
