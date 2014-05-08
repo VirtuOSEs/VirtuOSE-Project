@@ -138,8 +138,8 @@ function createInstruments(%instrument,%file){
 			   {
 			     //We try with an 's' at the end!
 			     %file3DName = "art/shapes/virtuose/" @ strlwr(%file) @ "s.dae";
-			     %fileExist = getFileCount(%file3DName);
-			     if (%fileExist < 0)
+			     %fileExist = getFileCount(%file3DName, false);
+			     if (%fileExist <= 0)
 			     {
 			       %file3DName = "art/shapes/virtuose/timpani.dae";
 			     }

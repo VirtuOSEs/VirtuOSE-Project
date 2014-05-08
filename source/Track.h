@@ -65,6 +65,7 @@ protected:
   int eventIndex;
   juce::String trackName;
   juce::String instrumentName;
+  int channel;
   int expressionValue;
   juce::Atomic<juce::int32> expressionChanged;
   PlayingStatus playingStatus;

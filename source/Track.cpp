@@ -14,6 +14,7 @@ Track::Track(juce::MidiMessageSequence sequence)
   : sequence(sequence),
     eventIndex(0), 
     trackName(juce::String::empty),
+    channel(0),
     expressionValue(64),
     expressionChanged(false),
     playingStatus(DO_NOT_PLAY),
@@ -21,7 +22,7 @@ Track::Track(juce::MidiMessageSequence sequence)
 {
   //Look for the track name meta event in the entire sequence (should be at the beginning)
   int i = 0;
-  while (i < sequence.getNumEvents() && trackName == juce::String::empty)
+  while (i < sequence.getNumEvents() && (trackName == juce::String::empty || channel == 0))
   {
     juce::MidiMessage& message = sequence.getEventPointer(i)->message;
     if (message.isTrackNameEvent())
@@ -33,6 +34,10 @@ Track::Track(juce::MidiMessageSequence sequence)
         trackName = trackName.replaceSection(0, 1, "X");
       }
     }
+    else if (message.isNoteOnOrOff())
+    {
+      channel = message.getChannel();
+    }
     ++i;
   }
   
@@ -41,7 +46,6 @@ Track::Track(juce::MidiMessageSequence sequence)
 
   //We instanciate a plugin for this track with the right instrument, based on the instrumentName
   AudioTools::getInstance().generatePlugin(trackName, instrumentName);
-
   this->sequence.updateMatchedPairs();
   resultingSequence = this->sequence;
 }
