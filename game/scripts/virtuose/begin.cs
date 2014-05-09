@@ -162,6 +162,7 @@ function createInstruments(%instrument,%file){
 				   //name=%instrument;
 					timeLeft=0;
 					distanceLeft=1;
+					hightOrigin=%famille.position.z;
 			   };
 		   
 }

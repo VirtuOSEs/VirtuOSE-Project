@@ -236,10 +236,13 @@ $play=1;
 	%instrumentName.particle.delete();
 	
   %delayInMillis=2000;
-
+	%distance=%instrumentName.position.z-%instrumentName.hightOrigin;
+	echo(%instrumentName.position.z SPC %instrumentName.hightOrigin);
+	if(%distance <=0) return;
+	
   for(%i=0;%i<%delayInMillis;%i=%i+%delayInMillis/$nbAppels){
-		%instrumentName.schedule(%i,"liftInstrument", -1/($nbAppels));
-		%w++;
+		%instrumentName.schedule(%i,"liftInstrument", -%distance/($nbAppels),0,1);
+		
 	}
 %instrumentName.distanceLeft=1;
 }
