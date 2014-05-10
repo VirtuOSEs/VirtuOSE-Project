@@ -70,7 +70,7 @@ function virtuoseStart(){
          canSaveDynamicFields = "1";
       };
 	$playParticleNode=new ParticleEmitterNode(playParticleNode) {
-         active = "0";
+         active = "1";
          emitter = "playEmitter";
          velocity = "1";
          dataBlock = "SimpleEmitterNodeData";
@@ -80,8 +80,6 @@ function virtuoseStart(){
          canSave = "1";
          canSaveDynamicFields = "1";
       };
-	
-	$playParticleNode.position="0 0 0";
 	
 	if(strcmp($orchestrator.options.handedness,"lEFT_HANDEDNESS")==0){
 		$velocityParticleNode.position=rightHand.position;
@@ -103,7 +101,6 @@ function placeInstruments(%nbInstruments){
 }
 
 function createInstruments(%instrument,%file){
-				echo(%instrument SPC %file);
 
 				%nameInstru=%instrument;
 				if (isWoodwind(%file))
@@ -141,6 +138,7 @@ function createInstruments(%instrument,%file){
 			     %fileExist = getFileCount(%file3DName, false);
 			     if (%fileExist <= 0)
 			     {
+					echo("File doesn't exist");
 			       %file3DName = "art/shapes/virtuose/timpani.dae";
 			     }
 			   }
