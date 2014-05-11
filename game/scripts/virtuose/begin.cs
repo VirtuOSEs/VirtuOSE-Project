@@ -16,6 +16,7 @@ $posxsolo = 0.0;
  //Initialisation
 function virtuoseStart(){
   echo("Virtuose is beginning");
+  MLAAfx.toggle();
   initialiseFamilies();
   $posx = 0.0;
   $posy = 0.0;

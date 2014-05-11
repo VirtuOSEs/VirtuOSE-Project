@@ -1057,7 +1057,7 @@ new SimGroup(MissionGroup) {
       allowPlayerStep = "1";
       renderNormals = "0";
       forceDetail = "-1";
-      position = "-4.77168 28.5814 4.49184";
+      position = "-8.2306 28.5814 4.49184";
       rotation = "1 0 0 0";
       scale = "0.0214852 0.0214852 0.0214852";
       canSave = "1";
