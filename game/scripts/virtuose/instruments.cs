@@ -52,6 +52,19 @@ function initialiseFamilies()
     $percussions[%i] = %instruName;
     echo(%instruName);
   }
+
+  %pattern = "../fxp/Solos/*.fxp";
+  %nbInstrus = getFileCount(%pattern);
+  $solos[0] = findFirstFile(%pattern);
+  $nbSolos = %nbInstrus;
+  for(%i = 1; %i < %nbInstrus; %i++)
+  {
+    %instruName = findNextFile(%pattern);
+    %instruName = fileName(%instruName);
+    %instruName = strreplace(%instruName, ".fxp", "");
+    $solos[%i] = %instruName;
+    echo(%instruName);
+  }
 }
 
 function isWoodwind(%instruName)
@@ -89,6 +102,16 @@ function isPercussion(%instruName)
  for(%i = 0; %i < $nbPercussions; %i++)
  {
    if (stricmp(%instruName, $percussions[%i]) == 0)
+     return true;
+ }
+ return false;
+}
+
+function isSoloInstrument(%instruName)
+{
+ for(%i = 0; %i < $nbSolos; %i++)
+ {
+   if (stricmp(%instruName, $solos[%i]) == 0)
      return true;
  }
  return false;

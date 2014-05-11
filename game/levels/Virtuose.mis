@@ -1381,5 +1381,21 @@ new SimGroup(MissionGroup) {
       canSave = "1";
       canSaveDynamicFields = "1";
    };
+   new TSStatic(solo) {
+      shapeName = "art/shapes/cube/cube.dae";
+      playAmbient = "1";
+      meshCulling = "0";
+      originSort = "0";
+      collisionType = "Collision Mesh";
+      decalType = "Collision Mesh";
+      allowPlayerStep = "1";
+      renderNormals = "0";
+      forceDetail = "-1";
+      position = "-4.3062 27.2021 5.67516";
+      rotation = "0 0 -1 23.3293";
+      scale = "0.01 0.01 0.01";
+      canSave = "1";
+      canSaveDynamicFields = "1";
+   };
 };
 //--- OBJECT WRITE END ---

@@ -12,11 +12,20 @@ $posxpercu = 0.0;
 $posxbois = 0.0;
 $posxcuivre = 0.0;
 $posxvent = 0.0;
+$posxsolo = 0.0;
 
  //Initialisation
 function virtuoseStart(){
   initialiseFamilies();
-  
+  $posx = 0.0;
+  $posy = 0.0;
+  $posz = 0.0;
+  $posxcorde = 0.0;
+  $posxpercu = 0.0;
+  $posxbois = 0.0;
+  $posxcuivre = 0.0;
+  $posxvent = 0.0;
+  $posxsolo = 0.0;
 	echo("Virtuose is beginning");
 	
 	//DataBlock Particle
@@ -127,6 +136,12 @@ function createInstruments(%instrument,%file){
           $posxpercu ++;
           $posx= $posxpercu;
 				}
+				else if (isSoloInstrument(%file))
+				{
+				  %famille = "solo";
+				  $posxsolo = $posxsolo + 2;
+				  $posx = $posxsolo;
+				}
 
 			   //Handling case where the instrument has not been yet modelised in 3D
 			   %file3DName = "art/shapes/virtuose/" @ strlwr(%file) @ ".dae";
@@ -138,8 +153,8 @@ function createInstruments(%instrument,%file){
 			     %fileExist = getFileCount(%file3DName, false);
 			     if (%fileExist <= 0)
 			     {
-					echo("File doesn't exist");
-			       %file3DName = "art/shapes/virtuose/timpani.dae";
+			       echo("File doesn't exist");
+			       %file3DName = "art/shapes/virtuose/violins.dae";//Default shape
 			     }
 			   }
 			   echo("Final name : " @ %file3DName);
