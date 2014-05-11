@@ -7,26 +7,24 @@ exec( "scripts/virtuose/instruments.cs" );
 $posx = 0.0;
 $posy = 0.0;
 $posz = 0.0;
-$posxcorde = 0.0;
+$posxstring = 0.0;
 $posxpercu = 0.0;
-$posxbois = 0.0;
-$posxcuivre = 0.0;
-$posxvent = 0.0;
+$posxhorn = 0.0;
+$posxwoodwind = 0.0;
 $posxsolo = 0.0;
 
  //Initialisation
 function virtuoseStart(){
+  echo("Virtuose is beginning");
   initialiseFamilies();
   $posx = 0.0;
   $posy = 0.0;
   $posz = 0.0;
-  $posxcorde = 0.0;
+  $posxstring = 0.0;
   $posxpercu = 0.0;
-  $posxbois = 0.0;
-  $posxcuivre = 0.0;
-  $posxvent = 0.0;
+  $posxhorn = 0.0;
+  $posxwoodwind = 0.0;
   $posxsolo = 0.0;
-	echo("Virtuose is beginning");
 	
 	//DataBlock Particle
    datablock ParticleEmitterNodeData(SimpleEmitterNodeData)
@@ -36,25 +34,25 @@ function virtuoseStart(){
 
 	%options = new Options();
 	
-    %options.initialTempo=tempo.getText();
-    %options.rythmUnit=battue.getText();
-    %options.rythmUnitDotted=dotted.isStateOn();
+  %options.initialTempo=tempo.getText();
+  %options.rythmUnit=battue.getText();
+  %options.rythmUnitDotted=dotted.isStateOn();
 	if(leftHandCtrl.getValue()==1)
 			%options.handedness = LEFT_HANDEDNESS;
 	else
 			%options.handedness = RIGHT_HANDEDNESS;
 	
 	$orchestrator = new Orchestrator()
-	  {
-		options = %options;
-	  };
+  {
+    options = %options;
+  };
   $orchestrator.setSaveFile("../tracks/" @ $vsaveFile);
   $orchestrator.loadMidiFile("../tracks/" @ $vfileName);
 
 	//HideSun();
 	//HideSun();
-    leftHand.position = Spawn.position.x-2 SPC Spawn.position.y+5 SPC Spawn.position.z+1;
-    rightHand.position = Spawn.position.x+2 SPC Spawn.position.y+5 SPC Spawn.position.z+1;
+  leftHand.position = Spawn.position.x-2 SPC Spawn.position.y+5 SPC Spawn.position.z+1;
+  rightHand.position = Spawn.position.x+2 SPC Spawn.position.y+5 SPC Spawn.position.z+1;
 	
 	$TempoParticleNode=new ParticleEmitterNode(TempoParticleNode) {
          active = "0";
@@ -114,31 +112,31 @@ function createInstruments(%instrument,%file){
 				%nameInstru=%instrument;
 				if (isWoodwind(%file))
 				{
-				  %famille = "vent";
-          $posxvent ++;
-			   	$posx= $posxvent;	
+				  %family = "woodwind";
+          $posxwoodind ++;
+			   	$posx= $posxwoodind;	
 				}
 				else if (isHorn(%file))
 				{
-          %famille = "cuivre";
-          $posxcuivre ++;
-          $posx= $posxcuivre;
+          %family = "horn";
+          $posxhorn ++;
+          $posx= $posxhorn;
 				}
 				else if (isString(%file))
 				{
-          %famille = "corde";
-          $posxcorde +=1.5;
-          $posx= $posxcorde;
+          %family = "string";
+          $posxstring +=1.5;
+          $posx= $posxstring;
 				}
 				else if (isPercussion(%file))
 				{
-          %famille = "percussion";
+          %family = "percussion";
           $posxpercu ++;
           $posx= $posxpercu;
 				}
 				else if (isSoloInstrument(%file))
 				{
-				  %famille = "solo";
+				  %family = "solo";
 				  $posxsolo = $posxsolo + 2;
 				  $posx = $posxsolo;
 				}
@@ -158,7 +156,7 @@ function createInstruments(%instrument,%file){
 			     }
 			   }
 			   echo("Final name : " @ %file3DName);
-			   echo(%famille @ ":" @ %famille.position.x);
+			   echo(%family @ ":" @ %family.position.x);
 			   new TSStatic(%nameInstru) 
 
 			   {
@@ -168,14 +166,14 @@ function createInstruments(%instrument,%file){
 					internalName=%nameInstru;
 				   //dataBlock = %instrument;
 	
-					position = $posx+%famille.position.x SPC %famille.position.y SPC %famille.position.z;
+					position = $posx+%family.position.x SPC %family.position.y SPC %family.position.z;
 					particule="";
 				   rotation = "1 90 0 0";
 				   scale = "1 1 1";
 				   //name=%instrument;
 					timeLeft=0;
 					distanceLeft=1;
-					hightOrigin=%famille.position.z;
+					hightOrigin=%family.position.z;
 			   };
 		   
 }
