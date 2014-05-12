@@ -94,7 +94,7 @@ void Track::playAtTick(double tick, double songTimeInSec)
 
   if (expressionChanged.get() && channel != 0)
   {
-    juce::MidiMessage expressionMessage = juce::MidiMessage::controllerEvent(midiEvent->message.getChannel(), EXPRESSION_CC, expressionValue);
+    juce::MidiMessage expressionMessage = juce::MidiMessage::controllerEvent(channel, EXPRESSION_CC, expressionValue);
     expressionMessage.setTimeStamp(songTimeInSec);//AudioTools needs timestamp in seconds
     AudioTools::getInstance().makePluginPlay(trackName, expressionMessage);
     expressionMessage.setTimeStamp(tick);//But we want to save the timestamp in tick (tempo independant)
