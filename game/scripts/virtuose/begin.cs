@@ -89,15 +89,11 @@ function virtuoseStart(){
          canSaveDynamicFields = "1";
       };
 	
-	echo ("Main" SPC $orchestrator.options.handedness);
-	
 	if(strcmp($orchestrator.options.handedness,LEFT_HANDEDNESS)==0){
-		echo("Left");
 		$velocityParticleNode.position=rightHand.position;
 		$TempoParticleNode.position=leftHand.position;
 	}
 	else {
-		echo("Right");
 		$velocityParticleNode.position=leftHand.position;
 		$TempoParticleNode.position=rightHand.position;
 	}
@@ -131,7 +127,7 @@ function createInstruments(%instrument,%file){
 				if (isWoodwind(%file))
 				{
 				  %family = "woodwind";
-          $posxwoodind ++;
+				$posxwoodind ++;
 			   	$posx= $posxwoodind;	
 				}
 				else if (isHorn(%file))
@@ -146,23 +142,19 @@ function createInstruments(%instrument,%file){
           $posxstring +=1.5;
           $posx= $posxstring;
 				}
-				else if (isPercussion(%file))
-				{
-          %family = "percussion";
-          $posxpercu ++;
-          $posx= $posxpercu;
-				}
 				else if (isSoloInstrument(%file))
 				{
 				  %family = "solo";
 				  $posxsolo = $posxsolo + 2;
 				  $posx = $posxsolo;
 				}
-				else {
-					 %family = "percussion";
+				else// if (isPercussion(%file))
+				{
+					  %family = "percussion";
 					  $posxpercu ++;
 					  $posx= $posxpercu;
 				}
+				
 			   //Handling case where the instrument has not been yet modelised in 3D
 			   %file3DName = "art/shapes/virtuose/" @ strlwr(%file) @ ".dae";
 			   %fileExist = getFileCount(%file3DName, false);
@@ -177,8 +169,9 @@ function createInstruments(%instrument,%file){
 			       %file3DName = "art/shapes/virtuose/violins.dae";//Default shape
 			     }
 			   }
+			   echo(%nameInstru);
 			   echo("Final name : " @ %file3DName);
-			   echo(%family @ ":" @ %family.position.x);
+			   echo(%family @ ":" @ %family.position);
 			   new TSStatic(%nameInstru) 
 
 			   {
@@ -198,12 +191,11 @@ function createInstruments(%instrument,%file){
 					hightOrigin=%family.position.z;
 					wasPlaying=0;
 			   };
-		   echo("Hello" SPC %nameInstru SPC %family);
 }
 
 function placeInstrumentsTrack(){
 	for(%i=0;%i<$orchestrator.getNumTracks();%i++){
-		
 		createInstruments($orchestrator.getTrackName(%i),$orchestrator.getInstrumentName(%i));
+		echo("");
 	}
 }
