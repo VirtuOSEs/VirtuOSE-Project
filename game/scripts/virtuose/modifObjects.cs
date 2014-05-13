@@ -287,6 +287,18 @@ $play=0;
 	  }
   }
   
+  %mapTo=leftHand.getTargetName(0);
+	%mapTo.diffuseColor.r=0.5;
+	%mapTo.diffuseColor.g=0.5;
+	%mapTo.diffuseColor.b=0.5;
+	%mapTo.reload();
+	
+	%mapTo=rightHand.getTargetName(0);
+	%mapTo.diffuseColor.r=0.5;
+	%mapTo.diffuseColor.g=0.5;
+	%mapTo.diffuseColor.b=0.5;
+	%mapTo.reload();
+	
 }
 
 function onStop()
