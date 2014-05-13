@@ -29,7 +29,7 @@ function hide(%obj){
 }
 
 function changeTempo(%r, %g, %b){
-	if(strcmp($orchestrator.options.handedness,"LEFT_HANDEDNESS")==0){
+	if(strcmp($orchestrator.options.handedness,LEFT_HANDEDNESS)==0){
 		%obj="rightHand";	
 	}
 	else {
@@ -44,7 +44,7 @@ function changeTempo(%r, %g, %b){
 
 function changeVelocity(%var){
 	
-	if(strcmp($orchestrator.options.handedness,"RIGHT_HANDEDNESS")==0){
+	if(strcmp($orchestrator.options.handedness,RIGHT_HANDEDNESS)==0){
 		%obj=leftHand;
 	}
 	else {
@@ -116,7 +116,7 @@ function HideSun(){
 function onTempoGestureStart()
 {
   echo("Tempo Gesture Start");
-  if(strcmp($orchestrator.options.handedness,"lEFT_HANDEDNESS")==0){
+  if(strcmp($orchestrator.options.handedness,lEFT_HANDEDNESS)==0){
 		%obj="leftHand";
 	}
 	else {
@@ -133,7 +133,7 @@ function onTempoGestureStart()
 }
 
 function TSStatic::whiteOut(){
-	if(strcmp($orchestrator.options.handedness,"lEFT_HANDEDNESS")==0){
+	if(strcmp($orchestrator.options.handedness,lEFT_HANDEDNESS)==0){
 		%obj="leftHand";
 	}
 	else {
@@ -153,7 +153,7 @@ function TSStatic::whiteOut(){
 function onTempoGestureEnd()
 {
   echo("Tempo Gesture End");
-  if(strcmp($orchestrator.options.handedness,"lEFT_HANDEDNESS")==0){
+  if(strcmp($orchestrator.options.handedness,lEFT_HANDEDNESS)==0){
 		%obj="leftHand";
 	}
 	else {
