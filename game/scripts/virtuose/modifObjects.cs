@@ -255,6 +255,13 @@ $play=1;
   
   for(%i=0;%i<$orchestrator.getNumTracks();%i++){
 	 onInstrumentWillPlay($orchestrator.getTrackName(%i),$orchestrator.getTrackName(%i).timeLeft);
+		 if($orchestrator.getTrackName(%i).wasPlaying==1){
+			echo($orchestrator.getTrackName(%i));
+			  $orchestrator.getTrackName(%i).particle=$playParticleNode.clone();
+			  $orchestrator.getTrackName(%i).particle.position=$orchestrator.getTrackName(%i).position.x SPC $orchestrator.getTrackName(%i).position.y SPC $orchestrator.getTrackName(%i).position.z;
+			  $orchestrator.getTrackName(%i).particle.active=true;
+			  
+		 }
 	 }
 }
 
@@ -269,6 +276,15 @@ $play=0;
 		$orchestrator.getTrackName(%i).sched[%j]="";
 	  }
 	  $orchestrator.getTrackName(%i).sched[0]=0;
+	  if($orchestrator.getTrackName(%i).particle!$=""){
+		$orchestrator.getTrackName(%i).particle.delete();
+		$orchestrator.getTrackName(%i).wasPlaying=1;
+		$orchestrator.getTrackName(%i).particle="";
+		
+		}
+	  else {
+		$orchestrator.getTrackName(%i).wasPlaying=0;
+	  }
   }
   
 }

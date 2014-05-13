@@ -78,7 +78,7 @@ function virtuoseStart(){
          canSaveDynamicFields = "1";
       };
 	$playParticleNode=new ParticleEmitterNode(playParticleNode) {
-         active = "1";
+         active = "0";
          emitter = "playEmitter";
          velocity = "1";
          dataBlock = "SimpleEmitterNodeData";
@@ -175,12 +175,14 @@ function createInstruments(%instrument,%file){
 					timeLeft=0;
 					distanceLeft=1;
 					hightOrigin=%family.position.z;
+					wasPlaying=0;
 			   };
 		   
 }
 
 function placeInstrumentsTrack(){
 	for(%i=0;%i<$orchestrator.getNumTracks();%i++){
+		echo("Hello" SPC $orchestrator.getTrackName(%i));
 		createInstruments($orchestrator.getTrackName(%i),$orchestrator.getInstrumentName(%i));
 	}
 }
