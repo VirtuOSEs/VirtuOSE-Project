@@ -213,7 +213,6 @@ $play=1;
 		%instrumentName.sched[%w]=%instrumentName.schedule(%i,"liftInstrument", %distance/($nbAppels),%delayInMillis-%i,%distance-(%w*%distance)/($nbAppels));
 		%w++;
 	}
-	echo(%w);
 	%instrumentName.sched[0]=%w-1; // Le premier indique le nombre de schedule appelés
 }
 
