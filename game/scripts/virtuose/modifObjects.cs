@@ -43,7 +43,7 @@ function changeTempo(%r, %g, %b){
 }
 
 function changeVelocity(%var){
-	%var=(%var-0.5)*2;
+	
 	if(strcmp($orchestrator.options.handedness,RIGHT_HANDEDNESS)==0){
 		%obj=leftHand;
 	}
@@ -57,9 +57,13 @@ function changeVelocity(%var){
 		$particuleVeloTmp.active=true;
 		%mapTo=%obj.getTargetName(0);
 		
-		%r=%var;
-		%g=1-%var;
-		%b=1-%var;
+		%r=1.5*(%var-0.5);
+		%g=1.5-%var*1.5;
+		%b=1.5-%var*1.5;
+		
+		if(%r>1) %r=1;
+		if(%g>1) %g=1;
+		if(%b>1) %b=1;
 		
 		%mapTo.diffuseColor.r=%r;
 		%mapTo.diffuseColor.g=%g;
