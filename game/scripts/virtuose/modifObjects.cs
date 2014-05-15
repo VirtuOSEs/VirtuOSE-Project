@@ -43,7 +43,7 @@ function changeTempo(%r, %g, %b){
 }
 
 function changeVelocity(%var){
-	
+	%var=(%var-0.5)*2;
 	if(strcmp($orchestrator.options.handedness,RIGHT_HANDEDNESS)==0){
 		%obj=leftHand;
 	}
