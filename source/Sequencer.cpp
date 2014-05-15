@@ -7,7 +7,7 @@
 namespace JuceModule
 {
 
-const int Sequencer::TIME_STEP = 3;
+const int Sequencer::TIME_STEP = 10;
 const double Sequencer::MS_PER_MINUTE = 60000.0;
 
 double Sequencer::computeTickStep() 

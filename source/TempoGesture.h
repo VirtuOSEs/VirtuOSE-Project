@@ -14,7 +14,7 @@
 class TempoGesture
 {
 public:
-  enum GestureStatus{NO_GESTURE, IN_ZONE, OUT_ZONE};
+  enum ZoneStatus{IN_ZONE, OUT_ZONE};
 
     ///Width of the gesture zone in percentage of the arm lenght
   static const float GESTURE_WIDTH_PERCENTAGE;
@@ -24,6 +24,7 @@ public:
   ///the GESTURE_VECTOR and the hand direction to consider that the gesture is
   ///being performed
   static const float GESTURE_SIMILARITY_THRESHOLD;
+  static const float TIME_OUT;
   
   TempoGesture(const Options& options);
 
@@ -35,14 +36,14 @@ public:
 private:
   bool calibrateGesture(const nite::Skeleton& skeleton);
   nite::JointType gestureHand; 
-  GestureStatus status;
-
+  ZoneStatus status;
+  bool gestureStarted;
   double startTime;
   juce::int32 tempo;
   //---ZONE DELIMITERS
   float yBottom;
   float yTop;
-  float timeOut;
+
 };
 
 #endif //KINECT_TEMPO_GESTURE_H

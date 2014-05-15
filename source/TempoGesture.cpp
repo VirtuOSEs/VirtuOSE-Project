@@ -4,14 +4,15 @@
 const float TempoGesture::GESTURE_WIDTH_PERCENTAGE = 50.f/100.f;
 const VectorF TempoGesture::GESTURE_VECTOR = VectorF(0, 1, 0);
 const float TempoGesture::GESTURE_SIMILARITY_THRESHOLD = 0.95f;
+const float TempoGesture::TIME_OUT = 2000.f;
 
 TempoGesture::TempoGesture(const Options& options)
-  : status(NO_GESTURE),
+  : status(OUT_ZONE),
     startTime(0.),
     tempo(options.initialTempo),
     yBottom(0.f),
     yTop(150.f),
-    timeOut(3500)
+    gestureStarted(false)
 {
   if (options.handedness == LEFT_HANDEDNESS)
     gestureHand = nite::JOINT_LEFT_HAND;
@@ -44,72 +45,56 @@ bool TempoGesture::checkTempoGesture(const HandsTracker& handsTracker, const nit
 
   float handY = hand.getPosition().y;
 
-  if (status == NO_GESTURE)
-  {
-    //Am I in the zone and is my hand raising up ?
-    if (handY >= yBottom && handY <= yTop && handDirection.y > 0)
+  double currentTime = juce::Time::getMillisecondCounterHiRes();
+  double elapsedTime = currentTime - startTime;
+  if (gestureStarted)
+  { 
+    if (elapsedTime >= TIME_OUT)
     {
-      // Con::printf("DANS ZONE : DEBUT MOUVEMENT %f", handY);
+      gestureStarted = false;
+      CallbackManager::tempoGestureEnd();
+      return false;
+    }
+  }
+
+  if (status == OUT_ZONE)
+  {
+    
+    //Am I in the zone and is my hand going down ?
+    if (handY >= yBottom && handY <= yTop && handDirection.y < 0)
+    {
       status = IN_ZONE;
-      startTime = juce::Time::getMillisecondCounterHiRes();
-      CallbackManager::tempoGestureStart();
+      if (!gestureStarted)
+      {
+        CallbackManager::tempoGestureStart();
+        startTime = juce::Time::getMillisecondCounterHiRes();
+        gestureStarted = true;
+      }
+      else
+      { 
+        juce::int32 tmpTempo = static_cast<juce::int32>(60000 / elapsedTime);
+        //Gestion des valeurs aberrantes
+        if (tmpTempo > 300) 
+        {
+          gestureStarted = false;
+          CallbackManager::tempoGestureEnd();
+          return false;
+        }
+
+        tempo = tmpTempo;
+        startTime = currentTime;
+        return true;
+      }
     }
   }
   else if (status == IN_ZONE)
   {
-    //Did I cross the zone meaning the gesture go next step ?
-    if (handY > yTop)
+    if (handY > yTop || handY < yBottom)
     {
-      // Con::printf("HORS ZONE : SUITE MOUVEMENT %f", handY);
       status = OUT_ZONE;
     }
-    //Leaving the zone by bottom means cancelling the gesture
-    else if (handY < yBottom)
-    {
-      // Con::printf("SORTIE PAR LE BAS : NO GESTURE %f", handY);
-      status = NO_GESTURE;
-      CallbackManager::tempoGestureEnd();
-    }
-    else if (juce::Time::getMillisecondCounterHiRes() - startTime >= timeOut)
-    {
-      // Con::printf("TIMEOUT %f", handY);
-      status = NO_GESTURE;
-      CallbackManager::tempoGestureEnd();
-    }
   }
-  //If I were outzone and now I am again in zone: I just finished a tempo gesture!
-  else if (status == OUT_ZONE)
-  {
-    if (handY >= yBottom && handY <= yTop)
-    {
-    //  Con::printf("DANS ZONE FIN MOUVEMENT %f", handY);
-      double currentTime = juce::Time::getMillisecondCounterHiRes();
-      double elapsedTime = currentTime - startTime;
-        
-      juce::int32 tmpTempo = static_cast<juce::int32>(60000 / elapsedTime);
-      //Gestion des valeurs aberrantes
-      if (tmpTempo > 300) 
-      {
-      //  Con::printf("VALEUR ABERRANTE: PASSAGE EN NO GESTURE %f", handY);
-        status = NO_GESTURE;
-        return false;
-      }
 
-      tempo = tmpTempo;
-      startTime = currentTime;
-
-      CallbackManager::tempoGestureEnd();
-
-      status = NO_GESTURE;
-      return true;
-    }
-    //Gesture timeout
-    else if (juce::Time::getMillisecondCounterHiRes() - startTime >= timeOut)
-    {
-    //  Con::printf("TIMEOUT %f", handY);
-      status = NO_GESTURE;
-    }
-  }
   return false;
 }
 

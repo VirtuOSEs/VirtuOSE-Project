@@ -130,6 +130,12 @@ function onTempoGestureStart()
 	%mapTo.diffuseColor.b=1;
 	
 	%mapTo.reload();
+	
+	$particuleTempoTmp=$TempoParticleNode.clone();
+
+	$particuleTempoTmp.position=%obj.position;
+	$particuleTempoTmp.active=true;
+	%obj.schedule(100,"whiteOut");
 }
 
 function TSStatic::whiteOut(){
@@ -139,14 +145,7 @@ function TSStatic::whiteOut(){
 	else {
 		%obj="rightHand";
 	}
-	
-	%mapTo=%obj.getTargetName(0);
-	
-	%mapTo.diffuseColor.r=0.5;
-	%mapTo.diffuseColor.g=0.5;
-	%mapTo.diffuseColor.b=0.5;
-	
-	%mapTo.reload();
+
 	$particuleTempoTmp.delete();	
 }
 
@@ -159,44 +158,50 @@ function onTempoGestureEnd()
 	else {
 		%obj="rightHand";
 	}
-	
-	$particuleTempoTmp=$TempoParticleNode.clone();
 		
 	%mapTo=%obj.getTargetName(0);
 	
-	%mapTo.diffuseColor.r=1;
-	%mapTo.diffuseColor.g=0;
-	%mapTo.diffuseColor.b=0;
+	%mapTo.diffuseColor.r=0.5;
+	%mapTo.diffuseColor.g=0.5;
+	%mapTo.diffuseColor.b=0.5;
 	
 	%mapTo.reload();
-	$particuleTempoTmp.position=%obj.position;
-	$particuleTempoTmp.active=true;
-	%obj.schedule(100,"whiteOut");
 }
 
 
 function onTempoJustChanged(%newTempo)
 {
   echo("Tempo just changed " @ %newTempo);
+    if(strcmp($orchestrator.options.handedness,lEFT_HANDEDNESS)==0){
+		%obj="leftHand";
+	}
+	else {
+		%obj="rightHand";
+	}
+	
+	$particuleTempoTmp=$TempoParticleNode.clone();
+		
+
+	$particuleTempoTmp.position=%obj.position;
+	$particuleTempoTmp.active=true;
+	%obj.schedule(100,"whiteOut");
 }
 
 function onVelocityChanged(%newVelocity)
 {
-   echo("Velocity just changed " @ %newVelocity); 
-		
+ 	
 	changeVelocity(%newVelocity);
 }
 
 function onExpressionChanged(%newExpression)
 {
-  echo("Expression: " @ %newExpression);
-    changeVelocity(%newExpression);
+  changeVelocity(%newExpression);
 }
 
 function onInstrumentWillPlay(%instrumentName, %delayInMillis) 
 {
 $play=1;
-  echo(%instrumentName @ " will play in " @ %delayInMillis);
+
 	  %w=1;
 	  %distance=%instrumentName.distanceLeft;
 	  
@@ -219,7 +224,6 @@ $play=1;
 function onInstrumentStartPlaying(%instrumentName)
 {
 $play=1;
-  echo(%instrumentName @ " starts playing");
   %pos=%instrumentName.position.x SPC %instrumentName.position.y SPC %instrumentName.position.z;
   
   %particle=$playParticleNode.clone();
@@ -234,14 +238,12 @@ $play=1;
 function onInstrumentStoppedPlaying(%instrumentName)
 {
 $play=1;
-  echo(%instrumentName @ " stops playing");
   //changeOpacity(%instrumentName,1);
   if(%instrumentName.particle!$="")
 	%instrumentName.particle.delete();
 	
   %delayInMillis=2000;
 	%distance=%instrumentName.position.z-%instrumentName.hightOrigin;
-	echo(%instrumentName.position.z SPC %instrumentName.hightOrigin);
 	if(%distance <=0) return;
 	
   for(%i=0;%i<%delayInMillis;%i=%i+%delayInMillis/$nbAppels){
