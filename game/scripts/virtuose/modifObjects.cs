@@ -322,4 +322,11 @@ function onStop()
 	$posxbois = 0.0;
 	$posxcuivre = 0.0;
 	$posxvent = 0.0;
+	for(%i=0;%i<$orchestrator.getNumTracks();%i++){
+		 if($orchestrator.getTrackName(%i).particle!$=""){
+			$orchestrator.getTrackName(%i).particle.delete();
+			$orchestrator.getTrackName(%i).wasPlaying=0;
+			$orchestrator.getTrackName(%i).particle="";		
+		}
+	}
 }
